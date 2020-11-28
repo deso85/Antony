@@ -30,6 +30,7 @@ hs_err_pid*
 /bin/
 
 # Antony specific ignores
+/target/
 antony.properties
 DeleteLastMessages.java
 PurgeChannel.java
