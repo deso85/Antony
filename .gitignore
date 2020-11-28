@@ -21,3 +21,16 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Eclipse Core      
+.project
+
+# JDT-specific (Eclipse Java Development Tools)     
+.classpath
+/bin/
+
+# Antony specific ignores
+antony.properties
+DeleteLastMessages.java
+PurgeChannel.java
+SpamMessages.java
