@@ -13,6 +13,8 @@ public class Shop {
 	private String country;
 
 	private String priceinfo;
+	
+	private String currency;
 
 	public String getId() {
 		return id;
@@ -61,11 +63,19 @@ public class Shop {
 	public void setPriceinfo(String priceinfo) {
 		this.priceinfo = priceinfo;
 	}
+	
+	public String getCurrency() {
+		return currency;
+	}
+	
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 
 	@Override
 	public String toString() {
 		return "Shop [id=" + id + ", name=" + name + ", url=" + url + ", shippingurl=" + shippingurl + ", country="
-				+ country + ", priceinfo=" + priceinfo + "]";
+				+ country + ", priceinfo=" + priceinfo + ", currency=" + currency + "]";
 	}
 
 	@Override

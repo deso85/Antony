@@ -20,7 +20,7 @@ public class Antony extends ListenerAdapter {
 	public static Antony INSTANCE;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan;
-	private static String version = "1.2.0";
+	private static String version = "1.2.1";
 	private static boolean prodStage = false;
 
 	

@@ -5,10 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,18 +37,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class CallAntcheck implements ServerCommand {
 
 	static Logger logger = LoggerFactory.getLogger(CallAntcheck.class);
-
-	static Map<String, String> CURRENCY_MAP;
-	static {
-		CURRENCY_MAP = new HashMap<String, String>();
-		CURRENCY_MAP.put("at", "€");
-		CURRENCY_MAP.put("au", "A$");
-		CURRENCY_MAP.put("ch", "CHF");
-		CURRENCY_MAP.put("de", "€");
-		CURRENCY_MAP.put("gb", "£");
-		CURRENCY_MAP.put("th", "£");
-		CURRENCY_MAP.put("uk", "£");
-	}
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
@@ -184,8 +170,7 @@ public class CallAntcheck implements ServerCommand {
 		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_")); // title
 		eb.setColor(new Color(31, 89, 152)); // color of side stripe
 		eb.setDescription("Die folgenden Daten wurden von https://antcheck.de/ bereitgestellt.\n\n"
-				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.\n\n"
-				+ "***Angebote von MyAnts werden auf Wunsch des Shop-Betreibers nicht mehr mit ausgegeben.***");
+				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
 		String specieImageurl = specie.getImageurl();
 		if (!specieImageurl.isEmpty()) {
 			eb.setThumbnail(specieImageurl); // image thumbnail
@@ -203,12 +188,11 @@ public class CallAntcheck implements ServerCommand {
 			for (Variant variant : variantsForShop) {
 				messagePart.append(variant.getName());
 				messagePart.append(": [**" + String.format("%.2f", Double.parseDouble(variant.getPrice())) + " "
-						+ CURRENCY_MAP.get(shop.getCountry()) + "**]");
+						+ shop.getCurrency() + "**]");
 				messagePart.append("(" + variant.getUrl() + ")\n");
 				
 			}
-			// Discord Flag for UK can be shown with :flag_gb: instead of :flag_uk:
-			eb.addField(":flag_" + shop.getCountry().replace("uk", "gb") + ": " + shop.getName(), messagePart.toString(), false);
+			eb.addField(":flag_" + shop.getCountry() + ": " + shop.getName(), messagePart.toString(), false);
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date now = new Date();
