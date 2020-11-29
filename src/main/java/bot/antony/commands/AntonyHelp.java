@@ -33,6 +33,9 @@ public class AntonyHelp implements ServerCommand {
 	    			//Show test image
 	    			eb.setThumbnail(TESTIMAGE);
 	    		}*/
+	    		eb.addField("29.11.2020 - Version 1.2.1",
+	    				"Kleineres Update aufgrund einer Änderung an der antcheck API",
+	    				false);
 	    		eb.addField("26.11.2020 - Version 1.2.0",
 	    				"Einige Basis-Funktionalitäten wurden hinzugefügt, um den Bot einfacher nutzen zu können. "
 	    				+ "Dazu zählt unter anderem das ***!antony*** Kommando, um dem Anwender Informationen zum Bot zur Verfügung zu stellen. "
