@@ -24,6 +24,7 @@ hs_err_pid*
 
 # Eclipse Core      
 .project
+org.eclipse.*
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
@@ -32,6 +33,3 @@ hs_err_pid*
 # Antony specific ignores
 /target/
 antony.properties
-DeleteLastMessages.java
-PurgeChannel.java
-SpamMessages.java

@@ -59,7 +59,7 @@ public class CallAntcheck implements ServerCommand {
 			if (species.isEmpty()) {
 				channel.sendMessage(
 						"Es konnte keine Ameisenart mit \"" + antNames[0] + "\" im Namen gefunden werden.\r\n"
-								+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
+								+ "Bitte Ã¼berprÃ¼fe die Schreibweise und versuche es erneut.")
 						.queue();
 			} else {
 				List<Specie> speciesWithVariants = species.stream()
@@ -170,7 +170,7 @@ public class CallAntcheck implements ServerCommand {
 		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_")); // title
 		eb.setColor(new Color(31, 89, 152)); // color of side stripe
 		eb.setDescription("Die folgenden Daten wurden von https://antcheck.de/ bereitgestellt.\n\n"
-				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
+				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und kÃ¶nnen je nach Shop unterschiedlich hoch ausfallen.");
 		String specieImageurl = specie.getImageurl();
 		if (!specieImageurl.isEmpty()) {
 			eb.setThumbnail(specieImageurl); // image thumbnail
@@ -196,7 +196,7 @@ public class CallAntcheck implements ServerCommand {
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date now = new Date();
-		StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
+		StringBuilder sb = new StringBuilder("Preise und VerfÃ¼gbarkeiten zuletzt aktualisiert: ");
 		sb.append(sdf.format(now.getTime()));
 		sb.append(" 00:00 Uhr.");
 		eb.setFooter(sb.toString());
@@ -210,7 +210,7 @@ public class CallAntcheck implements ServerCommand {
 			sb.append(specie.getName());
 			sb.append("*\n");
 		}
-		sb.append("\nBitte schränke die Suche weiter ein.");
+		sb.append("\nBitte schrÃ¤nke die Suche weiter ein.");
 		channel.sendMessage(sb.toString()).queue();
 	}
 

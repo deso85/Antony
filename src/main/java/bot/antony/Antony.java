@@ -14,13 +14,17 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class Antony extends ListenerAdapter {
 
 	public static Antony INSTANCE;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan;
-	private static String version = "1.2.1";
+	private static String version = "1.3.0";
 	private static boolean prodStage = false;
 
 	
@@ -33,6 +37,13 @@ public class Antony extends ListenerAdapter {
 			
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage())) // The token of the account that is logging in.
 					.addEventListeners(new CommandListener()) // An instance of a class that will handle events.
+					.setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
+			        .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
+			        .enableCache(CacheFlag.ACTIVITY)
+			        .enableCache(CacheFlag.CLIENT_STATUS)
+			        .enableCache(CacheFlag.EMOTE)
+			        .enableIntents(GatewayIntent.GUILD_MEMBERS)
+			        .enableIntents(GatewayIntent.GUILD_PRESENCES) // Check online Status
 					.build();
 
 			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.

@@ -11,90 +11,75 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class AntonyHelp implements ServerCommand {
 
+	TextChannel channel;
+
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
-		
+		this.channel = channel;
+
 		String[] userMessage = message.getContentDisplay().split(" ");
-		
-		if(userMessage.length > 1) {
-			
-			switch(userMessage[1].toLowerCase()) {
-			
-	        case "changelog":
-	        	EmbedBuilder eb = new EmbedBuilder();
-	        	eb.setTitle("***Antony - Changelog***"); // title
-	    		eb.setColor(new Color(31, 89, 152)); // color of side stripe
-	    		eb.setDescription("Hier kannst du nachvollziehen, wie sich Antony weiterentwickelt hat.");
-	    		/* TODO make Antony avatar available
-	    		 * if(Antony.isProdStage()) {
-	    			//Show prod image
-	    			eb.setThumbnail(PRODIMAGE);
-	    		} else {
-	    			//Show test image
-	    			eb.setThumbnail(TESTIMAGE);
-	    		}*/
-	    		eb.addField("29.11.2020 - Version 1.2.1",
-	    				"Kleineres Update aufgrund einer ƒnderung an der antcheck API",
-	    				false);
-	    		eb.addField("26.11.2020 - Version 1.2.0",
-	    				"Einige Basis-Funktionalit‰ten wurden hinzugef¸gt, um den Bot einfacher nutzen zu kˆnnen. "
-	    				+ "Dazu z‰hlt unter anderem das ***!antony*** Kommando, um dem Anwender Informationen zum Bot zur Verf¸gung zu stellen. "
-	    				+ "Zus‰tzlich wurden kleinere Bugs behoben.",
-	    				false);
-	    		eb.addField("25.11.2020 - Version 1.1.0",
-	    				"Ein Groﬂteil des Codes wurde umgeschrieben, um eine bessere Ausgangslage f¸r neue Funktionen zu bieten.",
-	    				false);
-	    		eb.addField("20.11.2020 - Version 1.0.0",
-	    				"Die ***!sells*** Funktion wurde fertig implementiert und der Bot auf dem Discord Server \"Ameisen an die Macht!\" vorgestellt.",
-	    				false);
-	    		eb.addField("17.11.2020 - Version 0.0.1",
-	    				"Antony wurde bei Discord registriert und erste Test-Funktionen wurden geschrieben.",
-	    				false);
-	    		eb.setFooter("Version " + Antony.getVersion());
-	    		channel.sendMessage(eb.build()).queue();
-	            break;
-	            
-	        default:
+
+		if (userMessage.length > 1) {
+
+			switch (userMessage[1].toLowerCase()) {
+
+			case "changelog":
+				EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony - Changelog***") // title
+						.setColor(new Color(31, 89, 152)) // color of side stripe
+						.setThumbnail(channel.getJDA().getSelfUser().getEffectiveAvatarUrl())
+						.setDescription("Hier kannst du nachvollziehen, wie sich Antony weiterentwickelt hat.")
+						.addField("05.12.2020 - Version 1.3.0",
+								"Die ***!userinfo*** Funktion wurde fertig implementiert.", false)
+						.addField("29.11.2020 - Version 1.2.1",
+								"Kleineres Update aufgrund einer √Ñnderung an der antcheck API", false)
+						.addField("26.11.2020 - Version 1.2.0",
+								"Einige Basis-Funktionalit√§ten wurden hinzugef√ºgt, um den Bot einfacher nutzen zu k√∂nnen. "
+										+ "Dazu z√§hlt unter anderem das ***!antony*** Kommando, um dem Anwender Informationen zum Bot zur Verf√ºgung zu stellen. "
+										+ "Zus√§tzlich wurden kleinere Bugs behoben.",
+								false)
+						.addField("25.11.2020 - Version 1.1.0",
+								"Ein Gro√üteil des Codes wurde umgeschrieben, um eine bessere Ausgangslage f√ºr neue Funktionen zu bieten.",
+								false)
+						.addField("20.11.2020 - Version 1.0.0",
+								"Die ***!sells*** Funktion wurde fertig implementiert und der Bot auf dem Discord Server \"Ameisen an die Macht!\" vorgestellt.",
+								false)
+						.addField("17.11.2020 - Version 0.0.1",
+								"Antony wurde bei Discord registriert und erste Test-Funktionen wurden geschrieben.",
+								false)
+						.setFooter("Version " + Antony.getVersion());
+				channel.sendMessage(eb.build()).queue();
+				break;
+
+			default:
 				channel.sendMessage(getCommandList().build()).queue();
 				break;
-				
+
 			}
 		} else {
-			
+
 			channel.sendMessage(getCommandList().build()).queue();
-			
+
 		}
-		
+
 	}
-	
+
 	private EmbedBuilder getCommandList() {
-		
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setTitle("***Antony***"); // title
-		eb.setColor(new Color(31, 89, 152)); // color of side stripe
-		eb.setDescription("Folgende Befehle kˆnnen genutzt werden.");
-		/* TODO make Antony avatar available
-		 * if(Antony.isProdStage()) {
-			//Show prod image
-			eb.setThumbnail(PRODIMAGE);
-		} else {
-			//Show test image
-			eb.setThumbnail(TESTIMAGE);
-		}*/
-		eb.addField("!antony  |  !antony help",
-				"Zeigt diese ‹bersicht an.",
-				false);
-		eb.addField("!antony changelog",
-				"Zeigt den Changelog von Antony an.",
-				false);
-		eb.addField("!sells",
-				"Listet zu der gesuchten Ameisenart alle Shops und zugehˆrigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.de zur Verf¸gung gestellt. Vielen Dank hierf¸r!\n"
-				+ "***Beispiel***: *!sells Lasius niger*",
-				false);
-		eb.setFooter("Version " + Antony.getVersion());
-		
+
+		EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony***") // title
+				.setColor(new Color(31, 89, 152)) // color of side stripe
+				.setDescription("Folgende Befehle k√∂nnen genutzt werden.")
+				.setThumbnail(channel.getJDA().getSelfUser().getEffectiveAvatarUrl())
+				.addField("!antony", "Zeigt diese √úbersicht an.", false)
+				.addField("!antony changelog", "Zeigt den Changelog von Antony an.", false)
+				.addField("!sells",
+						"Listet zu der gesuchten Ameisenart alle Shops und zugeh√∂rigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.de zur Verf√ºgung gestellt. Vielen Dank hierf√ºr!\n"
+								+ "*Beispiel: !sells Lasius niger*",
+						false)
+				.addField("!userinfo", "Zeigt Details √ºber den Benutzer.\n" + "*Beispiel: !userinfo Antony*", false)
+				.setFooter("Version " + Antony.getVersion());
+
 		return eb;
-		
+
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.CallAntcheck;
 import bot.antony.commands.ShutdownBot;
+import bot.antony.commands.UserInfo;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,6 +27,7 @@ public class CommandManager {
 		
 		// Miscellaneous
 		this.commands.put("antony", new AntonyHelp());
+		this.commands.put("userinfo", new UserInfo());
 		
 	}
 
