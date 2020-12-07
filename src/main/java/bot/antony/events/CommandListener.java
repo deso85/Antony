@@ -18,12 +18,12 @@ public class CommandListener extends ListenerAdapter {
 			TextChannel channel = event.getTextChannel();
 			
 			//!cmd arg0 arg1 arg2 ...
-			if(message.startsWith("!")) {
-				String[] args = message.substring(1).split(" ");
+			if(message.startsWith(Antony.getCmdPrefix())) {
+				String[] args = message.substring(Antony.getCmdPrefix().length()).split(" ");
 				
 				if(args.length > 0) {
 					if(!Antony.getCmdMan().perform(args[0], event.getMember(), channel, event.getMessage())) {
-						// TODO: What if command is unknown?
+						// TODO What if command is unknown?
 						// System.out.println("Unknown Command: '" + event.getMessage() + "'");
 					}
 				}

@@ -1,6 +1,5 @@
 package bot.antony.commands;
 
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import bot.antony.Antony;
 import bot.antony.antcheck.client.AntCheckClient;
 import bot.antony.antcheck.client.dto.Shop;
 import bot.antony.antcheck.client.dto.Specie;
@@ -167,13 +167,13 @@ public class CallAntcheck implements ServerCommand {
 		// build an embedded message
 		EmbedBuilder eb = new EmbedBuilder();
 		String specieName = specie.getName();
-		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_")); // title
-		eb.setColor(new Color(31, 89, 152)); // color of side stripe
+		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_"));
+		eb.setColor(Antony.getBaseColor());
 		eb.setDescription("Die folgenden Daten wurden von https://antcheck.de/ bereitgestellt.\n\n"
 				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
 		String specieImageurl = specie.getImageurl();
 		if (!specieImageurl.isEmpty()) {
-			eb.setThumbnail(specieImageurl); // image thumbnail
+			eb.setThumbnail(specieImageurl);
 		} else {
 			eb.addField("Bild einreichen",
 					"Leider gibt es zu dieser Art noch kein passendes Bild. Du kannst helfen und [***hier***](https://antcheck.de/submit-image) ein Bild einreichen. Vielen Dank!",
@@ -217,7 +217,7 @@ public class CallAntcheck implements ServerCommand {
 	/**
 	 * Function to return formatted ant names
 	 * 
-	 * @param args the arguments which came with the read message
+	 * @param args the arguments which came with the message
 	 * @return String[] which consists of 2 strings. The first one with ant species
 	 *         name divided by spaces. The second one with ant species name divided
 	 *         by underscores.
