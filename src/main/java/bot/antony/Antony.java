@@ -1,16 +1,12 @@
 package bot.antony;
 
 import java.awt.Color;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,85 +30,75 @@ public class Antony extends ListenerAdapter {
 	private static CommandManager cmdMan = new CommandManager();
 	private static boolean prodStage = false;
 	
+
 	/**
 	 * This is the method where the program starts.
 	 * @param args
-	 * @throws IOException
-	 * @throws XmlPullParserException
-	 * @throws LoginException
-	 * @throws InterruptedException
 	 */
-
-	public static void main(String[] args) throws IOException, XmlPullParserException, LoginException, InterruptedException {
+	public static void main(String[] args) {
 		
+		setVersion(getProperty("bot.version"));			// set Antony version
+		setCmdPrefix(getProperty("command.prefix"));	// set command prefix
 		
-		setVersion(getVersionFromPom());			// set Antony version
-		setCmdPrefix(getCmdPrefixFromProperty());	// set command prefix
+		try {
+			// build bot
+			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
+					.addEventListeners(new CommandListener())			// An instance of a class that will handle events.
+					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
+					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
+					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
+					.enableCache(CacheFlag.CLIENT_STATUS)				// To get client status
+					.enableCache(CacheFlag.EMOTE)						// To get guilds emotes
+					.enableIntents(GatewayIntent.GUILD_MEMBERS)			// Has to be set to use MemberCachePolicy.ALL
+					.enableIntents(GatewayIntent.GUILD_PRESENCES)		// Has to be set to use CacheFlag.ACTIVITY
+					.build();
+			
+			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
+			jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
+			
+			logger.info("Antony (" + getVersion() + ") started");
+			
+		} catch (LoginException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		// build bot
-		JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
-				.addEventListeners(new CommandListener())			// An instance of a class that will handle events.
-				.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
-				.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
-				.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
-				.enableCache(CacheFlag.CLIENT_STATUS)				// To get client status
-				.enableCache(CacheFlag.EMOTE)						// To get guilds emotes
-				.enableIntents(GatewayIntent.GUILD_MEMBERS)			// Has to be set to use MemberCachePolicy.ALL
-				.enableIntents(GatewayIntent.GUILD_PRESENCES)		// Has to be set to use CacheFlag.ACTIVITY
-				.build();
-		jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
-		jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
-		
-		logger.info("Antony (" + getVersion() + ") started");
 	}
 
+
 	/**
-	 * Function to get bot token from antony.properties file
+	 * Function to get value for key from antony.properties file
+	 * @param	key
+	 * 			as String
+	 * @return	value
+	 * 			as String
+	 */
+	private static String getProperty(String key) {
+		InputStream is = Antony.class.getResourceAsStream("/antony.properties");
+		Properties prop = new Properties();
+		try {
+			prop.load(is);
+			return prop.getProperty(key);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Function to get bot token
 	 * @param	prod
 	 * 			Boolean if bot is for productive use
 	 * @return	Discord Bot Token
 	 * 			as String
 	 */
 	private static String getToken(boolean prod) {
-		InputStream is = Antony.class.getResourceAsStream("/antony.properties");
-		Properties prop = new Properties();
-		try {
-			prop.load(is);
-			if(prod) {
-				return prop.getProperty("bot.token.prod");
-			}
-			return prop.getProperty("bot.token.dev");
-		} catch (IOException e) {
-			return null;
+		if(prod) {
+			return getProperty("bot.token.prod");
 		}
-	}
-	
-	/**
-	 * Function to get command prefix from antony.properties file
-	 * @return	Bot command prefix
-	 * 			as String
-	 */
-	private static String getCmdPrefixFromProperty() {
-		InputStream is = Antony.class.getResourceAsStream("/antony.properties");
-		Properties prop = new Properties();
-		try {
-			prop.load(is);
-			return prop.getProperty("command.prefix");
-		} catch (IOException e) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Function to read program version from pom.xml
-	 * @return	Program version
-	 * @throws	IOException
-	 * @throws	XmlPullParserException
-	 */
-	private static String getVersionFromPom() throws IOException, XmlPullParserException {
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-	    Model model = reader.read(new FileReader("pom.xml"));
-	    return model.getVersion();
+		return getProperty("bot.token.dev");
 	}
 	
 	

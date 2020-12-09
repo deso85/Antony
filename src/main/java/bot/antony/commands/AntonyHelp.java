@@ -29,7 +29,7 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
-				changeLog.add(new ChangeLogEntry("07.12.2020 - Version 1.3.1", "Der Code wurde an einigen Stellen umgeschrieben."));
+				changeLog.add(new ChangeLogEntry("09.12.2020 - Version 1.3.1", "Der Code wurde an einigen Stellen überarbeitet."));
 				changeLog.add(new ChangeLogEntry("05.12.2020 - Version 1.3.0", "Die ***" + Antony.getCmdPrefix() + "userinfo*** Funktion wurde fertig implementiert."));
 				changeLog.add(new ChangeLogEntry("29.11.2020 - Version 1.2.1", "Kleineres Update aufgrund einer Änderung an der antcheck API"));
 				changeLog.add(new ChangeLogEntry("26.11.2020 - Version 1.2.0", "Einige Basis-Funktionalitäten wurden hinzugefügt, um den Bot einfacher nutzen zu können. "
