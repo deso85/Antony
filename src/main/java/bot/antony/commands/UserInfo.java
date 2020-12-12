@@ -19,9 +19,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class UserInfo implements ServerCommand {
 
-	List<Member> memberList;
-	Member member;
-	String memberOnlineStatus;
+	private List<Member> memberList;
+	private Member member;
+	private String memberOnlineStatus;
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {

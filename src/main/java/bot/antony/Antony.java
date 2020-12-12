@@ -56,7 +56,17 @@ public class Antony extends ListenerAdapter {
 			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
 			jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
 			
-			logger.info("Antony (" + getVersion() + ") started");
+			// Create log output after startup
+			StringBuilder postStartLogEntry = new StringBuilder();
+			postStartLogEntry.append("[");
+			if(prodStage) {
+				postStartLogEntry.append("PROD");
+			} else {
+				postStartLogEntry.append("DEV/TEST");
+			}
+			postStartLogEntry.append("] ");
+			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
+			logger.info(postStartLogEntry.toString());
 			
 		} catch (LoginException e) {
 			// TODO Auto-generated catch block

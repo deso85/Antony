@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.CallAntcheck;
+import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.ShutdownBot;
 import bot.antony.commands.UserInfo;
 import bot.antony.commands.types.ServerCommand;
@@ -19,14 +20,15 @@ public class CommandManager {
 		
 		this.commands = new ConcurrentHashMap<>();
 
-		// Ant Specific
-		this.commands.put("sells", new CallAntcheck());
-
 		// Administrative
 		this.commands.put("shutdown", new ShutdownBot());
 		
+		// Ant Specific
+		this.commands.put("sells", new CallAntcheck());
+
 		// Miscellaneous
 		this.commands.put("antony", new AntonyHelp());
+		this.commands.put("showavatar", new ShowAvatar());
 		this.commands.put("userinfo", new UserInfo());
 		
 	}

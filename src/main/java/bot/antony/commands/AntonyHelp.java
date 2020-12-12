@@ -29,7 +29,7 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
-				changeLog.add(new ChangeLogEntry("09.12.2020 - Version 1.3.1", "Der Code wurde an einigen Stellen überarbeitet."));
+				changeLog.add(new ChangeLogEntry("12.12.2020 - Version 1.4.0", "Die ***" + Antony.getCmdPrefix() + "showavatar*** Funktion wurde implementiert und der Code an einigen Stellen überarbeitet."));
 				changeLog.add(new ChangeLogEntry("05.12.2020 - Version 1.3.0", "Die ***" + Antony.getCmdPrefix() + "userinfo*** Funktion wurde fertig implementiert."));
 				changeLog.add(new ChangeLogEntry("29.11.2020 - Version 1.2.1", "Kleineres Update aufgrund einer Änderung an der antcheck API"));
 				changeLog.add(new ChangeLogEntry("26.11.2020 - Version 1.2.0", "Einige Basis-Funktionalitäten wurden hinzugefügt, um den Bot einfacher nutzen zu können. "
@@ -75,10 +75,12 @@ public class AntonyHelp implements ServerCommand {
 		BotCommand antony = new BotCommand("antony", "Zeigt diese Übersicht an.");
 		BotCommand antonyChangelog = new BotCommand("antony changelog", "Zeigt den Changelog von Antony an.");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.de zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
+		BotCommand showAvatar = new BotCommand("showavatar", "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.", "Antony");
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		botCommands.add(antony);
 		botCommands.add(antonyChangelog);
 		botCommands.add(sells);
+		botCommands.add(showAvatar);
 		botCommands.add(userinfo);
 		
 		EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony***")
