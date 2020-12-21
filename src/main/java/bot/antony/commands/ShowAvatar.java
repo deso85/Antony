@@ -15,13 +15,14 @@ public class ShowAvatar implements ServerCommand {
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
-
+		String fullMemberName = message.getContentDisplay().substring(userMessage[0].length()+1);
+		
 		// overwrite member
 		if (userMessage.length > 1) {			
 			if(message.getMentionedMembers().size() > 0) {
 				setMember(message.getMentionedMembers().get(0));
 			} else {
-				setMember(findUserIn(channel, userMessage[1]));
+				setMember(findUserIn(channel, fullMemberName));
 			}
 		} else {
 			setMember(m);
@@ -32,7 +33,7 @@ public class ShowAvatar implements ServerCommand {
 			channel.sendMessage(getMember().getUser().getEffectiveAvatarUrl() + "?size=2048").queue();
 
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + userMessage[1] + "\" finden.").queue();
+			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + fullMemberName + "\" finden.").queue();
 		}
 
 	}

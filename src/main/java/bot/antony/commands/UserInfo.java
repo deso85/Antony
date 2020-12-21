@@ -26,8 +26,8 @@ public class UserInfo implements ServerCommand {
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		setMemberList(new ArrayList<>());
-		
 		String[] userMessage = message.getContentDisplay().split(" ");
+		String fullMemberName = message.getContentDisplay().substring(userMessage[0].length()+1);
 
 		// fill memberList
 		for (Member member : channel.getGuild().getMembers()) {
@@ -46,7 +46,7 @@ public class UserInfo implements ServerCommand {
 			if(message.getMentionedMembers().size() > 0) {
 				setMember(message.getMentionedMembers().get(0));
 			} else {
-				setMember(findUserIn(channel, userMessage[1]));
+				setMember(findUserIn(channel, fullMemberName));
 			}
 		} else {
 			setMember(m);
@@ -71,7 +71,7 @@ public class UserInfo implements ServerCommand {
 			channel.sendMessage(getUserEB().build()).queue();
 
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + userMessage[1] + "\" finden.").queue();
+			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + fullMemberName + "\" finden.").queue();
 		}
 
 	}
@@ -179,7 +179,7 @@ public class UserInfo implements ServerCommand {
 	 */
 	public Member findUserIn(TextChannel channel, String searchText) {
 		// List<Member> users = channel.getGuild().getMembers();
-		List<Member> users = memberList;
+		List<Member> users = getMemberList();
 		List<Member> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = -1;
 		for (Member u : users) {
