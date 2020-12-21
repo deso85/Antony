@@ -22,12 +22,14 @@ public class UserInfo implements ServerCommand {
 	private List<Member> memberList;
 	private Member member;
 	private String memberOnlineStatus;
+	private String fullMemberName;
+	
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		setMemberList(new ArrayList<>());
 		String[] userMessage = message.getContentDisplay().split(" ");
-		String fullMemberName = message.getContentDisplay().substring(userMessage[0].length()+1);
+		
 
 		// fill memberList
 		for (Member member : channel.getGuild().getMembers()) {
@@ -46,7 +48,8 @@ public class UserInfo implements ServerCommand {
 			if(message.getMentionedMembers().size() > 0) {
 				setMember(message.getMentionedMembers().get(0));
 			} else {
-				setMember(findUserIn(channel, fullMemberName));
+				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
+				setMember(findUserIn(channel, getFullMemberName()));
 			}
 		} else {
 			setMember(m);
@@ -56,22 +59,22 @@ public class UserInfo implements ServerCommand {
 
 			// TODO Search for guild emotes to use
 			if (getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-				setUserOnlineStatus("🟢"); // :green_circle:
+				setMemberOnlineStatus("🟢"); // :green_circle:
 			} else if (getMember().getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
-				setUserOnlineStatus("⚫"); // :black_circle:
+				setMemberOnlineStatus("⚫"); // :black_circle:
 			} else if (getMember().getOnlineStatus().equals(OnlineStatus.IDLE)) {
-				setUserOnlineStatus("🌙"); // :crescent_moon:
+				setMemberOnlineStatus("🌙"); // :crescent_moon:
 			} else if (getMember().getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)) {
-				setUserOnlineStatus("⛔"); // :no_entry:
+				setMemberOnlineStatus("⛔"); // :no_entry:
 			} else {
-				setUserOnlineStatus("⚪"); // :white_circle:
+				setMemberOnlineStatus("⚪"); // :white_circle:
 			}
 
 
 			channel.sendMessage(getUserEB().build()).queue();
 
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + fullMemberName + "\" finden.").queue();
+			channel.sendMessage("Ich konnte niemanden mit dem Namen " + getFullMemberName() + " finden.").queue();
 		}
 
 	}
@@ -81,7 +84,7 @@ public class UserInfo implements ServerCommand {
 
 		//Build Title or Author
 		StringBuilder ebHeadline = new StringBuilder();
-		ebHeadline.append(getUserOnlineStatus() + " ");
+		ebHeadline.append(getMemberOnlineStatus() + " ");
 		ebHeadline.append(getMember().getUser().getAsTag());
 		if (getMember().getNickname() != null) {
 			ebHeadline.append(" - " + getMember().getNickname());
@@ -221,11 +224,19 @@ public class UserInfo implements ServerCommand {
 		this.member = member;
 	}
 
-	public String getUserOnlineStatus() {
+	public String getMemberOnlineStatus() {
 		return memberOnlineStatus;
 	}
 
-	public void setUserOnlineStatus(String userOnlineStatus) {
+	public void setMemberOnlineStatus(String userOnlineStatus) {
 		this.memberOnlineStatus = userOnlineStatus;
+	}
+	
+	public String getFullMemberName() {
+		return fullMemberName;
+	}
+
+	public void setFullMemberName(String fullMemberName) {
+		this.fullMemberName = fullMemberName;
 	}
 }

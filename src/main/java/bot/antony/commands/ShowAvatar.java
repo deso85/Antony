@@ -11,18 +11,21 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class ShowAvatar implements ServerCommand {
 
 	private Member member;
+	private String fullMemberName;
 
+	
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
-		String fullMemberName = message.getContentDisplay().substring(userMessage[0].length()+1);
+		
 		
 		// overwrite member
-		if (userMessage.length > 1) {			
+		if (userMessage.length > 1) {
 			if(message.getMentionedMembers().size() > 0) {
 				setMember(message.getMentionedMembers().get(0));
 			} else {
-				setMember(findUserIn(channel, fullMemberName));
+				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
+				setMember(findUserIn(channel, getFullMemberName()));
 			}
 		} else {
 			setMember(m);
@@ -33,7 +36,7 @@ public class ShowAvatar implements ServerCommand {
 			channel.sendMessage(getMember().getUser().getEffectiveAvatarUrl() + "?size=2048").queue();
 
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen \"" + fullMemberName + "\" finden.").queue();
+			channel.sendMessage("Ich konnte niemanden mit dem Namen " + getFullMemberName() + " finden.").queue();
 		}
 
 	}
@@ -80,6 +83,14 @@ public class ShowAvatar implements ServerCommand {
 
 	public void setMember(Member member) {
 		this.member = member;
+	}
+	
+	public String getFullMemberName() {
+		return fullMemberName;
+	}
+
+	public void setFullMemberName(String fullMemberName) {
+		this.fullMemberName = fullMemberName;
 	}
 
 }
