@@ -29,6 +29,7 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("30.12.2020 - Version 1.4.2", "Bugfixes für die ***" + Antony.getCmdPrefix() + "sells*** Funktion."));
 				changeLog.add(new ChangeLogEntry("21.12.2020 - Version 1.4.1", "Die Funktionen ***" + Antony.getCmdPrefix() + "userinfo*** und ***" + Antony.getCmdPrefix() + "showavatar*** wurden dahingehend korrigiert, dass nun auch Benutzernamen mit Leerzeichen abgefragt werden können."));
 				changeLog.add(new ChangeLogEntry("12.12.2020 - Version 1.4.0", "Die ***" + Antony.getCmdPrefix() + "showavatar*** Funktion wurde implementiert und der Code an einigen Stellen überarbeitet."));
 				changeLog.add(new ChangeLogEntry("05.12.2020 - Version 1.3.0", "Die ***" + Antony.getCmdPrefix() + "userinfo*** Funktion wurde fertig implementiert."));

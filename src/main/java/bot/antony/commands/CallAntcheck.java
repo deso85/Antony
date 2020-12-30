@@ -73,7 +73,14 @@ public class CallAntcheck implements ServerCommand {
 					} else {
 						outputMessage = handleOnlyOneSpecieFoundWithoutVariant(species);
 					}
-					channel.sendMessage(outputMessage).queue();
+					// Message may only contain 2000 chars
+					if (outputMessage.length() <= 2000) {
+						channel.sendMessage(outputMessage).queue();
+					} else {
+						channel.sendMessage("Es wurden " + species.size() + " Arten mit dem Suchbegriff \""
+								+ antNames[0] + "\" gefunden.\nBitte schränke die Suche weiter ein.").queue();
+					}
+
 				} else {
 					if (speciesWithVariants.size() == 1) {
 						handleOnlyOneSpecieWithVariant(channel, antCheckClient, speciesWithVariants);
@@ -82,6 +89,7 @@ public class CallAntcheck implements ServerCommand {
 					}
 
 				}
+
 			}
 
 		}
@@ -172,7 +180,7 @@ public class CallAntcheck implements ServerCommand {
 		eb.setDescription("Die folgenden Daten wurden von https://antcheck.de/ bereitgestellt.\n\n"
 				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
 		String specieImageurl = specie.getImageurl();
-		if (!specieImageurl.isEmpty()) {
+		if (specieImageurl != null && !specieImageurl.isEmpty()) {
 			eb.setThumbnail(specieImageurl);
 		} else {
 			eb.addField("Bild einreichen",
@@ -190,10 +198,13 @@ public class CallAntcheck implements ServerCommand {
 				messagePart.append(": [**" + String.format("%.2f", Double.parseDouble(variant.getPrice())) + " "
 						+ shop.getCurrency() + "**]");
 				messagePart.append("(" + variant.getUrl() + ")\n");
-				
+
 			}
+			// TODO Check if messagePart is more than 1024 chars (many variants offered) ->
+			// Count and add another field if needed
 			eb.addField(":flag_" + shop.getCountry() + ": " + shop.getName(), messagePart.toString(), false);
 		}
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date now = new Date();
 		StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
