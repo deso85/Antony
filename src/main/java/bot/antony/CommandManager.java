@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.CallAntcheck;
+import bot.antony.commands.ChannelUpdateNotification;
 import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.ShutdownBot;
 import bot.antony.commands.UserInfo;
@@ -28,6 +29,7 @@ public class CommandManager {
 
 		// Miscellaneous
 		this.commands.put("antony", new AntonyHelp());
+		this.commands.put("notify", new ChannelUpdateNotification());
 		this.commands.put("showavatar", new ShowAvatar());
 		this.commands.put("userinfo", new UserInfo());
 		
