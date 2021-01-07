@@ -10,7 +10,12 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import bot.antony.events.CommandListener;
+import bot.antony.events.NotificationListener;
+import bot.antony.notifications.NotificationController;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -28,6 +33,7 @@ public class Antony extends ListenerAdapter {
 	private static String version;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
+	private static NotificationController notificationController = new NotificationController();
 	private static boolean prodStage = false;
 	
 
@@ -39,11 +45,12 @@ public class Antony extends ListenerAdapter {
 		
 		setVersion(getProperty("bot.version"));			// set Antony version
 		setCmdPrefix(getProperty("command.prefix"));	// set command prefix
-		
+
 		try {
 			// build bot
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
-					.addEventListeners(new CommandListener())			// An instance of a class that will handle events.
+					.addEventListeners(new CommandListener())			// Listener for commands
+					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
@@ -67,13 +74,15 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("] ");
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
-			
+			notificationController.initData();
 		} catch (LoginException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Could not login to Discord!", e);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Antony thread is interrupted while waiting!", e);
+		} catch (JsonParseException | JsonMappingException e) {
+			logger.error("Could not parse GCNL data!", e);
+		} catch (IOException e) {
+			logger.error("Could not read GCNL file!", e);
 		}
 		
 	}
@@ -157,6 +166,14 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static CommandManager getCmdMan() {
 		return cmdMan;
+	}
+	
+	/**
+	 * Function to get the NotificationManager
+	 * @return NotificationManager
+	 */
+	public static NotificationController getNotificationController() {
+		return notificationController;
 	}
 
 	/**

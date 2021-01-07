@@ -15,7 +15,7 @@ public class CommandListener extends ListenerAdapter {
 		
 		//check which channel ...
 		if(event.isFromType(ChannelType.TEXT)) {
-			TextChannel channel = event.getTextChannel();
+			final TextChannel channel = event.getTextChannel();
 			
 			//!cmd arg0 arg1 arg2 ...
 			if(message.startsWith(Antony.getCmdPrefix())) {
@@ -25,9 +25,15 @@ public class CommandListener extends ListenerAdapter {
 					if(!Antony.getCmdMan().perform(args[0], event.getMember(), channel, event.getMessage())) {
 						// TODO What if command is unknown?
 						// System.out.println("Unknown Command: '" + event.getMessage() + "'");
+					} else {
+						StringBuilder logMessage = new StringBuilder();
+						logMessage.append("User \"" + event.getMember().getUser().getName() + "\" (UID: " + event.getMember().getUser().getId() + ") ");
+						logMessage.append("used command \"" + message + "\" ");
+						logMessage.append("on server \"" + event.getGuild().getName() + "\" (GID: " + event.getGuild().getId() + ") ");
+						logMessage.append("in Channel \"#" + channel.getName() + "\" (CID: " + channel.getId() + ")");
+						Antony.getLogger().info(logMessage.toString());
 					}
 				}
-				
 			}
 		}
 	}
