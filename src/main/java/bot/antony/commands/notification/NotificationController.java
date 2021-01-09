@@ -1,4 +1,4 @@
-package bot.antony.notifications;
+package bot.antony.commands.notification;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
+import bot.antony.guild.GuildData;
+import bot.antony.guild.channel.ChannelData;
 
 /**
  * ChannelNotificationController controls all notifications

@@ -24,10 +24,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
-import bot.antony.antcheck.client.AntCheckClient;
-import bot.antony.antcheck.client.dto.Shop;
-import bot.antony.antcheck.client.dto.Specie;
-import bot.antony.antcheck.client.dto.Variant;
+import bot.antony.commands.antcheck.client.AntCheckClient;
+import bot.antony.commands.antcheck.client.dto.Shop;
+import bot.antony.commands.antcheck.client.dto.Specie;
+import bot.antony.commands.antcheck.client.dto.Variant;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;

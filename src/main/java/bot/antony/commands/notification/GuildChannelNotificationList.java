@@ -1,4 +1,4 @@
-package bot.antony.notifications;
+package bot.antony.commands.notification;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bot.antony.Antony;
+import bot.antony.guild.GuildData;
+import bot.antony.guild.channel.ChannelData;
 
 /**
  * GuildChannelNotificationList stores a List with all discord servers including the ChannelNotificationLists

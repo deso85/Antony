@@ -1,7 +1,7 @@
 package bot.antony.events;
 
 import bot.antony.Antony;
-import bot.antony.notifications.NotificationController;
+import bot.antony.commands.notification.NotificationController;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;

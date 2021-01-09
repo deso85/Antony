@@ -1,4 +1,4 @@
-package bot.antony.antcheck.client.dto;
+package bot.antony.commands.antcheck.client.dto;
 
 public class Specie {
 

@@ -3,7 +3,7 @@ package bot.antony.events;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
-import bot.antony.notifications.NotificationController;
+import bot.antony.commands.notification.NotificationController;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;

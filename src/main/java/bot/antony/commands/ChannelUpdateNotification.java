@@ -3,10 +3,10 @@ package bot.antony.commands;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
+import bot.antony.commands.notification.NotificationController;
 import bot.antony.commands.types.ServerCommand;
-import bot.antony.notifications.ChannelData;
-import bot.antony.notifications.GuildData;
-import bot.antony.notifications.NotificationController;
+import bot.antony.guild.GuildData;
+import bot.antony.guild.channel.ChannelData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;

@@ -1,4 +1,4 @@
-package bot.antony.antcheck.client;
+package bot.antony.commands.antcheck.client;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

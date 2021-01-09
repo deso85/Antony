@@ -1,26 +1,26 @@
-package bot.antony.notifications;
+package bot.antony.guild.channel;
 
 /**
- * Class to store Discord server data to help manage notifications
+ * Class to store channel data to help manage the notifications
  */
-public class GuildData {
+public class ChannelData {
 	private String id;
 	private String name;
-
-
+	
+	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public GuildData() {
+	public ChannelData() {
 		super();
 	}
 	
-	public GuildData(String id) {
+	public ChannelData(String id) {
 		setId(id);
 		setName(id);
 	}
 
-	public GuildData(String id, String name) {
+	public ChannelData(String id, String name) {
 		setId(id);
 		setName(name);
 	}

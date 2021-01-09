@@ -1,10 +1,11 @@
-package bot.antony.notifications;
+package bot.antony.commands.notification;
 
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bot.antony.Antony;
+import bot.antony.guild.channel.ChannelData;
 
 /**
  * ChannelNotificationList stores all user which have to be notified on updates for a specific channel

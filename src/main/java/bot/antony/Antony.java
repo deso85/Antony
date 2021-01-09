@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import bot.antony.commands.notification.NotificationController;
 import bot.antony.events.CommandListener;
 import bot.antony.events.NotificationListener;
-import bot.antony.notifications.NotificationController;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
