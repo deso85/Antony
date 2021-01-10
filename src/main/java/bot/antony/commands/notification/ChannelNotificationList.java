@@ -6,14 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bot.antony.Antony;
 import bot.antony.guild.channel.ChannelData;
+import bot.antony.guild.user.UserData;
 
 /**
  * ChannelNotificationList stores all user which have to be notified on updates for a specific channel
  */
 public class ChannelNotificationList {
-	private ChannelData cd = new ChannelData();
-	private ArrayList<String> userList = new ArrayList<String>();
+	private ChannelData channel = new ChannelData();
+	private ArrayList<UserData> userList = new ArrayList<UserData>();
 
+	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
@@ -21,8 +23,8 @@ public class ChannelNotificationList {
 		super();
 	}
 	
-	public ChannelNotificationList(ChannelData cd) {
-		this.cd = cd;
+	public ChannelNotificationList(ChannelData channel) {
+		this.channel = channel;
 	}
 	
 	
@@ -34,34 +36,32 @@ public class ChannelNotificationList {
 	 * @param	userID as String
 	 * @return	TRUE if user has been added or FALSE if user already was on the list
 	 */
-	public boolean addUser(String userID) {
-		if(!getUserList().contains(userID)) {
-			getUserList().add(userID);
-			return true;
+	public boolean addUser(UserData user) {
+		if(!hasUser(user)) {
+			return getUserList().add(user);
 		}
 		return false;
 	}
 	
 	/**
 	 * Removes a user from the CNL
-	 * @param	userID as String
+	 * @param	user as UserData
 	 * @return	TRUE if user has been removed or FALSE if not
 	 */
-	public boolean removeUser(String userID) {
-		if(getUserList().contains(userID)) {
-			getUserList().remove(userID);
-			return true;
+	public boolean removeUser(UserData user) {
+		if(hasUser(user)) {
+			return getUserList().remove(user);
 		}
 		return false;
 	}
 	
 	/**
-	 * Checks if user is on the CNL
-	 * @param	userID as String
+	 * Checks if user is listed on CNL
+	 * @param	user as UserData
 	 * @return	TRUE if on the CNL or FALSE if not
 	 */
-	public boolean hasUser(String userID) {
-		return getUserList().contains(userID);
+	public boolean hasUser(UserData user) {
+		return getUserList().contains(user);
 	}
 	
 	/**
@@ -85,43 +85,56 @@ public class ChannelNotificationList {
 	 */
 	public void printUser() {
 		if(!isEmpty()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("User in CNL " + getID() + " (" + getName() + "): " );
+			StringBuilder logEntry = new StringBuilder();
+			logEntry.append("User in CNL [" + toString() + "]: " );
 			int counter = 1;
-			for(String user: getUserList()) {
-				sb.append(user);
+			for(UserData user: getUserList()) {
+				logEntry.append("[" + user.toString() + "]");
 				if(counter < getUserList().size()) {
-					sb.append(", ");
+					logEntry.append(", ");
+					counter++;
 				}
-				counter++;
 			}
-			Antony.getLogger().info(sb.toString());
+			Antony.getLogger().info(logEntry.toString());
 		} else {
-			Antony.getLogger().info("CNL " + getID() + " (" + getName() + ") is empty.");
+			Antony.getLogger().info("CNL [" + toString() + "] is empty.");
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "id:" + getId() + ", name:" + getName();
 	}
 	
 	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
-	public String getID() {
-		return this.cd.getId();
+	@JsonIgnore
+	public String getId() {
+		return this.channel.getId();
 	}
 
-	public void setID(String id) {
-		this.cd.setId(id);
+	@JsonIgnore
+	public void setId(String id) {
+		this.channel.setId(id);
 	}
 	
+	@JsonIgnore
 	public String getName() {
-		return this.cd.getName();
+		return this.channel.getName();
 	}
 
+	@JsonIgnore
 	public void setName(String name) {
-		this.cd.setName(name);
+		this.channel.setName(name);
 	}
 	
-	public ArrayList<String> getUserList() {
+	public ChannelData getChannel() {
+		return this.channel;
+	}
+	
+	public ArrayList<UserData> getUserList() {
 		return userList;
 	}
 }

@@ -7,6 +7,7 @@ import bot.antony.commands.notification.NotificationController;
 import bot.antony.commands.types.ServerCommand;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.channel.ChannelData;
+import bot.antony.guild.user.UserData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,68 +16,68 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class ChannelUpdateNotification implements ServerCommand {
 
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member m, TextChannel cmdChannel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		NotificationController nc = Antony.getNotificationController();
-		String userID = message.getAuthor().getId();
-		GuildData gd = new GuildData(message.getGuild().getId(), message.getGuild().getName());
+		GuildData guild = new GuildData(message.getGuild());
+		UserData user = new UserData(message.getAuthor());
 		
 		// Exp. Parameter: (on|off|stats|statistics) #MentionedChannel
 		if(message.getMentionedChannels().size() > 0) {
-			ArrayList<TextChannel> channelsAdddedTo = new ArrayList<TextChannel>();
-			ArrayList<TextChannel> channelsRemovedFrom = new ArrayList<TextChannel>();
-			ArrayList<TextChannel> channelsUnchanged = new ArrayList<TextChannel>();
+			ArrayList<ChannelData> channelsAdddedTo = new ArrayList<ChannelData>();
+			ArrayList<ChannelData> channelsRemovedFrom = new ArrayList<ChannelData>();
+			ArrayList<ChannelData> channelsUnchanged = new ArrayList<ChannelData>();
 			
 			
 			//for each mentioned channel...
-			for(TextChannel tc: message.getMentionedChannels()) {
-				ChannelData cd = new ChannelData(tc.getId(), tc.getName());
-				Antony.getLogger().debug(cd.toString());
+			for(TextChannel textChannel: message.getMentionedChannels()) {
+				ChannelData channel = new ChannelData(textChannel);
+				Antony.getLogger().debug(channel.toString());
 				
 				switch (userMessage[1].toLowerCase()) {
 
 				case "on": // If user wants to receive notifications for channel
-						if(nc.addNotification(gd, cd, userID)) {
-							channelsAdddedTo.add(tc);
+						if(nc.addNotification(guild, channel, user)) {
+							channelsAdddedTo.add(channel);
 						} else {
-							channelsUnchanged.add(tc);
+							channelsUnchanged.add(channel);
 						}
 					break;
 				case "off": // If user doesn't want to receive notifications for channel
-						if(nc.removeNotification(gd, cd, userID)) {
-							channelsRemovedFrom.add(tc);
+						if(nc.removeNotification(guild, channel, user)) {
+							channelsRemovedFrom.add(channel);
 						} else {
-							channelsUnchanged.add(tc);
+							channelsUnchanged.add(channel);
 						}
 					break;
 				case "stats":
 				case "statistics": // If user want's to see who has notifications turned on for specified channel
 						
-						ArrayList<String> usrList = nc.getUserIDsforChannel(gd, cd);
+						ArrayList<UserData> usrList = nc.getChannelUser(guild, channel);
 						StringBuilder msg = new StringBuilder();
 						
 						if(!usrList.isEmpty()) {
-							msg.append("Folgende Benutzer werden über Aktualisierungen im Kanal " + tc.getAsMention() + " informiert:\n");
+							msg.append("Folgende Benutzer werden über Aktualisierungen im Kanal " + textChannel.getAsMention() + " informiert:\n");
 							int counter = 1;
-							for(String usr: usrList) {
-								msg.append(message.getGuild().getMemberById(usr).getEffectiveName());
+							for(UserData usr: usrList) {
+								msg.append(message.getGuild().getMemberById(usr.getId()).getEffectiveName());
 								if(counter < usrList.size()) {
 									msg.append(", ");
+									counter++;
 								}
-								counter++;
 							}
-							channel.sendMessage(msg.toString()).queue();
+							cmdChannel.sendMessage(msg.toString()).queue();
 						} else {
-							msg.append("Es wird aktuell niemand über Aktualisierungen im Kanal " + tc.getAsMention() + " informiert.");
-							channel.sendMessage(msg.toString()).queue();
+							msg.append("Es wird aktuell niemand über Aktualisierungen im Kanal " + textChannel.getAsMention() + " informiert.");
+							cmdChannel.sendMessage(msg.toString()).queue();
 						}
 						
 					break;
 				default: // Toggle - Turns on if user doesn't receive notifications and vice versa
-						if(nc.toggleNotification(gd, cd, userID)) {
-							channelsAdddedTo.add(tc);
+						if(nc.toggleNotification(guild, channel, user)) {
+							channelsAdddedTo.add(channel);
 						} else {
-							channelsRemovedFrom.add(tc);
+							channelsRemovedFrom.add(channel);
 						}
 					break;
 				}
@@ -86,14 +87,14 @@ public class ChannelUpdateNotification implements ServerCommand {
 				//Prepare message for PN
 				EmbedBuilder eb = new EmbedBuilder().setTitle("Einstellungen - Benachrichtigungen über Kanal-Updates")
 						.setColor(Antony.getBaseColor())
-						.setThumbnail(channel.getGuild().getIconUrl())
-						.setDescription("Folgende Änderungen wurden an den Einstellungen zur Benachrichtigung bei Kanal-Updates auf dem Server [" + gd.getName() + "](https://discord.com/channels/" + gd.getId() + ") durchgeführt.")
+						.setThumbnail(cmdChannel.getGuild().getIconUrl())
+						.setDescription("Folgende Änderungen wurden an den Einstellungen zur Benachrichtigung bei Kanal-Updates auf dem Server [" + guild.getName() + "](https://discord.com/channels/" + guild.getId() + ") durchgeführt.")
 						.setFooter("Antony | Version " + Antony.getVersion());
 				
 				if(!channelsAdddedTo.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for(TextChannel tc: channelsAdddedTo) {
-						sb.append("- [#" + tc.getName() + "](https://discord.com/channels/" + gd.getId() + "/" + tc.getId() + ")\n");
+					for(ChannelData channel: channelsAdddedTo) {
+						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
 						
 					}
 					eb.addField("Benachrichtigungen aktiviert", sb.toString(), false);
@@ -101,8 +102,8 @@ public class ChannelUpdateNotification implements ServerCommand {
 				
 				if(!channelsRemovedFrom.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for(TextChannel tc: channelsRemovedFrom) {
-						sb.append("- [#" + tc.getName() + "](https://discord.com/channels/" + gd.getId() + "/" + tc.getId() + ")\n");
+					for(ChannelData channel: channelsRemovedFrom) {
+						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
 						
 					}
 					eb.addField("Benachrichtigungen deaktiviert", sb.toString(), false);
@@ -110,8 +111,8 @@ public class ChannelUpdateNotification implements ServerCommand {
 				
 				if(!channelsUnchanged.isEmpty()) {
 					StringBuilder sb = new StringBuilder();
-					for(TextChannel tc: channelsUnchanged) {
-						sb.append("- [#" + tc.getName() + "](https://discord.com/channels/" + gd.getId() + "/" + tc.getId() + ")\n");
+					for(ChannelData channel: channelsUnchanged) {
+						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
 						
 					}
 					eb.addField("Keine Änderungen", sb.toString(), false);
@@ -135,24 +136,24 @@ public class ChannelUpdateNotification implements ServerCommand {
 					
 					StringBuilder msgText = new StringBuilder();
 					
-					ArrayList<ChannelData> channels = nc.getNotificationChannelOfGuildForUser(gd.getId(), userID);
+					ArrayList<ChannelData> channels = nc.getNotificationChannelOfGuildForUser(guild, user);
 					if(!channels.isEmpty()) {
-						msgText.append("Auf dem Server [" + gd.getName() + "](https://discord.com/channels/" + gd.getId() + ") erhältst du aktuell in folgenden Kanälen Updates: ");
+						msgText.append("Auf dem Server [" + guild.getName() + "](https://discord.com/channels/" + guild.getId() + ") erhältst du aktuell in folgenden Kanälen Updates: ");
 						int counter = 1;
-						for(ChannelData cd: channels) {
-							msgText.append("[#" + cd.getName() + "](https://discord.com/channels/" + gd.getId() + "/" + cd.getId() + ")");
+						for(ChannelData channel: channels) {
+							msgText.append("[#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")");
 							if(counter < channels.size()) {
 								msgText.append(", ");
+								counter++;
 							}
-							counter++;
 						}
 					} else {
-						msgText.append("Auf dem Server [" + gd.getName() + "](https://discord.com/channels/" + gd.getId() + ") erhältst du aktuell keine Kanal-Updates.");
+						msgText.append("Auf dem Server [" + guild.getName() + "](https://discord.com/channels/" + guild.getId() + ") erhältst du aktuell keine Kanal-Updates.");
 					}
-					
+					//TODO Message won't be send if there are more than 1024 charakters. Has to be fixed for every pm
 					EmbedBuilder eb = new EmbedBuilder().setTitle("Status - Benachrichtigungen über Kanal-Updates")
 							.setColor(Antony.getBaseColor())
-							.setThumbnail(channel.getGuild().getIconUrl())
+							.setThumbnail(cmdChannel.getGuild().getIconUrl())
 							.setDescription(msgText.toString())
 							.setFooter("Antony | Version " + Antony.getVersion());
 					message.getAuthor().openPrivateChannel().queue((privChannel) ->
@@ -163,16 +164,16 @@ public class ChannelUpdateNotification implements ServerCommand {
 					
 					break;
 				case "off": // if user wants to receive no more notifications for this guild
-						nc.removeFromAllListsOfGuild(gd.getId(), userID);
-						channel.sendMessage("Du erhältst nun keine weiteren Benachrichtigungen mehr.").queue();
+						nc.removeUserFromAllListsOfGuild(guild, user);
+						cmdChannel.sendMessage("Du erhältst nun keine weiteren Benachrichtigungen mehr.").queue();
 					break;
 				default: // give the user an overview on which channels he'll receive notifications for this guild
-						channel.sendMessage(getHelpText()).queue();
+						cmdChannel.sendMessage(getHelpText()).queue();
 					break;
 					
 				}
 			} else { //send help message because of no parameters
-				channel.sendMessage(getHelpText()).queue();
+				cmdChannel.sendMessage(getHelpText()).queue();
 			}
 		}
 		nc.persistData();

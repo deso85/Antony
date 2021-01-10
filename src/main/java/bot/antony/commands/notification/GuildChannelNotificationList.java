@@ -13,20 +13,19 @@ import bot.antony.guild.channel.ChannelData;
  * GuildChannelNotificationList stores a List with all discord servers including the ChannelNotificationLists
  */
 public class GuildChannelNotificationList {
-	private GuildData gd = new GuildData();
+	private GuildData guild = new GuildData();
 	private Map<String, ChannelNotificationList> cnls = new HashMap<String, ChannelNotificationList>();
 	
-
-	public GuildChannelNotificationList() {
-		super();
-	}
-
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public GuildChannelNotificationList(GuildData gd) {
-		this.gd = gd;
+	public GuildChannelNotificationList() {
+		super();
+	}
+	
+	public GuildChannelNotificationList(GuildData guild) {
+		this.guild = guild;
 	}
 	
 	
@@ -35,30 +34,30 @@ public class GuildChannelNotificationList {
 	// --------------------------------------------------		
 	/**
 	 * Adds a CNL to the GCNL if necessary
-	 * @param	cd as ChannelData
+	 * @param	channel as ChannelData
 	 * @return	TRUE if CNL has been added or FALSE if CNL already was listed
 	 */
-	public boolean addCNL(ChannelData cd) {
+	public boolean addCNL(ChannelData channel) {
 		//if CNL isn't already on the list
-		if(!hasCNL(cd.getId())) {
-			getCNLs().put(cd.getId(), new ChannelNotificationList(cd));
-			Antony.getLogger().debug("Added CNL " + cd.getId() + " (" + cd.getName() + ") to GCNL " + getID() + " (" + getName() + ").");
+		if(!hasCNL(channel)) {
+			getCNLs().put(channel.getId(), new ChannelNotificationList(channel));
+			Antony.getLogger().debug("Added CNL [" + channel.toString() + "] to GCNL [" + toString() + "].");
 			return true;
 		}
-		Antony.getLogger().debug("Can't add CNL " + cd.getId() + " (" + cd.getName() + ") to GCNL " + getID() + " (" + getName() + ") because it's alredy on the list.");
+		Antony.getLogger().debug("Can't add CNL [" + channel.toString() + "] to GCNL [" + toString() + "] because it's alredy listed.");
 		return false;
 	}
 	
 	/**
 	 * Removes CNL from GCNL if necessary
-	 * @param	cd as ChannelData
+	 * @param	channel as ChannelData
 	 * @return	TRUE if CNL was removed from list or FALSE if CNL was not empty or not listed
 	 */
-	public boolean removeCNL(ChannelData cd) {
-		if(hasCNL(cd.getId())) {
-			getCNLs().get(cd.getId()).clear(); //clears CNL before removing it from GCNL
-			getCNLs().remove(cd.getId());
-			Antony.getLogger().debug("Removed CNL " + cd.getId() + "(" + cd.getName() +")");
+	public boolean removeCNL(ChannelData channel) {
+		if(hasCNL(channel)) {
+			getCNLs().get(channel.getId()).clear(); //clears CNL before removing it from GCNL
+			getCNLs().remove(channel.getId());
+			Antony.getLogger().debug("Removed CNL [" + channel.toString() +"]");
 			return true;
 		}
 		return false;
@@ -66,23 +65,23 @@ public class GuildChannelNotificationList {
 	
 	/**
 	 * Returns CNL if available
-	 * @param	channelID as String
+	 * @param	channel as ChannelData
 	 * @return	ChannelNotificationList
 	 */
-	public ChannelNotificationList getCNL(String channelID) {
-		if(hasCNL(channelID)) {
-			return getCNLs().get(channelID);
+	public ChannelNotificationList getCNL(ChannelData channel) {
+		if(hasCNL(channel)) {
+			return getCNLs().get(channel.getId());
 		}
 		return null;
 	}
 	
 	/**
 	 * Checks if CNL is listed
-	 * @param	channelID as String
+	 * @param	channel as ChannelData
 	 * @return	TRUE if CNL is listed or FALSE if not
 	 */
-	public boolean hasCNL(String channelID) {
-		return getCNLs().containsKey(channelID);
+	public boolean hasCNL(ChannelData channel) {
+		return getCNLs().containsKey(channel.getId());
 	}
 	
 	/**
@@ -98,8 +97,8 @@ public class GuildChannelNotificationList {
 	 * Clears GCNL
 	 */
 	public void clear() {
-		for(String key: getCNLs().keySet()) {
-			getCNL(key).clear();
+		for(HashMap.Entry<String, ChannelNotificationList> cnlEntry: getCNLs().entrySet()) {
+			cnlEntry.getValue().clear();
 		}
 		getCNLs().clear();
 	}
@@ -109,40 +108,54 @@ public class GuildChannelNotificationList {
 	 */
 	public void printCNLs() {
 		if(!isEmpty()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("CNLs inside GCNL " + getID() + " (" + getName() + "): ");
+			StringBuilder logEntry = new StringBuilder();
+			logEntry.append("CNLs inside GCNL [" + toString() + "]: ");
 			int counter = 1;
-			for(String key : getCNLs().keySet()) {
-				sb.append(key.toString() + " (" + getCNLs().get(key).getName() + ")");
+			for(HashMap.Entry<String, ChannelNotificationList> cnlEntry : getCNLs().entrySet()) {
+				ChannelNotificationList cnl = cnlEntry.getValue();
+				logEntry.append("[" + cnl.toString() + "]");
 				if(counter < getCNLs().size()) {
-					sb.append(", ");
+					logEntry.append(", ");
+					counter++;
 				}
-				counter++;
 			}
-			Antony.getLogger().info(sb.toString());
+			Antony.getLogger().info(logEntry.toString());
 		} else {
-			Antony.getLogger().info("GCNL " + getID() + " (" + getName() + ") is empty.");
+			Antony.getLogger().info("GCNL [" + toString() + "] is empty.");
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "id:" + getId() + ", name:" + getName();
 	}
 	
 	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
-	public String getID() {
-		return gd.getId();
+	@JsonIgnore
+	public String getId() {
+		return guild.getId();
 	}
 
-	public void setID(String id) {
-		this.gd.setId(id);
+	@JsonIgnore
+	public void setId(String id) {
+		this.guild.setId(id);
 	}
 	
+	@JsonIgnore
 	public String getName() {
-		return gd.getName();
+		return guild.getName();
 	}
 
+	@JsonIgnore
 	public void setName(String name) {
-		this.gd.setName(name);
+		this.guild.setName(name);
+	}
+	
+	public GuildData getGuild() {
+		return this.guild;
 	}
 	
 	public Map<String, ChannelNotificationList> getCNLs() {

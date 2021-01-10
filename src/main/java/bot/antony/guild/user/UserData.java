@@ -1,11 +1,12 @@
-package bot.antony.guild.channel;
+package bot.antony.guild.user;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
 /**
- * Class to store channel data to help manage the notifications
+ * Class to store user data
  */
-public class ChannelData {
+public class UserData {
 	private String id;
 	private String name;
 	
@@ -13,23 +14,29 @@ public class ChannelData {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public ChannelData() {
+	public UserData() {
 		super();
 	}
 	
-	public ChannelData(String id) {
+	public UserData(String id) {
 		setId(id);
 		setName(id);
 	}
 
-	public ChannelData(String id, String name) {
+	public UserData(String id, String name) {
 		setId(id);
 		setName(name);
 	}
 	
-	public ChannelData(TextChannel textChannel) {
-		setId(textChannel.getId());
-		setName(textChannel.getName());
+	public UserData(User user) {
+		setId(user.getId());
+		setName(user.getName());
+	}
+	
+	public UserData(Member member) {
+		User user = member.getUser();
+		setId(user.getId());
+		setName(user.getName());
 	}
 	
 	
@@ -48,18 +55,17 @@ public class ChannelData {
 			return true;
 		}
 		// Check if o is an instance of UserData or not "null instanceof [type]" also returns false
-		if(!(o instanceof ChannelData)) {
+		if(!(o instanceof UserData)) {
 			return false;
 		}
-		// Typecast o to ChannelData so that we can compare data
-		ChannelData channelData = (ChannelData) o;
-		// Compare the ID, because it's unique while the channel name could have been changed
-		if(getId().equals(channelData.getId())) {
+		// Typecast o to UserData so that we can compare data
+		UserData userData = (UserData) o;
+		// Compare the ID, because it's unique while the user name could have been changed
+		if(getId().equals(userData.getId())) {
 			return true;
 		}
 		return false;
 	}
-	
 	
 	// --------------------------------------------------
 	// Getter & Setter
@@ -67,15 +73,15 @@ public class ChannelData {
 	public String getId() {
 		return id;
 	}
-
+	
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}

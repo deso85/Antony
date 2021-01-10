@@ -14,81 +14,76 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import bot.antony.Antony;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.channel.ChannelData;
+import bot.antony.guild.user.UserData;
 
 /**
- * ChannelNotificationController controls all notifications
+ * NotificationController controls all notifications
  */
 public class NotificationController {
-	private Map<String, GuildChannelNotificationList> gcnl = new HashMap<String, GuildChannelNotificationList>();
-	private String fileName = "antony.notifications.json";
+	private Map<String, GuildChannelNotificationList> gcnls = new HashMap<String, GuildChannelNotificationList>();
+	private String fileName;
+	
+	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public NotificationController() {
+		setFileName("antony.notifications.json");
+	}
+	
+	public NotificationController(String filename) {
+		setFileName(filename);
+	}
+	
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
-	
 	/**
 	 * Toggles user notification for channel
-	 * @param	gd as GuildData
-	 * @param	cd as ChannelData
-	 * @param	userID as String
+	 * @param	guild as GuildData
+	 * @param	channel as ChannelData
+	 * @param	user as UserData
 	 * @return	TRUE if user has been added to notification or FALSE if user has been removed from notifications
 	 */
-	public boolean toggleNotification(GuildData gd, ChannelData cd, String userID) {
-		//if GCNL exists
-		if(hasGCNL(gd.getId())) {
-			//if GCNL has CNL
-			if(getGCNL(gd.getId()).hasCNL(cd.getId())) {
-				//if user is listed
-				if(getGCNL(gd.getId()).getCNL(cd.getId()).hasUser(userID)) {
-					removeNotification(gd, cd, userID);
-					return false;
-				}
-			}
+	public boolean toggleNotification(GuildData guild, ChannelData channel, UserData user) {
+		//If return value of addNotification is FALSE the user already listed and has to be removed
+		if(addNotification(guild, channel, user)) {
+			return true;
 		}
-		addNotification(gd, cd, userID);
-		return true;
+		removeNotification(guild, channel, user);
+		return false;
+		
 	}
 	
 	/**
 	 * Adds user to notification list if necessary
-	 * @param	gd as GuildData
-	 * @param	cd as ChannelData
-	 * @param	userID as String
+	 * @param	guild as GuildData
+	 * @param	channel as ChannelData
+	 * @param	user as UserData
 	 * @return	TRUE if user has been added or FALSE if not
 	 */
-	public boolean addNotification(GuildData gd, ChannelData cd, String userID) {
+	public boolean addNotification(GuildData guild, ChannelData channel, UserData user) {
 		//functions will take care to not add duplicates
-		addGCNL(gd);
-		addCNLtoGCNL(gd.getId(), cd);
-		return getGCNL(gd.getId()).getCNL(cd.getId()).addUser(userID);
-		//persistData();
-		//return returnVal;
+		addGCNL(guild);
+		addCNLtoGCNL(guild, channel);
+		return getGCNL(guild).getCNL(channel).addUser(user);
 	}
 	
 	/**
 	 * Removes user from notification list if possible
-	 * @param	gd as GuildData
-	 * @param	cd as ChanelData
-	 * @param	userID as String
+	 * @param	guild as GuildData
+	 * @param	channel as ChanelData
+	 * @param	user as UserData
 	 * @return	TRUE if user has been removed from notification List or FALSE if not
 	 */
-	public boolean removeNotification(GuildData gd, ChannelData cd, String userID) {
+	public boolean removeNotification(GuildData guild, ChannelData channel, UserData user) {
 		//if GCNL exists
-		if(hasGCNL(gd.getId())) {
+		if(hasGCNL(guild)) {
 			//if GCNL has CNL
-			if(getGCNL(gd.getId()).hasCNL(cd.getId())) {
+			if(getGCNL(guild).hasCNL(channel)) {
 				//remove user if possible
-				return getGCNL(gd.getId()).getCNL(cd.getId()).removeUser(userID);
-				/*//if CNL is now empty it can be removed
-				if(getGCNL(gd.getId()).getCNL(cd.getId()).isEmpty()) {
-					getGCNL(gd.getId()).removeCNL(cd);
-					//if GCNL is now empty it can be removed
-					if(getGCNL(gd.getId()).isEmpty()) {
-						removeGCNL(gd.getId());
-					}
-				}*/
-				//cleanGuildLists(gd.getId());
-				//return returnVal;
+				return getGCNL(guild).getCNL(channel).removeUser(user);
 			}
 		}
 		return false;
@@ -96,13 +91,13 @@ public class NotificationController {
 	
 	/**
 	 * Adds GCNL if necessary
-	 * @param	gd as GuildData
+	 * @param	guild as GuildData
 	 * @return	TRUE if GCNL was added or FALSE if GCNL already was listed
 	 */
-	private boolean addGCNL(GuildData gd) {
+	private boolean addGCNL(GuildData guild) {
 		//check if GCNL isn't already listed
-		if(!hasGCNL(gd.getId())) {
-			getGCNLs().put(gd.getId(), new GuildChannelNotificationList(gd));
+		if(!hasGCNL(guild)) {
+			getGCNLs().put(guild.getId(), new GuildChannelNotificationList(guild));
 			return true;
 		}
 		return false;
@@ -110,27 +105,26 @@ public class NotificationController {
 	
 	/**
 	 * Returns GCNL if listed
-	 * @param	guildID as String
+	 * @param	guild as GuildData
 	 * @return	GuildChannelNotificationList
 	 */
-	public GuildChannelNotificationList getGCNL(String guildID) {
+	public GuildChannelNotificationList getGCNL(GuildData guild) {
 		//check if GCNL exists before returning it
-		if(hasGCNL(guildID)) {
-			return getGCNLs().get(guildID);
+		if(hasGCNL(guild)) {
+			return getGCNLs().get(guild.getId());
 		}
 		return null;
 	}
 	
 	/**
 	 * Removes GCNL if possible
-	 * @param	guildID as String
+	 * @param	guild as GuildData
 	 * @return	TRUE if GCNL has been removed or FALSE if not
 	 */
-	private boolean removeGCNL(String guildID) {
+	private boolean removeGCNL(GuildData guild) {
 		//check if GCNL exists before clearing and removing it
-		if(hasGCNL(guildID)) {
-			getGCNL(guildID).clear();
-			getGCNLs().remove(guildID);
+		if(hasGCNL(guild)) {
+			getGCNLs().remove(guild.getId());
 			return true;
 		}
 		return false;
@@ -138,39 +132,39 @@ public class NotificationController {
 	
 	/**
 	 * Adds a CNL to a GCNL
-	 * @param	guildID as String
-	 * @param	cd as ChannelData
+	 * @param	guild as GuildData
+	 * @param	channel as ChannelData
 	 * @return	TRUE if CNL has been added or FALSE if not
 	 */
-	private boolean addCNLtoGCNL(String guildID, ChannelData cd) {
+	private boolean addCNLtoGCNL(GuildData guild, ChannelData channel) {
 		//check if GCNL exists before adding the CNL
-		if(hasGCNL(guildID)) {
-			return getGCNL(guildID).addCNL(cd);
+		if(hasGCNL(guild)) {
+			return getGCNL(guild).addCNL(channel);
 		}
 		return false;
 	}
 	
 	/**
 	 * Removes CNL from GCNL if possible
-	 * @param	guildID as String
-	 * @param	cd as ChannelData
+	 * @param	guild as GuildData
+	 * @param	channel as ChannelData
 	 * @return	TRUE if CNL has been removed from GCNL or FALSE if not
 	 */
-	private boolean removeCNLfromGCNL(String guildID, ChannelData cd) {
+	private boolean removeCNLfromGCNL(GuildData guild, ChannelData channel) {
 		//check if GCNL exists before removing the CNL
-		if(hasGCNL(guildID)) {
-			return getGCNL(guildID).removeCNL(cd);
+		if(hasGCNL(guild)) {
+			return getGCNL(guild).removeCNL(channel);
 		}
 		return false;
 	}
 	
 	/**
 	 * Checks if Discord server is listed
-	 * @param	guildID as String
+	 * @param	guild as GuildData
 	 * @return	TRUE if Discord server is listed or FALSE if not
 	 */
-	public boolean hasGCNL(String guildID) {
-		return getGCNLs().containsKey(guildID);
+	public boolean hasGCNL(GuildData guild) {
+		return getGCNLs().containsKey(guild.getId());
 	}
 	
 	/**
@@ -183,69 +177,69 @@ public class NotificationController {
 
 	/**
 	 * Remove user from each notification list
-	 * @param userID as String
+	 * @param	user as UserData
 	 */
-	public void removeFromAllLists(String userID) {
-		
+	public void removeUserFromAllLists(UserData user) {
 		for(HashMap.Entry<String, GuildChannelNotificationList> gcnlEntry : getGCNLs().entrySet()) {
 		    GuildChannelNotificationList gcnl = gcnlEntry.getValue();
-		    removeFromAllListsOfGuild(gcnl.getID(), userID);
+		    removeUserFromAllListsOfGuild(gcnl.getGuild(), user);
 		}
 	}
 	
-	
-	public ArrayList<ChannelData> getNotificationChannelOfGuildForUser(String guildID, String userID) {
+	/**
+	 * Get all channels of a guild the user gets notifications for
+	 * @param	guild as GuildData
+	 * @param	user as UserData
+	 * @return	ArrayList<ChannelData>
+	 */
+	public ArrayList<ChannelData> getNotificationChannelOfGuildForUser(GuildData guild, UserData user) {
 		ArrayList<ChannelData> channels = new ArrayList<ChannelData>();
 		
-		if(getGCNLs().containsKey(guildID)) {
-			GuildChannelNotificationList gcnl = getGCNL(guildID);
+		if(getGCNLs().containsKey(guild.getId())) {
+			GuildChannelNotificationList gcnl = getGCNL(guild);
 			for(HashMap.Entry<String, ChannelNotificationList> cnlEntry : gcnl.getCNLs().entrySet()) {
 			    ChannelNotificationList cnl = cnlEntry.getValue();
-			    if(cnl.hasUser(userID)) {
-			    	channels.add(new ChannelData(cnl.getID(), cnl.getName()));
+			    if(cnl.hasUser(user)) {
+			    	channels.add(cnl.getChannel());
 			    }
 			}
 		}
-		
 		return channels;
 	}
 	
 	/**
-	 * Remove user from each notification list within a guild
-	 * @param guildID as String
-	 * @param userID as String
-	 * @return
+	 * Remove user from every notification list within a guild
+	 * @param	guild as GuildData
+	 * @param	user as UserData
 	 */
-	public void removeFromAllListsOfGuild(String guildID, String userID) {
-		if(getGCNLs().containsKey(guildID)) {
-			GuildChannelNotificationList gcnl = getGCNL(guildID);
+	public void removeUserFromAllListsOfGuild(GuildData guild, UserData user) {
+		if(getGCNLs().containsKey(guild.getId())) {
+			GuildChannelNotificationList gcnl = getGCNL(guild);
 			for(HashMap.Entry<String, ChannelNotificationList> cnlEntry : gcnl.getCNLs().entrySet()) {
 				ChannelNotificationList cnl = cnlEntry.getValue();
-				removeNotification(new GuildData(gcnl.getID(), gcnl.getName()), new ChannelData(cnl.getID(), cnl.getName()), userID);
-			    //cnl.removeUser(userID);
-			    
+				removeNotification(gcnl.getGuild(), cnl.getChannel(), user);
 			}
 		}
 	}
 	
 	/**
-	 * Returns all userIDs for a channel
-	 * @param gd as GuildData
-	 * @param cd as ChannelData
-	 * @return ArrayList<String>
+	 * Returns all user for a channel
+	 * @param	guild as GuildData
+	 * @param	channel as ChannelData
+	 * @return	ArrayList<UserData>
 	 */
-	public ArrayList<String> getUserIDsforChannel(GuildData gd, ChannelData cd){
-		ArrayList<String> usrList = new ArrayList<String>();
+	public ArrayList<UserData> getChannelUser(GuildData guild, ChannelData channel){
+		ArrayList<UserData> usrList = new ArrayList<UserData>();
 		
 		//check if guild has notification lists
-		if(getGCNLs().containsKey(gd.getId())) {
+		if(getGCNLs().containsKey(guild.getId())) {
 			//check if there is a notification list for that channel
-			if(getGCNL(gd.getId()).hasCNL(cd.getId())) {
+			if(getGCNL(guild).hasCNL(channel)) {
 				//TODO can be removed if lists will deleted after last user has been removed from list
-				if(!getGCNL(gd.getId()).getCNL(cd.getId()).isEmpty()) {
+				if(!getGCNL(guild).getCNL(channel).isEmpty()) {
 					//add user to return list 
-					for(String usr: getGCNL(gd.getId()).getCNL(cd.getId()).getUserList()) {
-						usrList.add(usr);
+					for(UserData user: getGCNL(guild).getCNL(channel).getUserList()) {
+						usrList.add(user);
 					}
 				}
 			}
@@ -253,25 +247,33 @@ public class NotificationController {
 		return usrList;
 	}
 	
+	/**
+	 * Cleans all lists so that there are no empty ones
+	 */
 	private void cleanLists() {
-		//TODO Doesnt work atm and has to be fixed before referenced by persistData()
+		//TODO Doesn't work atm and has to be fixed before referenced by persistData()
 		for(HashMap.Entry<String, GuildChannelNotificationList> gcnlEntry : getGCNLs().entrySet()) {
 			GuildChannelNotificationList gcnl = gcnlEntry.getValue();
-			cleanGuildLists(gcnl.getID());
+			cleanGuildLists(gcnl.getGuild());
 		}
 	}
 	
-	private void cleanGuildLists(String guildID) {
-		GuildChannelNotificationList gcnl = getGCNL(guildID);
+	/**
+	 * Cleans all guild specific lists so that there are no empty ones
+	 * @param	guild as GuildData
+	 */
+	private void cleanGuildLists(GuildData guild) {
+		//TODO Doesn't work atm
+		GuildChannelNotificationList gcnl = getGCNL(guild);
 		
 		for(HashMap.Entry<String, ChannelNotificationList> cnlEntry : gcnl.getCNLs().entrySet()) {
 			ChannelNotificationList cnl = cnlEntry.getValue();
 			if(cnl.isEmpty()) {
-				gcnl.removeCNL(new ChannelData(cnl.getID(), cnl.getName()));
+				gcnl.removeCNL(cnl.getChannel());
 			}
 		}
 		if(gcnl.isEmpty()) {
-			removeGCNL(gcnl.getID());
+			removeGCNL(gcnl.getGuild());
 		}
 	}
 	
@@ -283,7 +285,7 @@ public class NotificationController {
 		//cleanLists();
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			objectMapper.writeValue(new File(fileName), getGCNLs());
+			objectMapper.writeValue(new File(getFileName()), getGCNLs());
 			return true;
 			
 		} catch (IOException e) {
@@ -294,22 +296,31 @@ public class NotificationController {
 	
 	/**
 	 * Loads data in JSON format from stored file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws	JsonParseException
+	 * @throws	JsonMappingException
+	 * @throws	IOException
 	 */
 	public void initData() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		File f = new File(fileName);
-		if(f.exists() && !f.isDirectory()) { 
-			this.gcnl = objectMapper.readValue(new File(fileName), new TypeReference<Map<String, GuildChannelNotificationList>>(){});
+		File file = new File(getFileName());
+		if(file.exists() && !file.isDirectory()) { 
+			this.gcnls = objectMapper.readValue(new File(getFileName()), new TypeReference<Map<String, GuildChannelNotificationList>>(){});
 		}
 	}
+	
 	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
 	public Map<String, GuildChannelNotificationList> getGCNLs() {
-		return gcnl;
+		return gcnls;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
