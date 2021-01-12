@@ -182,15 +182,15 @@ public class ChannelUpdateNotification implements ServerCommand {
 	}
 	
 	private String getHelpText() {
-		StringBuilder msg = new StringBuilder();
-		msg.append("Folgende Befehle stehen dir zur Verfügung:\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify** - Gibt diese Hilfe aus.\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify #kanal1 (#kanal2 ...)** - Aktiviert oder deaktiviert deine Benachrichtigungen für die Kanäle, abhängig von der aktuellen Einstellung\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify on #kanal1 (#kanal2 ...)** - Aktiviert deine Benachrichtigungen für die Kanäle\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify off #kanal1 (#kanal2 ...)** - Deaktiviert deine Benachrichtigungen für die Kanäle\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify stats #kanal1 (#kanal2 ...)** - Zeigt, welche User den jeweiligen Kanal abonniert haben\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify info** - Informiert dich über alle Kanäle, zu denen du aktuell über Updates benachrichtigt wirst.\n");
-		msg.append("**" + Antony.getCmdPrefix() + "notify off** - Du wirst nicht mehr über Kanal-Updates informiert");
-		return msg.toString();
+		StringBuilder helpText = new StringBuilder();
+		helpText.append("Folgende Befehle stehen dir zur Verfügung:\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify** - Gibt diese Hilfe aus.\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify #kanal1 (#kanal2 ...)** - Aktiviert oder deaktiviert deine Benachrichtigungen für die Kanäle, abhängig von der aktuellen Einstellung\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify on #kanal1 (#kanal2 ...)** - Aktiviert deine Benachrichtigungen für die Kanäle\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify off #kanal1 (#kanal2 ...)** - Deaktiviert deine Benachrichtigungen für die Kanäle\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify stats #kanal1 (#kanal2 ...)** - Zeigt, welche User den jeweiligen Kanal abonniert haben\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify info** - Informiert dich über alle Kanäle, zu denen du aktuell über Updates benachrichtigt wirst.\n");
+		helpText.append("**" + Antony.getCmdPrefix() + "notify off** - Du wirst nicht mehr über Kanal-Updates informiert");
+		return helpText.toString();
 	}
 }
