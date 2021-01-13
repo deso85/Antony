@@ -116,7 +116,7 @@ public class PerformGiveaway implements ServerCommand {
 							int userCounter = 1;
 							for(HashMap.Entry<String, User> userEntry: gaWinner.entrySet()) {
 								User winner = userEntry.getValue();
-								msg.append(winner.getName());
+								msg.append(winner.getAsMention());
 								if(userCounter < gaWinner.size()) {
 									msg.append(", ");
 									userCounter++;
