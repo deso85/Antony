@@ -29,6 +29,7 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("13.01.2021 - Version 1.6.0", "Die Funktion ***" + Antony.getCmdPrefix() + "giveaway*** wurde in einer ersten Version fertig implementiert."));
 				changeLog.add(new ChangeLogEntry("10.01.2021 - Version 1.5.1", "Code und die JSON Strukturen für gespeicherte Daten wurden überarbeitet."));
 				changeLog.add(new ChangeLogEntry("06.01.2021 - Version 1.5.0", "Die Funktion ***" + Antony.getCmdPrefix() + "notify*** wurde fertig implementiert. Hierüber können User über neue Einträge in Kanälen benachrichtigt werden."));
 				changeLog.add(new ChangeLogEntry("30.12.2020 - Version 1.4.2", "Bugfixes für die ***" + Antony.getCmdPrefix() + "sells*** Funktion."));
@@ -78,12 +79,14 @@ public class AntonyHelp implements ServerCommand {
 		List<BotCommand> botCommands = new ArrayList<BotCommand>();
 		BotCommand antony = new BotCommand("antony", "Zeigt diese Übersicht an.");
 		BotCommand antonyChangelog = new BotCommand("antony changelog", "Zeigt den Changelog von Antony an.");
+		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.de zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
 		BotCommand showAvatar = new BotCommand("showavatar", "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.", "Antony");
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		botCommands.add(antony);
 		botCommands.add(antonyChangelog);
+		botCommands.add(giveawayEnd);
 		botCommands.add(notify);
 		botCommands.add(sells);
 		botCommands.add(showAvatar);
