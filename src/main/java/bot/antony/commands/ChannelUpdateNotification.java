@@ -11,6 +11,7 @@ import bot.antony.guild.user.UserData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class ChannelUpdateNotification implements ServerCommand {
@@ -91,37 +92,15 @@ public class ChannelUpdateNotification implements ServerCommand {
 						.setDescription("Folgende Änderungen wurden an den Einstellungen zur Benachrichtigung bei Kanal-Updates auf dem Server [" + guild.getName() + "](https://discord.com/channels/" + guild.getId() + ") durchgeführt.")
 						.setFooter("Antony | Version " + Antony.getVersion());
 				
-				if(!channelsAdddedTo.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for(ChannelData channel: channelsAdddedTo) {
-						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
-						
-					}
-					eb.addField("Benachrichtigungen aktiviert", sb.toString(), false);
-				}
 				
-				if(!channelsRemovedFrom.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for(ChannelData channel: channelsRemovedFrom) {
-						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
-						
-					}
-					eb.addField("Benachrichtigungen deaktiviert", sb.toString(), false);
-				}
-				
-				if(!channelsUnchanged.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for(ChannelData channel: channelsUnchanged) {
-						sb.append("- [#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")\n");
-						
-					}
-					eb.addField("Keine Änderungen", sb.toString(), false);
-				}
-				
+				eb = addEbFields(guild, channelsAdddedTo, eb, "Benachrichtigungen aktiviert");
+				eb = addEbFields(guild, channelsRemovedFrom, eb, "Benachrichtigungen deaktiviert");
+				eb = addEbFields(guild, channelsUnchanged, eb, "Keine Änderungen");
+				MessageEmbed messageEmbed = eb.build();
 				//Test PN for later reuse
 				message.getAuthor().openPrivateChannel().queue((privChannel) ->
 		        {
-		        	privChannel.sendMessage(eb.build()).queue();
+		        	privChannel.sendMessage(messageEmbed).queue();
 		        	
 		        });
 				
@@ -192,5 +171,44 @@ public class ChannelUpdateNotification implements ServerCommand {
 		helpText.append("**" + Antony.getCmdPrefix() + "notify info** - Informiert dich über alle Kanäle, zu denen du aktuell über Updates benachrichtigt wirst.\n");
 		helpText.append("**" + Antony.getCmdPrefix() + "notify off** - Du wirst nicht mehr über Kanal-Updates informiert");
 		return helpText.toString();
+	}
+	
+	private EmbedBuilder addEbFields(GuildData guild, ArrayList<ChannelData> channels, EmbedBuilder eb, String title) {
+		if(!channels.isEmpty()) {
+			
+			ArrayList<String> textList = new ArrayList<String>();
+			StringBuilder fieldText = new StringBuilder();
+			String textPart;
+			int counter=1;
+			
+			for(ChannelData channel: channels) {
+				textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + ")";
+				
+				if((fieldText.length() + textPart.length() + 2) > 1024) {
+					textList.add(fieldText.toString());
+					fieldText = new StringBuilder();
+				}
+				
+				fieldText.append(textPart);
+				if(counter < channels.size()) {
+					fieldText.append(", ");
+					counter++;
+				} else {
+					textList.add(fieldText.toString());
+				}
+				
+			}
+			
+			counter=1;
+			for(String text: textList) {
+				if(counter > 1) {
+					title = "";
+				}
+				eb.addField(title, text, false);
+				counter++;
+			}
+			
+		}
+		return eb;
 	}
 }
