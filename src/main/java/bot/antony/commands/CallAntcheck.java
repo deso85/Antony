@@ -177,14 +177,14 @@ public class CallAntcheck implements ServerCommand {
 		String specieName = specie.getName();
 		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_"));
 		eb.setColor(Antony.getBaseColor());
-		eb.setDescription("Die folgenden Daten wurden von https://antcheck.de/ bereitgestellt.\n\n"
+		eb.setDescription("Die folgenden Daten wurden von https://antcheck.info/ bereitgestellt.\n\n"
 				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
 		String specieImageurl = specie.getImageurl();
 		if (specieImageurl != null && !specieImageurl.isEmpty()) {
 			eb.setThumbnail(specieImageurl);
 		} else {
 			eb.addField("Bild einreichen",
-					"Leider gibt es zu dieser Art noch kein passendes Bild. Du kannst helfen und [***hier***](https://antcheck.de/submit-image) ein Bild einreichen. Vielen Dank!",
+					"Leider gibt es zu dieser Art noch kein passendes Bild. Du kannst helfen und [***hier***](https://antcheck.info/submit-image) ein Bild einreichen. Vielen Dank!",
 					true);
 		}
 

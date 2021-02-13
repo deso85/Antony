@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.TEXT_HTML)
 public interface AntCheckClient {
 
-	public static String BASE_URL = "https://antcheck.de";
+	public static String BASE_URL = "https://antcheck.info";
 
 	@GET
 	@Path("/species/")

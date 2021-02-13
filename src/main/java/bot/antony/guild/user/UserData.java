@@ -43,6 +43,10 @@ public class UserData {
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
+	public void update(User user) {
+		setName(user.getName());
+	}
+	
 	@Override
 	public String toString() {
 		return "id: " + getId() + ", name: " + getName();

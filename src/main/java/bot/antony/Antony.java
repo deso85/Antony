@@ -30,12 +30,12 @@ public class Antony extends ListenerAdapter {
 	public static Antony INSTANCE;
 	private static Color baseColor = new Color(31, 89, 152); // AAM blue
 	private static String cmdPrefix;
+	private static long notificationPendingTime;
 	private static String version;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
 	private static boolean prodStage = false;
-	
 
 	/**
 	 * This is the method where the program starts.
@@ -43,8 +43,9 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static void main(String[] args) {
 		
-		setVersion(getProperty("bot.version"));			// set Antony version
-		setCmdPrefix(getProperty("command.prefix"));	// set command prefix
+		setVersion(getProperty("bot.version"));														// set Antony version
+		setCmdPrefix(getProperty("command.prefix"));												// set command prefix
+		setNotificationPendingTime(Long.parseLong(getProperty("notification.pending.time"))*1000);	// set sleep time for sending notification thread
 
 		try {
 			// build bot
@@ -75,6 +76,24 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
 			notificationController.initData();
+			
+			Thread sendPendingNotifications = new Thread() {
+				public void run() {
+					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
+						try {
+							
+							//System.out.println(counter + " Thread Running");
+							notificationController.sendPendingNotifications(jda);
+							Thread.sleep(getNotificationPendingTime());
+						} catch (InterruptedException e) {
+							logger.error("Wasn't able to put Thread asleep.", e);
+						}
+					}
+				}
+			};
+			sendPendingNotifications.start();
+			
+			
 		} catch (LoginException e) {
 			logger.error("Could not login to Discord!", e);
 		} catch (InterruptedException e) {
@@ -209,5 +228,15 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static void setCmdPrefix(String cmdPrefix) {
 		Antony.cmdPrefix = cmdPrefix;
+	}
+
+
+	public static long getNotificationPendingTime() {
+		return notificationPendingTime;
+	}
+
+
+	public static void setNotificationPendingTime(long notificationPendingTime) {
+		Antony.notificationPendingTime = notificationPendingTime;
 	}
 }

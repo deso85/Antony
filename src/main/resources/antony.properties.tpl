@@ -4,5 +4,7 @@ command.prefix = !
 bot.token.dev = 
 # Set Discord Bot Token for your Prod Discord Bot
 bot.token.prod = 
+# Set pending timer for notifications in Seconds (60 = 1m, 3600 = 1h, 86400 = 1d ...)
+notification.pending.time = 3600
 # Set Bot version from pom.xml
 bot.version = ${project.version}

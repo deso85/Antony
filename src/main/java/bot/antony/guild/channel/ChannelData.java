@@ -27,15 +27,19 @@ public class ChannelData {
 		setName(name);
 	}
 	
-	public ChannelData(TextChannel textChannel) {
-		setId(textChannel.getId());
-		setName(textChannel.getName());
+	public ChannelData(TextChannel channel) {
+		setId(channel.getId());
+		setName(channel.getName());
 	}
 	
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
+	public void update(TextChannel channel) {
+		setName(channel.getName());
+	}
+	
 	@Override
 	public String toString() {
 		return "id: " + getId() + ", name: " + getName();

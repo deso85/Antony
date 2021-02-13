@@ -36,6 +36,10 @@ public class GuildData {
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
+	public void update(Guild guild) {
+		setName(guild.getName());
+	}
+	
 	@Override
 	public String toString() {
 		return "id: " + getId() + ", name: " + getName();

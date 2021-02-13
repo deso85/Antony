@@ -29,6 +29,9 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("13.02.2021 - Version 1.6.4", "Die URL für Antcheck wurde angepasst, da die Domain umgezogen wurde. Zusätzlich wurden die ***" + Antony.getCmdPrefix() + "notify*** Funktion überarbeitet, um konkurrierende Zugriffe auf gespeicherte Daten zu vermeiden."));
+				changeLog.add(new ChangeLogEntry("22.01.2021 - Version 1.6.3", "Die Funktion ***" + Antony.getCmdPrefix() + "pnlink*** wurde implementiert, um Kanäle als Verlinkung in PNs versenden zu können."));
+				changeLog.add(new ChangeLogEntry("15.01.2021 - Version 1.6.2", "Die Funktion ***" + Antony.getCmdPrefix() + "notify*** wurde dahingehend angepasst, dass Kanalupdates nun gesammelt und dann gebündelt versendet werden."));
 				changeLog.add(new ChangeLogEntry("13.01.2021 - Version 1.6.1", "Bugfix für die Funktion ***" + Antony.getCmdPrefix() + "notify***: Die PN über Einstellungsänderungen wurde nicht versendet, wenn zu viele Kanäle ausgewählt wurden."));
 				changeLog.add(new ChangeLogEntry("13.01.2021 - Version 1.6.0", "Die Funktion ***" + Antony.getCmdPrefix() + "giveaway*** wurde in einer ersten Version fertig implementiert."));
 				changeLog.add(new ChangeLogEntry("10.01.2021 - Version 1.5.1", "Code und die JSON Strukturen für gespeicherte Daten wurden überarbeitet."));

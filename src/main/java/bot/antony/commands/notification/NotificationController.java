@@ -15,24 +15,32 @@ import bot.antony.Antony;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.channel.ChannelData;
 import bot.antony.guild.user.UserData;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 
 /**
  * NotificationController controls all notifications
  */
 public class NotificationController {
 	private Map<String, GuildChannelNotificationList> gcnls = new HashMap<String, GuildChannelNotificationList>();
-	private String fileName;
-	
-	
+	private ArrayList<UserNotification> pendingUserNotifications = new ArrayList<UserNotification>();
+	private String notificationListConfigFileName;
+	private String pendingNotificationsFileName;
+	private boolean waiting = false;
+
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
 	public NotificationController() {
-		setFileName("antony.notifications.json");
+		setNotificationListConfigFileName("antony.notifications.config.json");
+		setPendingNotificationsFileName("antony.notifications.pending.json");
 	}
 	
-	public NotificationController(String filename) {
-		setFileName(filename);
+	public NotificationController(String configFileName, String pendingFileName) {
+		setNotificationListConfigFileName(configFileName);
+		setPendingNotificationsFileName(pendingFileName);
 	}
 	
 	
@@ -220,6 +228,10 @@ public class NotificationController {
 				removeNotification(gcnl.getGuild(), cnl.getChannel(), user);
 			}
 		}
+		UserNotification un = new UserNotification(user, guild);
+		if(getPendingUserNotifications().contains(un)) {
+			getPendingUserNotifications().remove(un);
+		}
 	}
 	
 	/**
@@ -277,19 +289,114 @@ public class NotificationController {
 		}
 	}
 	
+	
+	/*public void updateData() {
+		for(HashMap.Entry<String, GuildChannelNotificationList> gcnlEntry : getGCNLs().entrySet()) {
+			GuildChannelNotificationList gcnl = gcnlEntry.getValue();
+			Guild guild = gcnl.getGuild().getId();
+		}
+	}*/
+	
+	/**
+	 * will send all pending messages
+	 * @param jda as JDA
+	 */
+	public void sendPendingNotifications(JDA jda) {
+		if(getPendingUserNotifications().size() > 0) {
+			for(UserNotification notification: getPendingUserNotifications()) {
+				GuildData guildData = notification.getGuild();
+				UserData userData = notification.getUser();
+				ArrayList<ChannelData> channels = notification.getChannels();
+				Guild guild = jda.getGuildById(guildData.getId());
+				
+				if(guild.getMemberById(userData.getId()) != null) {
+				
+					User user = guild.getMemberById(userData.getId()).getUser();
+					StringBuilder logMessage = new StringBuilder();
+					logMessage.append("On server [" + guildData.toString() + "] ");
+					logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
+					logMessage.append("Notify about channels: ");
+					int counter = 1;
+					for(ChannelData channel: channels) {
+						logMessage.append("[" + channel.toString() + "]");
+						if(counter < channels.size()) {
+							logMessage.append(", ");
+							counter++;
+						}
+					}
+					Antony.getLogger().info(logMessage.toString());
+					
+					
+					user.openPrivateChannel().queue((privChannel) ->
+			        {
+			        	EmbedBuilder eb = new EmbedBuilder().setTitle("Benachrichtigung über Kanal-Updates")
+								.setColor(Antony.getBaseColor())
+								.setThumbnail(guild.getIconUrl())
+								.setDescription("Auf dem Server [" + guildData.getName() + "](https://discord.com/channels/" + guildData.getId() + ") "
+										+ "gibt es Neuigkeiten in den von dir abonnierten Kanälen. Schau es dir gleich mal an!")
+								.setFooter("Antony | Version " + Antony.getVersion());
+			        	
+			        	ArrayList<String> textList = new ArrayList<String>();
+						StringBuilder fieldText = new StringBuilder();
+						String textPart;
+						int msgCounter = 1;
+			        	
+			        	for(ChannelData channel: channels) {
+			        		textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + ")";
+			        		if((fieldText.length() + textPart.length() + 2) > 1024) {
+								textList.add(fieldText.toString());
+								fieldText = new StringBuilder();
+							}
+			        		
+			        		fieldText.append(textPart);
+							if(msgCounter < channels.size()) {
+								fieldText.append(", ");
+								msgCounter++;
+							} else {
+								textList.add(fieldText.toString());
+							}
+			        	}
+			        	
+			        	msgCounter = 1;
+						for(String text: textList) {
+							if(msgCounter == textList.size()) {
+								text += "\n_";
+							}
+							eb.addField("", text, false);
+						}
+						
+			        	privChannel.sendMessage(eb.build()).queue();
+			        });
+				}
+			}
+			getPendingUserNotifications().clear();
+			persistData();
+		}
+	}
+	
 	/**
 	 * Persists data in JSON format
 	 * @return	TRUE if data has been stored or FALSE if not
 	 */
 	public boolean persistData() {
-		//cleanLists();
+		while(isWaiting()) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			objectMapper.writeValue(new File(getFileName()), getGCNLs());
+			setWaiting(true);
+			objectMapper.writeValue(new File(getNotificationListConfigFileName()), getGCNLs());						//Notification Configuration
+			objectMapper.writeValue(new File(getPendingNotificationsFileName()), getPendingUserNotifications());	//Pending Notifications
+			setWaiting(false);
 			return true;
 			
 		} catch (IOException e) {
-			Antony.getLogger().error("Could not store GCNL data!", e);
+			Antony.getLogger().error("Could not store notification config and/or pending notifications data!", e);
 		}
 		return false;
 	}
@@ -301,11 +408,25 @@ public class NotificationController {
 	 * @throws	IOException
 	 */
 	public void initData() throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(getFileName());
-		if(file.exists() && !file.isDirectory()) { 
-			this.gcnls = objectMapper.readValue(new File(getFileName()), new TypeReference<Map<String, GuildChannelNotificationList>>(){});
+		while(isWaiting()) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		setWaiting(true);
+		ObjectMapper objectMapper = new ObjectMapper();
+		File file = new File(getNotificationListConfigFileName());	//Notification Configuration
+		if(file.exists() && !file.isDirectory()) { 
+			this.gcnls = objectMapper.readValue(file, new TypeReference<Map<String, GuildChannelNotificationList>>(){});
+		}
+		file = new File(getPendingNotificationsFileName());	//Pending Notifications
+		if(file.exists() && !file.isDirectory()) { 
+			this.pendingUserNotifications = objectMapper.readValue(file, new TypeReference<ArrayList<UserNotification>>(){});
+		}
+		setWaiting(false);
 	}
 	
 	
@@ -316,11 +437,32 @@ public class NotificationController {
 		return gcnls;
 	}
 	
-	public String getFileName() {
-		return fileName;
+	public ArrayList<UserNotification> getPendingUserNotifications() {
+		return pendingUserNotifications;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public String getNotificationListConfigFileName() {
+		return notificationListConfigFileName;
 	}
+
+	public void setNotificationListConfigFileName(String notificationListConfigFileName) {
+		this.notificationListConfigFileName = notificationListConfigFileName;
+	}
+
+	public String getPendingNotificationsFileName() {
+		return pendingNotificationsFileName;
+	}
+
+	public void setPendingNotificationsFileName(String pendingNotificationsFileName) {
+		this.pendingNotificationsFileName = pendingNotificationsFileName;
+	}
+	
+	public boolean isWaiting() {
+		return waiting;
+	}
+
+	public void setWaiting(boolean waiting) {
+		this.waiting = waiting;
+	}
+	
 }
