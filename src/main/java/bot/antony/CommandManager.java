@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.CallAntcheck;
+import bot.antony.commands.ChannelController;
 import bot.antony.commands.ChannelUpdateNotification;
 import bot.antony.commands.PerformGiveaway;
 import bot.antony.commands.PostPnLink;
@@ -34,6 +35,7 @@ public class CommandManager {
 		this.commands.put("giveaway", new PerformGiveaway());
 		this.commands.put("notify", new ChannelUpdateNotification());
 		this.commands.put("showavatar", new ShowAvatar());
+		this.commands.put("channel", new ChannelController());
 		this.commands.put("userinfo", new UserInfo());
 		this.commands.put("pnlink", new PostPnLink());
 		
