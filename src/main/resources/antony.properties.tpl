@@ -6,5 +6,7 @@ bot.token.dev =
 bot.token.prod = 
 # Set pending timer for notifications in Seconds (60 = 1m, 3600 = 1h, 86400 = 1d ...)
 notification.pending.time = 3600
+# Set SQLite database path
+sqlite.db.path = antony.db
 # Set Bot version from pom.xml
 bot.version = ${project.version}

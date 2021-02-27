@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.commands.notification.NotificationController;
+import bot.antony.db.DbController;
 import bot.antony.events.CommandListener;
 import bot.antony.events.NotificationListener;
 import net.dv8tion.jda.api.JDA;
@@ -35,6 +36,7 @@ public class Antony extends ListenerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
+	private static DbController dbcontroller = new DbController();
 	private static boolean prodStage = false;
 
 	/**
@@ -63,6 +65,10 @@ public class Antony extends ListenerAdapter {
 			
 			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
 			jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
+			
+			// Prepare Database
+			dbcontroller.setDbpath(getProperty("sqlite.db.path"));
+			dbcontroller.init();
 			
 			// Create log output after startup
 			StringBuilder postStartLogEntry = new StringBuilder();
@@ -103,7 +109,10 @@ public class Antony extends ListenerAdapter {
 			logger.error("Could not parse GCNL data!", e);
 		} catch (IOException e) {
 			logger.error("Could not read GCNL file!", e);
-		}
+		}/* catch (SQLException e) {
+			logger.error("Could not connect to database!", e);
+			//e1.printStackTrace();
+		}*/
 		
 	}
 
@@ -239,5 +248,15 @@ public class Antony extends ListenerAdapter {
 
 	public static void setNotificationPendingTime(long notificationPendingTime) {
 		Antony.notificationPendingTime = notificationPendingTime;
+	}
+
+
+	public static DbController getDbcontroller() {
+		return dbcontroller;
+	}
+
+
+	public static void setDbcontroller(DbController dbcontroller) {
+		Antony.dbcontroller = dbcontroller;
 	}
 }
