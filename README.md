@@ -7,27 +7,22 @@ Antony is yet another Discord Bot which provides well known functions as well as
 
 ## Functions provided
 
+The default command prefix is **!** and all following command explanations and examples are written as the bot is used with it.
+
 ### !antony
-This command prints a help text including all available commands.
+If no additional parameter is provided this command prints a help text including all available commands.
 
-*Usage: !antony (changelog)*
+**Usage**:
 
-**!antony changelog**
+```discord
+!antony (changelog)
+```
+
+#### !antony changelog
 
 Is a sub command which prints Antonys changelog
 
 ### !channel
-A channel controller which currently only has administrative purpose.
-
-*Usage: !channel (list)*
-
-**!channel list (abandoned)**
-
-Prints all text channel based on the filter parameter
-
- * *abandoned (months)* prints all text channel which
-   * are empty and are older than 2 weeks
-   * have only entries older than 6 months (default) or older than parameter *months* if provided
 
 ### !giveaway
 
