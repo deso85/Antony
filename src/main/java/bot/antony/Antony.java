@@ -77,6 +77,7 @@ public class Antony extends ListenerAdapter {
 			logger.info(postStartLogEntry.toString());
 			notificationController.initData();
 			
+			//Thread which is used to send channel notifications 
 			Thread sendPendingNotifications = new Thread() {
 				public void run() {
 					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {

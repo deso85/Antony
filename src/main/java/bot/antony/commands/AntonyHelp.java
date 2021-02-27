@@ -29,6 +29,8 @@ public class AntonyHelp implements ServerCommand {
 				
 				// Generate changelog entries
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("26.02.2021 - Version 1.8.0", "Die Funktionen ***" + Antony.getCmdPrefix() + "emergency*** und ***" + Antony.getCmdPrefix() + "shopping*** wurden hinzugefügt. ***" + Antony.getCmdPrefix() + "emergency*** gibt Hinweise zur Ameisenhaltung bei bestimmten Notfällen. ***" + Antony.getCmdPrefix() + "shopping*** gibt Kaufempfehlungen aus, die für die Ameisenhaltung relevant sind."));
+				changeLog.add(new ChangeLogEntry("16.02.2021 - Version 1.7.0", "Die Funktion ***" + Antony.getCmdPrefix() + "channel*** wurde hinzugefügt, die aktuell alle Kanäle ausgibt, in denen innerhalb eines bestimmten Zeitraums keine Einträge gemacht wurden."));
 				changeLog.add(new ChangeLogEntry("13.02.2021 - Version 1.6.4", "Die URL für Antcheck wurde angepasst, da die Domain umgezogen wurde. Zusätzlich wurden die ***" + Antony.getCmdPrefix() + "notify*** Funktion überarbeitet, um konkurrierende Zugriffe auf gespeicherte Daten zu vermeiden."));
 				changeLog.add(new ChangeLogEntry("22.01.2021 - Version 1.6.3", "Die Funktion ***" + Antony.getCmdPrefix() + "pnlink*** wurde implementiert, um Kanäle als Verlinkung in PNs versenden zu können."));
 				changeLog.add(new ChangeLogEntry("15.01.2021 - Version 1.6.2", "Die Funktion ***" + Antony.getCmdPrefix() + "notify*** wurde dahingehend angepasst, dass Kanalupdates nun gesammelt und dann gebündelt versendet werden."));
@@ -83,16 +85,24 @@ public class AntonyHelp implements ServerCommand {
 		List<BotCommand> botCommands = new ArrayList<BotCommand>();
 		BotCommand antony = new BotCommand("antony", "Zeigt diese Übersicht an.");
 		BotCommand antonyChangelog = new BotCommand("antony changelog", "Zeigt den Changelog von Antony an.");
+		BotCommand channel = new BotCommand("channel", "**Administrative Funktion**, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
+		BotCommand emergency = new BotCommand("emergency", "Soll eine Hilfestellungen bei Notfällen zur Verfügung stellen.", "milben");
 		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");
+		BotCommand pnlink = new BotCommand("pnlink", "Gibt einen formatierten Text für einen Kanal aus, der z.B. in PNs genutzt werden kann, um Kanäle zu verlinken, was über # nicht möglich ist. (Das letzte Leerzeichen der Ausgabe muss entfernt werden)", "#kanal1");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.de zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
+		BotCommand shopping = new BotCommand("shopping", "Zeigt eine Liste mit Kaufempfehlungen für die Ameisenhaltung.");
 		BotCommand showAvatar = new BotCommand("showavatar", "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.", "Antony");
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		botCommands.add(antony);
 		botCommands.add(antonyChangelog);
+		botCommands.add(channel);
+		botCommands.add(emergency);
 		botCommands.add(giveawayEnd);
 		botCommands.add(notify);
+		botCommands.add(pnlink);
 		botCommands.add(sells);
+		botCommands.add(shopping);
 		botCommands.add(showAvatar);
 		botCommands.add(userinfo);
 		

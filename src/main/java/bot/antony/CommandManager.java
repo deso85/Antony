@@ -6,8 +6,10 @@ import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.CallAntcheck;
 import bot.antony.commands.ChannelController;
 import bot.antony.commands.ChannelUpdateNotification;
+import bot.antony.commands.EmergencyHelp;
 import bot.antony.commands.PerformGiveaway;
 import bot.antony.commands.PostPnLink;
+import bot.antony.commands.Shoppinglist;
 import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.ShutdownBot;
 import bot.antony.commands.UserInfo;
@@ -28,7 +30,10 @@ public class CommandManager {
 		this.commands.put("shutdown", new ShutdownBot());
 		
 		// Ant Specific
+		this.commands.put("emergency", new EmergencyHelp());
 		this.commands.put("sells", new CallAntcheck());
+		this.commands.put("shopping", new Shoppinglist());
+		
 
 		// Miscellaneous
 		this.commands.put("antony", new AntonyHelp());

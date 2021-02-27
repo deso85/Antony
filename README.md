@@ -6,10 +6,12 @@ Antony is yet another Discord Bot which provides well known functions as well as
 
 ## Functions provided
 ### !antony
+### !channel
 ### !giveaway
 ### !notify
+### !pnlink
 ### !sells
 ### !showavatar
+### !shopping
 ### !shutdown
 ### !userinfo
-### !pnlink

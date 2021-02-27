@@ -148,12 +148,14 @@ public class CallAntcheck implements ServerCommand {
 
 	private String handleSpeciesFoundWithoutVariants(List<Specie> species) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Folgende Ameisenarten wurden gefunden, stehen aktuell aber nicht zum Verkauf:");
+		//Old output - Changerequest to not post variants if they are not on sale
+		/*sb.append("Folgende Ameisenarten wurden gefunden, stehen aktuell aber nicht zum Verkauf:");
 		for (Specie specie : species) {
 			sb.append("\n*- ");
 			sb.append(specie.getName());
 			sb.append("*");
-		}
+		}*/
+		sb.append("Es wurden " + species.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.");
 		return sb.toString();
 	}
 
