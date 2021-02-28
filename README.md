@@ -1,5 +1,11 @@
+[license]: https://github.com/deso85/Antony/tree/master/LICENSE
 [faq]: https://github.com/deso85/Antony/wiki
+[version]: https://github.com/deso85/Antony/releases/latest
+[license-shield]: https://img.shields.io/badge/license-EUPL%201.2-lightgrey
 [faq-shield]: https://img.shields.io/badge/Wiki-FAQ-blue.svg
+[version-shield]: https://img.shields.io/github/v/release/deso85/Antony
+[ ![version-shield] ][version]
+[ ![license-shield] ][license]
 [ ![faq-shield] ][faq]
 
 # Antony - Discord Bot
