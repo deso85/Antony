@@ -50,7 +50,8 @@ public class Shoppinglist implements ServerCommand {
 				+ "\n[Hobbymesser / Skalpell](https://amzn.to/3kEddO9)"			//B07V1MKKLB
 				+ "\n[Magnete (stark)](https://amzn.to/3rbYtbL)"				//B06X977K8L
 				+ "\n[Messschieber](https://amzn.to/3r0J5i2)"					//B073S69SQ1
-				+ "\n[Modellgips](https://amzn.to/3qYJn9h)",					//B0012FDY6O
+				+ "\n[Modellgips](https://amzn.to/3qYJn9h)"						//B0012FDY6O
+				+ "\n[Nagarium (67x36,5x20cm Arena)](https://amzn.to/30fMBcO)",	//B0843CY2T2
 				false);
 		
 		eb.addField("Einrichtung und Deko",

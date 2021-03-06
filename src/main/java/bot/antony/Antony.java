@@ -20,6 +20,8 @@ import bot.antony.events.NotificationListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -65,6 +67,13 @@ public class Antony extends ListenerAdapter {
 			
 			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
 			jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
+			
+			// Set status with command to see command list and some basic bot information
+			int usercount = 0;
+			for(Guild guild: jda.getGuilds()) {
+				usercount += guild.getMemberCount();
+			}
+			jda.getPresence().setActivity(Activity.listening(cmdPrefix + "antony | " + usercount + " User | " + jda.getGuilds().size() + " Server"));
 			
 			// Prepare Database
 			dbcontroller.setDbpath(getProperty("sqlite.db.path"));

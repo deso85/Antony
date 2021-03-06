@@ -29,7 +29,7 @@ public class UserInfo implements ServerCommand {
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		setMemberList(new ArrayList<>());
 		String[] userMessage = message.getContentDisplay().split(" ");
-		
+		boolean outputlight = false;
 
 		// fill memberList
 		for (Member member : channel.getGuild().getMembers()) {
@@ -43,16 +43,38 @@ public class UserInfo implements ServerCommand {
 			return member1.getTimeJoined().compareTo(member2.getTimeJoined());
 		});
 
-		// overwrite member
-		if (userMessage.length > 1) {			
+		// initially set the member who called the function
+		setMember(m);
+		
+		// overwrite member if needed
+		if (userMessage.length > 1) {
+			// user has been mentioned
 			if(message.getMentionedMembers().size() > 0) {
 				setMember(message.getMentionedMembers().get(0));
+			//not a mentioned user so it can be a user or a parameter
 			} else {
-				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
-				setMember(findUserIn(channel, getFullMemberName()));
+				// we build a new string to find the user even if we don't know if there is a parameter inside the provided text
+				StringBuilder usrMessage = new StringBuilder();
+				int messageParts = 0;
+				
+				// because the command can be used with parameters we have to search for them
+				for(String msgpart: userMessage) {
+					// if parameter "light" has been provided to have basic user information
+					if(msgpart.equals("light")) {
+						outputlight = true;
+					// part of the command was not a known parameter
+					} else {
+						messageParts++;
+						usrMessage.append(msgpart + " ");
+					}
+				}
+				// if output wasn't slimmed or there are even more parameters we have to search for someone
+				if(messageParts > 1) {
+					// full member name regarding to provided strings has to be a substring. cut off command and the last space which has been added inside the for loop
+					setFullMemberName(usrMessage.substring(userMessage[0].length() + 1, usrMessage.length() - 1));
+					setMember(findUserIn(channel, getFullMemberName()));
+				}
 			}
-		} else {
-			setMember(m);
 		}
 
 		if (getMember() != null) {
@@ -70,8 +92,19 @@ public class UserInfo implements ServerCommand {
 				setMemberOnlineStatus("⚪"); // :white_circle:
 			}
 
-
-			channel.sendMessage(getUserEB().build()).queue();
+			
+			if(outputlight) {
+				StringBuilder sb = new StringBuilder();
+				
+				sb.append("ID: " + getMember().getId() + "\n");
+				sb.append("Tag: " + getMember().getUser().getAsTag() + "\n");
+				sb.append("Nick: " + getMember().getUser().getName() + "\n");
+				
+				channel.sendMessage(sb.toString()).queue();
+			} else {
+				channel.sendMessage(getUserEB().build()).queue();
+			}
+			
 
 		} else {
 			channel.sendMessage("Ich konnte niemanden mit dem Namen " + getFullMemberName() + " finden.").queue();
