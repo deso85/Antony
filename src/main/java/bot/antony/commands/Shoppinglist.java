@@ -74,8 +74,12 @@ public class Shoppinglist implements ServerCommand {
 				+ "\n[Heimchen, mittel (ca. 700stk.)](https://amzn.to/2P7im5k)"							//B0162X2VU0
 				+ "\n[Lock & Lock (350ml für wiederv. Fruchtfliegenansatz)](https://amzn.to/3ktQLXN)"	//B0000AN4CY
 				+ "\n[Mehlwürmer (1kg)](https://amzn.to/3q55f1C)"										//B00PSFIE78
+				+ "\n[Schokoschaben (100, groß)](https://amzn.to/2PAzCA9)"									//B012NQTSGU
 				+ "\n[Sepia-Schale (für z.B. Asseln)](https://amzn.to/2ZWZHLT)"							//B00080HF3M
 				+ "\n[Springschwänze](https://amzn.to/3pXE4Wl)"											//B00PUJEKNE
+				+ "\n[Waldschaben (50, groß)](https://amzn.to/3v0oQ6D)"										//B00PUIKRIW
+				+ "\n[Waldschaben (100, klein)](https://amzn.to/3bmTuzt)"										//B00PUI4V98
+				+ "\n[Waldschaben (50, mittel)](https://amzn.to/30mt2PU)"									//B00PUII9E6
 				+ "\n[Wassergel Granulat (ca. 7,5l Wasser)](https://amzn.to/3uBnOxF)",					//B083QMG84N
 				false);
 		
