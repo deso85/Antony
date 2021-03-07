@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.commands.notification.NotificationController;
-import bot.antony.db.DbController;
 import bot.antony.events.CommandListener;
 import bot.antony.events.NotificationListener;
+import bot.antony.service.AntonyServiceInterface;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -38,7 +40,7 @@ public class Antony extends ListenerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
-	private static DbController dbcontroller = new DbController();
+	//private static DbController dbcontroller = new DbController();
 	private static boolean prodStage = false;
 
 	/**
@@ -75,9 +77,17 @@ public class Antony extends ListenerAdapter {
 			}
 			jda.getPresence().setActivity(Activity.listening(cmdPrefix + "antony | " + usercount + " User | " + jda.getGuilds().size() + " Server"));
 			
-			// Prepare Database
-			dbcontroller.setDbpath(getProperty("sqlite.db.path"));
-			dbcontroller.init();
+
+			
+			// Initialize CDI context and its dependencies to database, ...
+			// Custom initiallization is necessary due to standalone application
+			Weld weld = new Weld();
+		    WeldContainer container = weld.initialize();
+		    AntonyServiceInterface service = container.instance().select(AntonyServiceInterface.class).get();
+		    service.init();
+		    weld.shutdown();	//TODO: Move to antonys shutdown
+			//AntonyServiceInterface service = AntonyService.getService();
+
 			
 			// Create log output after startup
 			StringBuilder postStartLogEntry = new StringBuilder();
@@ -133,7 +143,7 @@ public class Antony extends ListenerAdapter {
 	 * @return	value
 	 * 			as String
 	 */
-	private static String getProperty(String key) {
+	public static String getProperty(String key) {
 		InputStream is = Antony.class.getResourceAsStream("/antony.properties");
 		Properties prop = new Properties();
 		try {
@@ -257,15 +267,5 @@ public class Antony extends ListenerAdapter {
 
 	public static void setNotificationPendingTime(long notificationPendingTime) {
 		Antony.notificationPendingTime = notificationPendingTime;
-	}
-
-
-	public static DbController getDbcontroller() {
-		return dbcontroller;
-	}
-
-
-	public static void setDbcontroller(DbController dbcontroller) {
-		Antony.dbcontroller = dbcontroller;
 	}
 }
