@@ -18,10 +18,9 @@ public class SoftbanFilterListener extends ListenerAdapter {
 			UserData user = new UserData(event.getAuthor().getId(), event.getAuthor().getName());
 			if(Antony.getSoftbanController().getBannedUser().contains(user)) {
 				event.getMessage().delete().queue();
-			}
-			Antony.getLogger().info("Message in channel #" + event.getChannel().getName() + " sent by user \"" + event.getAuthor().getName() + "\" (UID: " + event.getAuthor().getId() + ") "
+				Antony.getLogger().info("Message in channel #" + event.getChannel().getName() + " sent by user \"" + event.getAuthor().getName() + "\" (UID: " + event.getAuthor().getId() + ") "
 					+ "deleted because this user is softbanned.");
-			
+			}
 		}
 	}
 }
