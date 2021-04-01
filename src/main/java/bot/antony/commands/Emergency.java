@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class EmergencyHelp implements ServerCommand {
+public class Emergency implements ServerCommand {
 
 	private TextChannel channel;
 

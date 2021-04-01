@@ -3,16 +3,19 @@ package bot.antony;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
-import bot.antony.commands.CallAntcheck;
-import bot.antony.commands.ChannelController;
-import bot.antony.commands.ChannelUpdateNotification;
-import bot.antony.commands.EmergencyHelp;
-import bot.antony.commands.PerformGiveaway;
-import bot.antony.commands.PostPnLink;
-import bot.antony.commands.Shoppinglist;
+import bot.antony.commands.Sells;
+import bot.antony.commands.Channel;
+import bot.antony.commands.Notify;
+import bot.antony.commands.Emergency;
+import bot.antony.commands.Giveaway;
+import bot.antony.commands.Map;
+import bot.antony.commands.PnLink;
+import bot.antony.commands.Shopping;
 import bot.antony.commands.ShowAvatar;
-import bot.antony.commands.ShutdownBot;
+import bot.antony.commands.Shutdown;
+import bot.antony.commands.Softban;
 import bot.antony.commands.UserInfo;
+import bot.antony.commands.Watchlist;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,24 +29,25 @@ public class CommandManager {
 		
 		this.commands = new ConcurrentHashMap<>();
 
-		// Administrative
-		this.commands.put("shutdown", new ShutdownBot());
-		
-		// Ant Specific
-		this.commands.put("emergency", new EmergencyHelp());
-		this.commands.put("sells", new CallAntcheck());
-		this.commands.put("shopping", new Shoppinglist());
-		
-
-		// Miscellaneous
+		// Everyone
 		this.commands.put("antony", new AntonyHelp());
-		this.commands.put("giveaway", new PerformGiveaway());
-		this.commands.put("notify", new ChannelUpdateNotification());
+		this.commands.put("emergency", new Emergency());
+		this.commands.put("giveaway", new Giveaway());
+		this.commands.put("map", new Map());
+		this.commands.put("notify", new Notify());
+		this.commands.put("pnlink", new PnLink());
+		this.commands.put("sells", new Sells());
+		this.commands.put("shopping", new Shopping());
 		this.commands.put("showavatar", new ShowAvatar());
-		this.commands.put("channel", new ChannelController());
 		this.commands.put("userinfo", new UserInfo());
-		this.commands.put("pnlink", new PostPnLink());
-		
+
+		// Mod
+		this.commands.put("watchlist", new Watchlist());
+		this.commands.put("softban", new Softban());
+
+		// Admin
+		this.commands.put("channel", new Channel());
+		this.commands.put("shutdown", new Shutdown());
 	}
 
 	public boolean perform(String command, Member m, TextChannel channel, Message message) {

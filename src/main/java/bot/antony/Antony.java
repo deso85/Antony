@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +14,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.commands.notification.NotificationController;
+import bot.antony.commands.softban.SoftbanController;
+import bot.antony.commands.watchlist.WatchlistController;
 import bot.antony.events.CommandListener;
+import bot.antony.events.FlagReactionNotification;
+import bot.antony.events.GuildMemberJoin;
+import bot.antony.events.GuildMemberLeave;
 import bot.antony.events.NotificationListener;
-import bot.antony.service.AntonyServiceInterface;
+import bot.antony.events.OfferListener;
+import bot.antony.events.SpyReactionNotification;
+import bot.antony.events.WatchlistNotification;
+import bot.antony.events.softban.SoftbanFilterListener;
+import bot.antony.events.softban.SoftbanReactionListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -40,6 +47,10 @@ public class Antony extends ListenerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
+	private static WatchlistController watchlistController = new WatchlistController();
+	private static SoftbanController softbanController = new SoftbanController();
+	private static long antonyLogChannelId;
+	private static int usercount = 0;
 	//private static DbController dbcontroller = new DbController();
 	private static boolean prodStage = false;
 
@@ -51,13 +62,21 @@ public class Antony extends ListenerAdapter {
 		
 		setVersion(getProperty("bot.version"));														// set Antony version
 		setCmdPrefix(getProperty("command.prefix"));												// set command prefix
-		setNotificationPendingTime(Long.parseLong(getProperty("notification.pending.time"))*1000);	// set sleep time for sending notification thread
+		setNotificationPendingTime(Long.parseLong(getProperty("notification.pending.time")));		// set sleep time for sending notification thread
 
 		try {
 			// build bot
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
 					.addEventListeners(new CommandListener())			// Listener for commands
 					.addEventListeners(new NotificationListener())		// Listener for notification function
+					.addEventListeners(new WatchlistNotification())		// listener which checks if posts contains blacklisted text strings
+					.addEventListeners(new FlagReactionNotification())	// listener which informs mods about a used REDFLAG reaction as an alert
+					.addEventListeners(new SpyReactionNotification())	// listener which checks if a mod used a spy reaction to send a short userinfo about this user
+					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
+					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
+					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
+					.addEventListeners(new SoftbanFilterListener())
+					.addEventListeners(new SoftbanReactionListener())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
@@ -71,7 +90,6 @@ public class Antony extends ListenerAdapter {
 			jda.getPresence().setStatus(OnlineStatus.ONLINE); // Change bot status to online
 			
 			// Set status with command to see command list and some basic bot information
-			int usercount = 0;
 			for(Guild guild: jda.getGuilds()) {
 				usercount += guild.getMemberCount();
 			}
@@ -81,11 +99,13 @@ public class Antony extends ListenerAdapter {
 			
 			// Initialize CDI context and its dependencies to database, ...
 			// Custom initiallization is necessary due to standalone application
-			Weld weld = new Weld();
+			//TODO: BROKEN!
+			/*Weld weld = new Weld();
 		    WeldContainer container = weld.initialize();
 		    AntonyServiceInterface service = container.instance().select(AntonyServiceInterface.class).get();
 		    service.init();
 		    weld.shutdown();	//TODO: Move to antonys shutdown
+		    */
 			//AntonyServiceInterface service = AntonyService.getService();
 
 			
@@ -94,13 +114,18 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("[");
 			if(prodStage) {
 				postStartLogEntry.append("PROD");
+				//TODO: Has to be variable
+				antonyLogChannelId = 824652244464173096L;
 			} else {
 				postStartLogEntry.append("DEV/TEST");
+				antonyLogChannelId = 824405937979654154L;
 			}
 			postStartLogEntry.append("] ");
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
 			notificationController.initData();
+			watchlistController.initData();
+			softbanController.initData();
 			
 			//Thread which is used to send channel notifications 
 			Thread sendPendingNotifications = new Thread() {
@@ -110,7 +135,7 @@ public class Antony extends ListenerAdapter {
 							
 							//System.out.println(counter + " Thread Running");
 							notificationController.sendPendingNotifications(jda);
-							Thread.sleep(getNotificationPendingTime());
+							Thread.sleep(10000);	//10sec
 						} catch (InterruptedException e) {
 							logger.error("Wasn't able to put Thread asleep.", e);
 						}
@@ -129,6 +154,7 @@ public class Antony extends ListenerAdapter {
 		} catch (IOException e) {
 			logger.error("Could not read GCNL file!", e);
 		}/* catch (SQLException e) {
+		}
 			logger.error("Could not connect to database!", e);
 			//e1.printStackTrace();
 		}*/
@@ -268,4 +294,31 @@ public class Antony extends ListenerAdapter {
 	public static void setNotificationPendingTime(long notificationPendingTime) {
 		Antony.notificationPendingTime = notificationPendingTime;
 	}
+
+
+	public static WatchlistController getWatchlistController() {
+		return watchlistController;
+	}
+
+
+	public static long getAntonyLogChannelId() {
+		return antonyLogChannelId;
+	}
+
+
+	public static int getUsercount() {
+		return usercount;
+	}
+
+
+	public static void setUsercount(int usercount) {
+		Antony.usercount = usercount;
+	}
+
+
+	public static SoftbanController getSoftbanController() {
+		return softbanController;
+	}
+	
+	
 }
