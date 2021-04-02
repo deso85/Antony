@@ -8,10 +8,10 @@ import bot.antony.commands.types.ServerCommand;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.channel.ChannelData;
 import bot.antony.guild.user.UserData;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Notify implements ServerCommand {
@@ -96,13 +96,8 @@ public class Notify implements ServerCommand {
 				eb = addEbFields(guild, channelsAdddedTo, eb, "Benachrichtigungen aktiviert");
 				eb = addEbFields(guild, channelsRemovedFrom, eb, "Benachrichtigungen deaktiviert");
 				eb = addEbFields(guild, channelsUnchanged, eb, "Keine Änderungen");
-				MessageEmbed messageEmbed = eb.build();
-				//Test PN for later reuse
-				message.getAuthor().openPrivateChannel().queue((privChannel) ->
-		        {
-		        	privChannel.sendMessage(messageEmbed).queue();
-		        	
-		        });
+				
+				Utils.sendPM(message.getAuthor(), eb);
 				
 				message.addReaction("👌").queue();
 			}
@@ -135,11 +130,8 @@ public class Notify implements ServerCommand {
 							.setThumbnail(cmdChannel.getGuild().getIconUrl())
 							.setDescription(msgText.toString())
 							.setFooter("Antony | Version " + Antony.getVersion());
-					message.getAuthor().openPrivateChannel().queue((privChannel) ->
-			        {
-			        	privChannel.sendMessage(eb.build()).queue();
-			        	
-			        });
+					
+					Utils.sendPM(message.getAuthor(), eb);
 					
 					break;
 				case "off": // if user wants to receive no more notifications for this guild

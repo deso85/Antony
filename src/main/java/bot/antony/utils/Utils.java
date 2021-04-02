@@ -1,8 +1,8 @@
 package bot.antony.utils;
 
 import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
 import bot.antony.Antony;
@@ -18,8 +18,8 @@ public class Utils {
 		try {
 			user.openPrivateChannel().complete().sendMessage(eb.build()).complete();
 		} catch (ErrorResponseException e) {
-			Date date = new Date(System.currentTimeMillis());
-			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 			
 			TextChannel channel = (TextChannel) user.getJDA().getGuildChannelById(ChannelType.TEXT, Antony.getAntonyLogChannelId());
 			channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
@@ -30,13 +30,12 @@ public class Utils {
 							+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
 							+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
 							+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
-					.setFooter(formatter.format(date));
+					.setFooter(now.format(formatter) + " Uhr");
 			channel.sendMessage(eb.build()).complete();
 			
 			Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + user.getAsTag() + " (ID " + user.getId() + ")");
 		}
 	}
-
 	
 	/**
 	 * 

@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("02.04.2021 - Version 2.4.2b", "Kleineres Code-Refactoring zur Vereinheitlichung von Funktionen."));
 				changeLog.add(new ChangeLogEntry("01.04.2021 - Version 2.4.1b", "Die Ausgabe des ***" + cmdPrefix + "userinfo*** Befehls wurde für Benutzer ohne Rollen verändert. Wenn eine PN nicht zugestellt werden kann, erhält das Mod-Team nun eine entsprechende Benachrichtigung, um den User darüber informieren zu können. Die Suche nach Ameisen ist nun tolleranter gegenüber Leerzeichen im Namen."));
 				changeLog.add(new ChangeLogEntry("28.03.2021 - Version 2.4.0b", "Die moderative Funktion ***" + cmdPrefix + "softban*** wurde hinzugefügt. Hierüber können User verwaltet werden, deren Posts direkt wieder gelöscht werden. Dies ist notwendig, um zu vermeiden, dass z.B. Webhooks missbraucht werden."));
 				changeLog.add(new ChangeLogEntry("27.03.2021 - Version 2.3.0b", "Die Funktion ***" + cmdPrefix + "map*** wurde hinzugefügt und zeigt eine Karte von antmaps.org, auf der zu sehen ist, wo auf der Welt die gesuchte Ameisenart vorkommt. Zudem wurde der Scheduling-Mechanismus für die Kanalbenachrichtigungen angepasst."));
@@ -96,7 +97,7 @@ public class AntonyHelp implements ServerCommand {
 		//Commands for everyone
 		BotCommand antony = new BotCommand("antony", "Zeigt diese Übersicht an.");
 		BotCommand antonyChangelog = new BotCommand("antony changelog", "Zeigt den Changelog von Antony an.");
-		BotCommand emergency = new BotCommand("emergency", "Soll eine Hilfestellungen bei Notfällen zur Verfügung stellen.", "milben");
+		BotCommand emergency = new BotCommand("emergency", "Soll Hilfestellungen bei Notfällen zur Verfügung stellen.", "milben");
 		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
 		BotCommand map = new BotCommand("map","Zeigt eine Karte von https://antmaps.org, auf der zu sehen ist, wo auf der Welt die gesuchte Ameisenart vorkommt.", "Lasius niger");
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");

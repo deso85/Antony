@@ -42,22 +42,16 @@ public class NotificationController {
 	public NotificationController() {
 		setNotificationListConfigFileName("antony.notifications.config.json");
 		setPendingNotificationsFileName("antony.notifications.pending.json");
-		if(Antony.isProdStage()) {
-			setNextUpdateDate(LocalDateTime.now().plusHours(1).truncatedTo(ChronoUnit.HOURS));
-		} else {
-			setNextUpdateDate(LocalDateTime.now());
-		}
+		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
+		
 		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
 	}
 	
 	public NotificationController(String configFileName, String pendingFileName) {
 		setNotificationListConfigFileName(configFileName);
 		setPendingNotificationsFileName(pendingFileName);
-		if(Antony.isProdStage()) {
-			setNextUpdateDate(LocalDateTime.now().plusHours(1).truncatedTo(ChronoUnit.HOURS));
-		} else {
-			setNextUpdateDate(LocalDateTime.now());
-		}
+		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
+		
 		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
 	}
 	

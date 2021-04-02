@@ -40,10 +40,10 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 public class Antony extends ListenerAdapter {
 
 	public static Antony INSTANCE;
-	private static Color baseColor = new Color(31, 89, 152); // AAM blue
-	private static String cmdPrefix;
-	private static long notificationPendingTime;
-	private static String version;
+	private static Color baseColor = new Color(31, 89, 152);
+	private static String cmdPrefix = getProperty("command.prefix");
+	private static long notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
+	private static String version = getProperty("bot.version");
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
@@ -59,10 +59,6 @@ public class Antony extends ListenerAdapter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		setVersion(getProperty("bot.version"));														// set Antony version
-		setCmdPrefix(getProperty("command.prefix"));												// set command prefix
-		setNotificationPendingTime(Long.parseLong(getProperty("notification.pending.time")));		// set sleep time for sending notification thread
 
 		try {
 			// build bot
