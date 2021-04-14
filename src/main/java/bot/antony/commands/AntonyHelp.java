@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("15.04.2021 - Version 2.4.3b", "Bugfix für die ***" + cmdPrefix + "map*** Funktion."));
 				changeLog.add(new ChangeLogEntry("02.04.2021 - Version 2.4.2b", "Kleineres Code-Refactoring zur Vereinheitlichung von Funktionen."));
 				changeLog.add(new ChangeLogEntry("01.04.2021 - Version 2.4.1b", "Die Ausgabe des ***" + cmdPrefix + "userinfo*** Befehls wurde für Benutzer ohne Rollen verändert. Wenn eine PN nicht zugestellt werden kann, erhält das Mod-Team nun eine entsprechende Benachrichtigung, um den User darüber informieren zu können. Die Suche nach Ameisen ist nun tolleranter gegenüber Leerzeichen im Namen."));
 				changeLog.add(new ChangeLogEntry("28.03.2021 - Version 2.4.0b", "Die moderative Funktion ***" + cmdPrefix + "softban*** wurde hinzugefügt. Hierüber können User verwaltet werden, deren Posts direkt wieder gelöscht werden. Dies ist notwendig, um zu vermeiden, dass z.B. Webhooks missbraucht werden."));

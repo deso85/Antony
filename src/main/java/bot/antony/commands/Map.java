@@ -57,15 +57,26 @@ public class Map implements ServerCommand {
 				//Too many species found
 				if(species.size() > 1) {
 					channel.sendMessage("Es wurden " + species.size() + " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
-				} else {
-					//There is 1 species found
+				} else { //There is 1 species found
+					//Set variables for embed message
 					Specie ant = species.get(0);
 					String antName = ant.getName();
 					String antUrlName = antName.replace(" ", ".");
+					String[] antNameParts = antName.split(" ");
+					
+					//Build Image URL
+					StringBuilder imgUrl = new StringBuilder();
+					imgUrl.append("https://antmap.coc.tools/images/");
+					imgUrl.append(antNameParts[0] + "/");
+					for(String namePart: antNameParts) {
+						imgUrl.append(namePart + ".");
+					}
+					imgUrl.append("png");
+										
 					EmbedBuilder eb = new EmbedBuilder()
 							.setColor(Antony.getBaseColor())
 							.setTitle("*" + antName + "*", "https://antmaps.org/?mode=species&species=" + antUrlName)
-							.setImage("https://antmap.coc.tools/images/" + antUrlName + ".png")
+							.setImage(imgUrl.toString())
 							.setFooter("Klicke auf den Titel, um zur interaktiven Karte von antmaps.org zu gelangen.\n\nAntony Version " + Antony.getVersion())
 					;
 					channel.sendMessage(eb.build()).queue();
