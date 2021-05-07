@@ -7,12 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import bot.antony.Antony;
-import bot.antony.guild.user.UserData;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -31,17 +30,10 @@ public class SoftbanReactionListener extends ListenerAdapter {
 			allowedRoles.add("Admin");
 			allowedRoles.add("Soldat");
 			allowedRoles.add("Intermorphe");
-			
-			boolean mayUse = false;
-			for(Role role: member.getRoles()) {
-				if(allowedRoles.contains(role.getName())) {
-					mayUse = true;
-				}
-			}
 
-			if(mayUse) {
+			if(Utils.memberHasRole(member, allowedRoles)) {
 				message.removeReaction(event.getReactionEmote().getName(), event.getUser()).queue();
-				UserData user = new UserData(message.getAuthor().getId(), message.getAuthor().getName());
+				UserDataSB user = new UserDataSB(message.getAuthor().getId(), message.getAuthor().getName());
 				Antony.getSoftbanController().ban(user);
 				guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("🔨 User soft banned by " + event.getUser().getAsMention()).queue();
 				Date date = new Date(System.currentTimeMillis());

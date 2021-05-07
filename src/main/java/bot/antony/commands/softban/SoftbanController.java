@@ -11,13 +11,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
-import bot.antony.guild.user.UserData;
+import bot.antony.events.softban.UserDataSB;
 
 public class SoftbanController {
-	private List<UserData> bannedUser = new ArrayList<UserData>();
+	private List<UserDataSB> bannedUser = new ArrayList<UserDataSB>();
 	private String bannedUserFile = "antony.softbanneduser.json";
 	
-	public boolean ban(UserData user) {
+	public boolean ban(UserDataSB user) {
 		if(!bannedUser.contains(user)) {
 			bannedUser.add(user);
 			persistData();
@@ -26,7 +26,7 @@ public class SoftbanController {
 		return false;
 	}
 	
-	public boolean unban(UserData user) {
+	public boolean unban(UserDataSB user) {
 		if(bannedUser.contains(user)) {
 			bannedUser.remove(user);
 			persistData();
@@ -51,15 +51,15 @@ public class SoftbanController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		File file = new File(bannedUserFile);	//Map of softbanned user
 		if(file.exists() && !file.isDirectory()) { 
-			this.bannedUser = objectMapper.readValue(file, new TypeReference<List<UserData>>(){});
+			this.bannedUser = objectMapper.readValue(file, new TypeReference<List<UserDataSB>>(){});
 		}
 	}
 
-	public List<UserData> getBannedUser() {
+	public List<UserDataSB> getBannedUser() {
 		return bannedUser;
 	}
 
-	public void setBannedUser(List<UserData> bannedUser) {
+	public void setBannedUser(List<UserDataSB> bannedUser) {
 		this.bannedUser = bannedUser;
 	}
 

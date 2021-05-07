@@ -8,16 +8,16 @@ import java.util.List;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
-import bot.antony.guild.user.UserData;
+import bot.antony.events.softban.UserDataSB;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Softban implements ServerCommand {
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		
 		List<String> allowedRoles = new ArrayList<String>();
 		
@@ -26,37 +26,30 @@ public class Softban implements ServerCommand {
 		allowedRoles.add("Soldat");
 		allowedRoles.add("Intermorphe");
 		
-		boolean mayUse = false;
-		for(Role role: m.getRoles()) {
-			if(allowedRoles.contains(role.getName())) {
-				mayUse = true;
-			}
-		}
-		
-		if(mayUse) {
+		if(Utils.memberHasRole(member, allowedRoles)) {
 			String[] userMessage = message.getContentDisplay().split(" ");
 			if (userMessage.length > 1) {
 				switch (userMessage[1].toLowerCase()) {
 				case "add":
 					if (userMessage.length > 3) {
-						UserData user = new UserData(userMessage[2], userMessage[3]);
+						UserDataSB user = new UserDataSB(userMessage[2], userMessage[3]);
 						if(Antony.getSoftbanController().ban(user)) {
-							m.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("🔨 User manually soft banned by " + m.getUser().getAsMention()).queue();
+							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("🔨 User manually soft banned by " + member.getUser().getAsMention()).queue();
 							Date date = new Date(System.currentTimeMillis());
 							SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 							EmbedBuilder eb = new EmbedBuilder()
 									.setColor(Color.red)
 									.setAuthor(userMessage[3] + " | ID: " + userMessage[2])
 									.setDescription(message.getContentDisplay())
-									.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + m.getGuild().getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
+									.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + member.getGuild().getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
 									.setFooter(formatter.format(date));
-							m.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(eb.build()).queue();
+							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(eb.build()).queue();
 						}
 					}
 					break;
 				case "remove":
 					if (userMessage.length > 3) {
-						UserData user = new UserData(userMessage[2], userMessage[3]);
+						UserDataSB user = new UserDataSB(userMessage[2], userMessage[3]);
 						if(Antony.getSoftbanController().unban(user)) {
 							//System.out.println("Unbanned user");
 						}
@@ -66,8 +59,8 @@ public class Softban implements ServerCommand {
 					StringBuilder sb = new StringBuilder();
 					if(Antony.getSoftbanController().getBannedUser().size() > 0) {
 						sb.append("Folgende User sind softbanned:\n");
-						for(UserData user: Antony.getSoftbanController().getBannedUser()) {
-							sb.append("- " + user.getName() + " (" + user.getId() + ")");
+						for(UserDataSB user: Antony.getSoftbanController().getBannedUser()) {
+							sb.append("- " + user.getName() + " (" + user.getId() + ")\n");
 							//System.out.println("- " + user.getName() + " (" + user.getId() + ")");
 						}
 					} else {
@@ -76,7 +69,7 @@ public class Softban implements ServerCommand {
 					channel.sendMessage(sb.toString()).queue();
 					break;
 				case "clear":
-					Antony.getSoftbanController().setBannedUser(new ArrayList<UserData>());
+					Antony.getSoftbanController().setBannedUser(new ArrayList<UserDataSB>());
 					Antony.getSoftbanController().persistData();
 					break;
 				}

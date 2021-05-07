@@ -17,6 +17,7 @@ import bot.antony.commands.notification.NotificationController;
 import bot.antony.commands.softban.SoftbanController;
 import bot.antony.commands.watchlist.WatchlistController;
 import bot.antony.events.CommandListener;
+import bot.antony.events.EggReactionNotification;
 import bot.antony.events.FlagReactionNotification;
 import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
@@ -73,6 +74,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
 					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new SoftbanReactionListener())
+					.addEventListeners(new EggReactionNotification())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
@@ -131,7 +133,7 @@ public class Antony extends ListenerAdapter {
 							
 							//System.out.println(counter + " Thread Running");
 							notificationController.sendPendingNotifications(jda);
-							Thread.sleep(10000);	//10sec
+							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {
 							logger.error("Wasn't able to put Thread asleep.", e);
 						}

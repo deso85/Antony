@@ -30,6 +30,10 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("05.05.2021 - Version 2.5.3b", "Bugfix: Aufgrund konkurrierender Zugriffe auf die Liste der zu benachrichtigenden User wurde der Code angepasst."));
+				changeLog.add(new ChangeLogEntry("01.05.2021 - Version 2.5.2b", "Sollten mehr als 4 Flaggen unter einer Nachricht als Reaction gesetzt werden, wird diese Nachricht automatisch gelöscht."));
+				changeLog.add(new ChangeLogEntry("01.05.2021 - Version 2.5.1b", "Bugfix: Der Abgleich von Usern, die einen Softbann haben, hat nicht richtig funktioniert. Dieser Fehler wurde behoben."));
+				changeLog.add(new ChangeLogEntry("26.04.2021 - Version 2.5.0b", "Admins können nun über eine Reaction User auf dem Server freischalten."));
 				changeLog.add(new ChangeLogEntry("15.04.2021 - Version 2.4.3b", "Bugfix für die ***" + cmdPrefix + "map*** Funktion."));
 				changeLog.add(new ChangeLogEntry("02.04.2021 - Version 2.4.2b", "Kleineres Code-Refactoring zur Vereinheitlichung von Funktionen."));
 				changeLog.add(new ChangeLogEntry("01.04.2021 - Version 2.4.1b", "Die Ausgabe des ***" + cmdPrefix + "userinfo*** Befehls wurde für Benutzer ohne Rollen verändert. Wenn eine PN nicht zugestellt werden kann, erhält das Mod-Team nun eine entsprechende Benachrichtigung, um den User darüber informieren zu können. Die Suche nach Ameisen ist nun tolleranter gegenüber Leerzeichen im Namen."));

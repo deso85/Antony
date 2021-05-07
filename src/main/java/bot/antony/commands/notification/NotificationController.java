@@ -102,6 +102,16 @@ public class NotificationController {
 		if(hasGCNL(guild)) {
 			//if GCNL has CNL
 			if(getGCNL(guild).hasCNL(channel)) {
+				//ArrayList<UserNotification> tempUserNotifications = new ArrayList<UserNotification>(getPendingUserNotifications());
+				UserNotification userNotification = new UserNotification(user, guild);
+				if(getPendingUserNotifications().contains(userNotification)) {
+					for(UserNotification un : getPendingUserNotifications()) {
+						if(un.equals(userNotification)) {
+							un.getChannels().remove(channel);
+						}
+					}
+				}
+				
 				//remove user if possible
 				return getGCNL(guild).getCNL(channel).removeUser(user);
 			}
@@ -327,7 +337,8 @@ public class NotificationController {
 					ArrayList<ChannelData> channels = notification.getChannels();
 					Guild guild = jda.getGuildById(guildData.getId());
 					
-					if(guild.getMemberById(userData.getId()) != null) {
+					//If user is a member of the guild
+					if(guild.getMemberById(userData.getId()) != null && channels.size() > 0) {
 					
 						User user = guild.getMemberById(userData.getId()).getUser();
 						StringBuilder logMessage = new StringBuilder();
@@ -457,6 +468,10 @@ public class NotificationController {
 	
 	public ArrayList<UserNotification> getPendingUserNotifications() {
 		return pendingUserNotifications;
+	}
+
+	public void setPendingUserNotifications(ArrayList<UserNotification> pendingUserNotifications) {
+		this.pendingUserNotifications = pendingUserNotifications;
 	}
 
 	public String getNotificationListConfigFileName() {

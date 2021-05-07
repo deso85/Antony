@@ -3,11 +3,14 @@ package bot.antony.utils;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.function.Consumer;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -60,6 +63,14 @@ public class Utils {
 		return ant.toString();
 	}
 	
+	public static boolean memberHasRole(Member member, List<String> roles) {
+		for(Role role: member.getRoles()) {
+			if(roles.contains(role.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public static Consumer<? super Throwable> ERROR_RESPONSE_EXCEPTION_CONSUMER = exception -> {
 		if (exception instanceof ErrorResponseException) {

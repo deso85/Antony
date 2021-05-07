@@ -5,9 +5,9 @@ import java.util.List;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Mute implements ServerCommand {
@@ -15,7 +15,7 @@ public class Mute implements ServerCommand {
 	private TextChannel channel;
 	
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		setChannel(channel);
 		List<String> allowedRoles = new ArrayList<String>();
 		
@@ -24,14 +24,7 @@ public class Mute implements ServerCommand {
 		allowedRoles.add("Soldat");
 		allowedRoles.add("Intermorphe");
 		
-		boolean mayUse = false;
-		for(Role role: m.getRoles()) {
-			if(allowedRoles.contains(role.getName())) {
-				mayUse = true;
-			}
-		}
-		
-		if(mayUse) {
+		if(Utils.memberHasRole(member, allowedRoles)) {
 			
 		}
 		
