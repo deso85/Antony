@@ -33,6 +33,5 @@ org.eclipse.*
 # Antony specific ignores
 /target/
 antony.properties
-antony.notifications.config.json
-antony.notifications.pending.json
 antony.db
+antony.*.json

@@ -6,6 +6,7 @@ import java.util.List;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,16 +15,21 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class ChannelController implements ServerCommand {
+public class Channel implements ServerCommand {
 
 	private TextChannel channel;
 
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
-
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		setChannel(channel);
 
-		if(m.hasPermission(channel, Permission.MANAGE_CHANNEL)) {
+		List<String> allowedRoles = new ArrayList<String>();
+		
+		//Roles which may use the command
+		allowedRoles.add("Admin");
+		allowedRoles.add("Soldat");
+		
+		if(Utils.memberHasRole(member, allowedRoles)) {
 			String[] userMessage = message.getContentDisplay().split(" ");
 			Guild guild = message.getGuild();
 			

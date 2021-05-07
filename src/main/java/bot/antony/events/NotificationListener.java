@@ -32,21 +32,26 @@ public class NotificationListener extends ListenerAdapter {
 				//check if there is a notification list for this channel
 				if(nc.getGCNL(guildData).hasCNL(channelData)) {
 					ArrayList<UserData> usrlist = nc.getGCNL(guildData).getCNL(channelData).getUserList();
-					
+					//for each user who wants to receive a notification...
 					for(UserData user: usrlist) {
+						ArrayList<UserNotification> tempUserNotifications = new ArrayList<UserNotification>(nc.getPendingUserNotifications());
 						UserNotification userNotification = new UserNotification(user, guildData);
 						userNotification.addChannel(channelData);
-						if(!nc.getPendingUserNotifications().contains(userNotification)) {
-							nc.getPendingUserNotifications().add(userNotification);
-						} else {
+						//if there is no notification it gets added
+						if(!tempUserNotifications.contains(userNotification)) {
+							tempUserNotifications.add(userNotification);
+							//nc.getPendingUserNotifications().add(userNotification);
+						} else { //if there already is a notification
 							for(UserNotification un: nc.getPendingUserNotifications()) {
+								//if this is the user notification we have to add the channel
 								if(un.equals(userNotification)) {
-									nc.getPendingUserNotifications().remove(un);
+									tempUserNotifications.remove(un);
 									un.addChannel(channelData);
-									nc.getPendingUserNotifications().add(un);
+									tempUserNotifications.add(un);
 								}
 							}
 						}
+						nc.setPendingUserNotifications(tempUserNotifications);
 					}
 					if(!usrlist.isEmpty()) {
 						nc.persistData();

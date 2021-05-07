@@ -4,6 +4,7 @@ import bot.antony.Antony;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.user.UserData;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;
@@ -30,7 +31,7 @@ public class GuildMemberLeave extends ListenerAdapter {
 
 	    StringBuilder logMessage = new StringBuilder();
 	    logMessage.append("User [" + userData.toString() + "] ");
-	    logMessage.append("quitted Discord server " + guildData.toString() + "]. ");
+	    logMessage.append("quitted Discord server [" + guildData.toString() + "]. ");
 	    
 	    //Remove user from notification lists if
 	    nc.removeUserFromAllListsOfGuild(guildData, userData);
@@ -39,5 +40,8 @@ public class GuildMemberLeave extends ListenerAdapter {
 	    logMessage.append("Removed user from all notification lists.");
 	    Antony.getLogger().info(logMessage.toString());
 	    
+	    //update usercount
+	    Antony.setUsercount(Antony.getUsercount()-1);
+	    event.getJDA().getPresence().setActivity(Activity.listening(Antony.getCmdPrefix() + "antony | " + Antony.getUsercount() + " User | " + event.getJDA().getGuilds().size() + " Server"));
 	}
 }

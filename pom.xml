@@ -4,12 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>2.0.0-b</version>
+	<version>2.5.3b</version>
 
 	<properties>
 		<resteasy.version>3.0.5.Final</resteasy.version>
 		<maven.compiler.release>8</maven.compiler.release>
 		<jackson.version>2.11.3</jackson.version>
+		<hibernate.version>5.4.29.Final</hibernate.version>
 	</properties>
 
 	<build>
@@ -58,7 +59,7 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>4.2.0_225</version>
+			<version>4.2.0_247</version>
 			<exclusions>
 				<exclusion>
 					<groupId>club.minnced</groupId>
@@ -131,6 +132,56 @@
 		    <groupId>org.xerial</groupId>
 		    <artifactId>sqlite-jdbc</artifactId>
 		    <version>3.34.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.gwenn</groupId>
+		    <artifactId>sqlite-dialect</artifactId>
+		    <version>0.1.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-entitymanager</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate.javax.persistence</groupId>
+		    <artifactId>hibernate-jpa-2.1-api</artifactId>
+		    <version>1.0.2.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.spec.javax.transaction</groupId>
+		    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+		    <version>1.1.1.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-core</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>7.0.1.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.enterprise</groupId>
+		    <artifactId>cdi-api</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.weld.se</groupId>
+		    <artifactId>weld-se-core</artifactId>
+		    <version>2.3.1.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.weld</groupId>
+		    <artifactId>weld-core</artifactId>
+		    <version>2.3.1.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss</groupId>
+		    <artifactId>jandex</artifactId>
+		    <version>1.2.2.Final</version>
 		</dependency>
 	</dependencies>
 </project>

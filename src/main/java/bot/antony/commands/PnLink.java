@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class PostPnLink implements ServerCommand {
+public class PnLink implements ServerCommand {
 
 	private TextChannel channel;
 

@@ -123,21 +123,6 @@ public class UserInfo implements ServerCommand {
 			ebHeadline.append(" - " + getMember().getNickname());
 		}
 		
-		//Build Roles String
-		StringBuilder sbRoles = new StringBuilder();
-		if(getMember().getRoles().size() > 0) {
-			Iterator<Role> roleIterator = getMember().getRoles().iterator();
-			while(roleIterator.hasNext()) {
-				sbRoles.append(roleIterator.next().getAsMention());
-				if(roleIterator.hasNext()) {
-					sbRoles.append(", ");
-				}
-			}
-			
-		} else {
-			sbRoles.append("-");
-		}
-		
 		//Build status string
 		StringBuilder sbStatus = new StringBuilder();
 		if(!getMember().getActivities().isEmpty()) {
@@ -168,8 +153,21 @@ public class UserInfo implements ServerCommand {
 						+ ChronoUnit.DAYS.between(getMember().getTimeCreated(), OffsetDateTime.now()) + " Tagen)", true)
 				.addField("Server beigetreten", getMember().getTimeJoined().format(formatter) + "\n(Vor "
 						+ ChronoUnit.DAYS.between(getMember().getTimeJoined(), OffsetDateTime.now()) + " Tagen)", true)*/
-				.addField("Rollen", sbRoles.toString(), false)
 				.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());
+		
+		//Build Roles String
+		if(getMember().getRoles().size() > 0) {
+			StringBuilder sbRoles = new StringBuilder();
+			Iterator<Role> roleIterator = getMember().getRoles().iterator();
+			while(roleIterator.hasNext()) {
+				sbRoles.append(roleIterator.next().getAsMention());
+				if(roleIterator.hasNext()) {
+					sbRoles.append(", ");
+				}
+			}
+			eb.addField("Rollen", sbRoles.toString(), false);
+		}
+		
 		
 		return eb;
 

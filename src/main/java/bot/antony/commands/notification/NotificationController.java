@@ -2,6 +2,9 @@ package bot.antony.commands.notification;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +18,7 @@ import bot.antony.Antony;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.channel.ChannelData;
 import bot.antony.guild.user.UserData;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -28,6 +32,8 @@ public class NotificationController {
 	private ArrayList<UserNotification> pendingUserNotifications = new ArrayList<UserNotification>();
 	private String notificationListConfigFileName;
 	private String pendingNotificationsFileName;
+	LocalDateTime nextUpdateDateTime;
+	DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 	private boolean waiting = false;
 
 	// --------------------------------------------------
@@ -36,11 +42,17 @@ public class NotificationController {
 	public NotificationController() {
 		setNotificationListConfigFileName("antony.notifications.config.json");
 		setPendingNotificationsFileName("antony.notifications.pending.json");
+		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
+		
+		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
 	}
 	
 	public NotificationController(String configFileName, String pendingFileName) {
 		setNotificationListConfigFileName(configFileName);
 		setPendingNotificationsFileName(pendingFileName);
+		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
+		
+		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
 	}
 	
 	
@@ -90,6 +102,16 @@ public class NotificationController {
 		if(hasGCNL(guild)) {
 			//if GCNL has CNL
 			if(getGCNL(guild).hasCNL(channel)) {
+				//ArrayList<UserNotification> tempUserNotifications = new ArrayList<UserNotification>(getPendingUserNotifications());
+				UserNotification userNotification = new UserNotification(user, guild);
+				if(getPendingUserNotifications().contains(userNotification)) {
+					for(UserNotification un : getPendingUserNotifications()) {
+						if(un.equals(userNotification)) {
+							un.getChannels().remove(channel);
+						}
+					}
+				}
+				
 				//remove user if possible
 				return getGCNL(guild).getCNL(channel).removeUser(user);
 			}
@@ -302,62 +324,66 @@ public class NotificationController {
 	 * @param jda as JDA
 	 */
 	public void sendPendingNotifications(JDA jda) {
-		if(getPendingUserNotifications().size() > 0) {
-			for(UserNotification notification: getPendingUserNotifications()) {
-				GuildData guildData = notification.getGuild();
-				UserData userData = notification.getUser();
-				ArrayList<ChannelData> channels = notification.getChannels();
-				Guild guild = jda.getGuildById(guildData.getId());
-				
-				if(guild.getMemberById(userData.getId()) != null) {
-				
-					User user = guild.getMemberById(userData.getId()).getUser();
-					StringBuilder logMessage = new StringBuilder();
-					logMessage.append("On server [" + guildData.toString() + "] ");
-					logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
-					logMessage.append("Notify about channels: ");
-					int counter = 1;
-					for(ChannelData channel: channels) {
-						logMessage.append("[" + channel.toString() + "]");
-						if(counter < channels.size()) {
-							logMessage.append(", ");
-							counter++;
+		LocalDateTime now = LocalDateTime.now();
+
+		//Is it time to send notifications?
+		if(getNextUpdateDate().isBefore(now)) {
+			setNextUpdateDate(now.plusMinutes(Antony.getNotificationPendingTime()));
+			
+			if(getPendingUserNotifications().size() > 0) {
+				for(UserNotification notification: getPendingUserNotifications()) {
+					GuildData guildData = notification.getGuild();
+					UserData userData = notification.getUser();
+					ArrayList<ChannelData> channels = notification.getChannels();
+					Guild guild = jda.getGuildById(guildData.getId());
+					
+					//If user is a member of the guild
+					if(guild.getMemberById(userData.getId()) != null && channels.size() > 0) {
+					
+						User user = guild.getMemberById(userData.getId()).getUser();
+						StringBuilder logMessage = new StringBuilder();
+						logMessage.append("On server [" + guildData.toString() + "] ");
+						logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
+						logMessage.append("Notify about channels: ");
+						int counter = 1;
+						for(ChannelData channel: channels) {
+							logMessage.append("[" + channel.toString() + "]");
+							if(counter < channels.size()) {
+								logMessage.append(", ");
+								counter++;
+							}
 						}
-					}
-					Antony.getLogger().info(logMessage.toString());
-					
-					
-					user.openPrivateChannel().queue((privChannel) ->
-			        {
-			        	EmbedBuilder eb = new EmbedBuilder().setTitle("Benachrichtigung über Kanal-Updates")
+						Antony.getLogger().info(logMessage.toString());
+						
+						EmbedBuilder eb = new EmbedBuilder().setTitle("Benachrichtigung über Kanal-Updates")
 								.setColor(Antony.getBaseColor())
 								.setThumbnail(guild.getIconUrl())
 								.setDescription("Auf dem Server [" + guildData.getName() + "](https://discord.com/channels/" + guildData.getId() + ") "
 										+ "gibt es Neuigkeiten in den von dir abonnierten Kanälen. Schau es dir gleich mal an!")
 								.setFooter("Antony | Version " + Antony.getVersion());
-			        	
-			        	ArrayList<String> textList = new ArrayList<String>();
+						
+						ArrayList<String> textList = new ArrayList<String>();
 						StringBuilder fieldText = new StringBuilder();
 						String textPart;
 						int msgCounter = 1;
-			        	
-			        	for(ChannelData channel: channels) {
-			        		textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + ")";
-			        		if((fieldText.length() + textPart.length() + 2) > 1024) {
+						
+						for(ChannelData channel: channels) {
+							textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + ")";
+							if((fieldText.length() + textPart.length() + 2) > 1024) {
 								textList.add(fieldText.toString());
 								fieldText = new StringBuilder();
 							}
-			        		
-			        		fieldText.append(textPart);
+							
+							fieldText.append(textPart);
 							if(msgCounter < channels.size()) {
 								fieldText.append(", ");
 								msgCounter++;
 							} else {
 								textList.add(fieldText.toString());
 							}
-			        	}
-			        	
-			        	msgCounter = 1;
+						}
+						
+						msgCounter = 1;
 						for(String text: textList) {
 							if(msgCounter == textList.size()) {
 								text += "\n_";
@@ -365,14 +391,17 @@ public class NotificationController {
 							eb.addField("", text, false);
 						}
 						
-			        	privChannel.sendMessage(eb.build()).queue();
-			        });
+						Utils.sendPM(user, eb);
+	
+					}
 				}
+				getPendingUserNotifications().clear();
+				persistData();
 			}
-			getPendingUserNotifications().clear();
-			persistData();
 		}
 	}
+	
+
 	
 	/**
 	 * Persists data in JSON format
@@ -441,6 +470,10 @@ public class NotificationController {
 		return pendingUserNotifications;
 	}
 
+	public void setPendingUserNotifications(ArrayList<UserNotification> pendingUserNotifications) {
+		this.pendingUserNotifications = pendingUserNotifications;
+	}
+
 	public String getNotificationListConfigFileName() {
 		return notificationListConfigFileName;
 	}
@@ -457,6 +490,14 @@ public class NotificationController {
 		this.pendingNotificationsFileName = pendingNotificationsFileName;
 	}
 	
+	public LocalDateTime getNextUpdateDate() {
+		return nextUpdateDateTime;
+	}
+
+	public void setNextUpdateDate(LocalDateTime nextUpdateDateTime) {
+		this.nextUpdateDateTime = nextUpdateDateTime;
+	}
+
 	public boolean isWaiting() {
 		return waiting;
 	}

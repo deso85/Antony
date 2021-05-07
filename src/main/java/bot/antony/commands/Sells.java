@@ -2,6 +2,7 @@ package bot.antony.commands;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,14 +30,15 @@ import bot.antony.commands.antcheck.client.dto.Shop;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.commands.antcheck.client.dto.Variant;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class CallAntcheck implements ServerCommand {
+public class Sells implements ServerCommand {
 
-	static Logger logger = LoggerFactory.getLogger(CallAntcheck.class);
+	static Logger logger = LoggerFactory.getLogger(Sells.class);
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
@@ -51,14 +53,14 @@ public class CallAntcheck implements ServerCommand {
 		String[] userMessage = message.getContentDisplay().split(" ");
 
 		if (userMessage.length > 1) {
-			// get ant names to work with
-			String[] antNames = getAntNames(userMessage);
+			// get ant species name to work with
+			String antSpeciesName = Utils.getAntSpeciesName(Arrays.copyOfRange(userMessage, 1, userMessage.length));
 
-			List<Specie> species = getSpecies(antCheckClient, antNames[1]);
+			List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
 
 			if (species.isEmpty()) {
 				channel.sendMessage(
-						"Es konnte keine Ameisenart mit \"" + antNames[0] + "\" im Namen gefunden werden.\r\n"
+						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\r\n"
 								+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
 						.queue();
 			} else {
@@ -78,7 +80,7 @@ public class CallAntcheck implements ServerCommand {
 						channel.sendMessage(outputMessage).queue();
 					} else {
 						channel.sendMessage("Es wurden " + species.size() + " Arten mit dem Suchbegriff \""
-								+ antNames[0] + "\" gefunden.\nBitte schränke die Suche weiter ein.").queue();
+								+ antSpeciesName + "\" gefunden.\nBitte schränke die Suche weiter ein.").queue();
 					}
 
 				} else {
@@ -225,29 +227,6 @@ public class CallAntcheck implements ServerCommand {
 		}
 		sb.append("\nBitte schränke die Suche weiter ein.");
 		channel.sendMessage(sb.toString()).queue();
-	}
-
-	/**
-	 * Function to return formatted ant names
-	 * 
-	 * @param args the arguments which came with the message
-	 * @return String[] which consists of 2 strings. The first one with ant species
-	 *         name divided by spaces. The second one with ant species name divided
-	 *         by underscores.
-	 */
-	private String[] getAntNames(String[] args) {
-
-		String clearAntName = "";
-		String urlAntName = "";
-
-		for (int i = 1; i < args.length; i++) {
-			// args[i] = args[i].replace("-", " ");
-			clearAntName += (i > 1) ? " " + args[i].replace("-", " ") : args[i].replace("-", " ");
-			urlAntName += (i > 1) ? "_" + args[i].replace("-", "_") : args[i].replace("-", "_");
-		}
-		String[] antNames = { clearAntName, urlAntName };
-
-		return antNames;
 	}
 
 }
