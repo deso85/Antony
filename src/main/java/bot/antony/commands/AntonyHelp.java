@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("22.05.2021 - Version 2.5.4", "***" + cmdPrefix + "userinfo*** kann nun auch mit der ID des Benutzers verwendet werden."));
 				changeLog.add(new ChangeLogEntry("05.05.2021 - Version 2.5.3b", "Bugfix: Aufgrund konkurrierender Zugriffe auf die Liste der zu benachrichtigenden User wurde der Code angepasst."));
 				changeLog.add(new ChangeLogEntry("01.05.2021 - Version 2.5.2b", "Sollten mehr als 4 Flaggen unter einer Nachricht als Reaction gesetzt werden, wird diese Nachricht automatisch gelöscht."));
 				changeLog.add(new ChangeLogEntry("01.05.2021 - Version 2.5.1b", "Bugfix: Der Abgleich von Usern, die einen Softbann haben, hat nicht richtig funktioniert. Dieser Fehler wurde behoben."));

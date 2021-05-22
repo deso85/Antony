@@ -7,6 +7,7 @@ import bot.antony.commands.Sells;
 import bot.antony.commands.Channel;
 import bot.antony.commands.Notify;
 import bot.antony.commands.Emergency;
+import bot.antony.commands.EmoteAuswertung;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Map;
 import bot.antony.commands.PnLink;

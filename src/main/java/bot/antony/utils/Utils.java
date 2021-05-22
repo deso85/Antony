@@ -72,6 +72,18 @@ public class Utils {
 		return false;
 	}
 	
+	public static boolean isId(String member) {
+		if (member == null) {
+			return false;
+		}
+		try {
+			long l = Long.parseLong(member);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+	
 	public static Consumer<? super Throwable> ERROR_RESPONSE_EXCEPTION_CONSUMER = exception -> {
 		if (exception instanceof ErrorResponseException) {
 			int errorCode = ((ErrorResponseException) exception).getErrorCode();

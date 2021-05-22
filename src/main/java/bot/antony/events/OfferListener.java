@@ -20,7 +20,7 @@ public class OfferListener extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent event) {
 		String message = event.getMessage().getContentDisplay();
 		User user = event.getAuthor();
-		String userString = user.getAsTag() + " (ID: " + user.getId() + ")";
+		String userString = user.getAsMention() + " (ID: " + user.getId() + ")";
 				
 		//check which channel ...
 		if(event.isFromType(ChannelType.TEXT)) {
@@ -45,7 +45,9 @@ public class OfferListener extends ListenerAdapter {
 				
 				//TODO: may the user add a new offer?
 				
-				if(guild.getTextChannelById(offerLogChannelId).hasLatestMessage()) {
+				guild.getTextChannelById(offerLogChannelId).sendMessage(userString).queue();
+				
+				/*if(guild.getTextChannelById(offerLogChannelId).hasLatestMessage()) {
 					Message latestMessage = guild.getTextChannelById(offerLogChannelId).retrieveMessageById(guild.getTextChannelById(offerLogChannelId).getLatestMessageId()).complete();
 					//Shall the last post be updated / replaced?
 					if(latestMessage.getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(dtformatter).equals(sdformatter.format(now))) {
@@ -58,7 +60,7 @@ public class OfferListener extends ListenerAdapter {
 					}
 				} else {
 					guild.getTextChannelById(offerLogChannelId).sendMessage(sdformatter.format(now) + ": " + userString).queue();
-				}
+				}*/
 			}
 		}
 	}

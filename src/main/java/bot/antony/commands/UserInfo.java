@@ -10,8 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -23,10 +25,12 @@ public class UserInfo implements ServerCommand {
 	private Member member;
 	private String memberOnlineStatus;
 	private String fullMemberName;
+	private Guild guild;
 	
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
+		guild = channel.getGuild();
 		setMemberList(new ArrayList<>());
 		String[] userMessage = message.getContentDisplay().split(" ");
 		boolean outputlight = false;
@@ -72,7 +76,16 @@ public class UserInfo implements ServerCommand {
 				if(messageParts > 1) {
 					// full member name regarding to provided strings has to be a substring. cut off command and the last space which has been added inside the for loop
 					setFullMemberName(usrMessage.substring(userMessage[0].length() + 1, usrMessage.length() - 1));
-					setMember(findUserIn(channel, getFullMemberName()));
+					
+					if(Utils.isId(fullMemberName)) {
+						setMember(guild.getMemberById(Long.parseLong(fullMemberName)));
+						//In case the users name is a number
+						if (getMember() == null) {
+							setMember(findUserIn(channel, getFullMemberName()));
+						}
+					} else {
+						setMember(findUserIn(channel, getFullMemberName()));
+					}
 				}
 			}
 		}
@@ -107,7 +120,14 @@ public class UserInfo implements ServerCommand {
 			
 
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen " + getFullMemberName() + " finden.").queue();
+			//User was not found. Send message to channel
+			StringBuilder sb = new StringBuilder();
+			sb.append("Ich konnte niemanden mit dem Namen");
+			if(Utils.isId(fullMemberName)) {
+				sb.append("/der ID");
+			}
+			sb.append(" " + getFullMemberName() + " finden.");
+			channel.sendMessage(sb.toString()).queue();
 		}
 
 	}
