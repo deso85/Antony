@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("13.06.2021 - Version 2.6.0", "Sie Funktion ***" + cmdPrefix + "serverstats***, mit der Serverstatistiken ausgegeben werden können, wurde implementiert."));
 				changeLog.add(new ChangeLogEntry("22.05.2021 - Version 2.5.4", "***" + cmdPrefix + "userinfo*** kann nun auch mit der ID des Benutzers verwendet werden."));
 				changeLog.add(new ChangeLogEntry("05.05.2021 - Version 2.5.3b", "Bugfix: Aufgrund konkurrierender Zugriffe auf die Liste der zu benachrichtigenden User wurde der Code angepasst."));
 				changeLog.add(new ChangeLogEntry("01.05.2021 - Version 2.5.2b", "Sollten mehr als 4 Flaggen unter einer Nachricht als Reaction gesetzt werden, wird diese Nachricht automatisch gelöscht."));
@@ -109,6 +110,7 @@ public class AntonyHelp implements ServerCommand {
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");
 		BotCommand pnlink = new BotCommand("pnlink", "Gibt einen formatierten Text für einen Kanal aus, der z.B. in PNs genutzt werden kann, um Kanäle zu verlinken, was über # nicht möglich ist. (Das letzte Leerzeichen der Ausgabe muss entfernt werden)", "#kanal1");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.info zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
+		BotCommand serverstats = new BotCommand("serverstats", "Zeigt Serverstatistiken.");
 		BotCommand shopping = new BotCommand("shopping", "Zeigt eine Liste mit Kaufempfehlungen für die Ameisenhaltung.");
 		BotCommand showAvatar = new BotCommand("showavatar", "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.", "Antony");
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
@@ -120,6 +122,7 @@ public class AntonyHelp implements ServerCommand {
 		botCommands.add(notify);
 		botCommands.add(pnlink);
 		botCommands.add(sells);
+		botCommands.add(serverstats);
 		botCommands.add(shopping);
 		botCommands.add(showAvatar);
 		botCommands.add(userinfo);

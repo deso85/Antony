@@ -3,14 +3,14 @@ package bot.antony;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
-import bot.antony.commands.Sells;
 import bot.antony.commands.Channel;
-import bot.antony.commands.Notify;
 import bot.antony.commands.Emergency;
-import bot.antony.commands.EmoteAuswertung;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Map;
+import bot.antony.commands.Notify;
 import bot.antony.commands.PnLink;
+import bot.antony.commands.Sells;
+import bot.antony.commands.Serverstats;
 import bot.antony.commands.Shopping;
 import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.Shutdown;
@@ -38,6 +38,7 @@ public class CommandManager {
 		this.commands.put("notify", new Notify());
 		this.commands.put("pnlink", new PnLink());
 		this.commands.put("sells", new Sells());
+		this.commands.put("serverstats", new Serverstats());
 		this.commands.put("shopping", new Shopping());
 		this.commands.put("showavatar", new ShowAvatar());
 		this.commands.put("userinfo", new UserInfo());
