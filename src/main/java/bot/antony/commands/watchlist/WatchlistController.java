@@ -14,14 +14,17 @@ import bot.antony.Antony;
 
 public class WatchlistController {
 	List<String> watchlist = new ArrayList<String>();
-	String filename;
+	List<String> whitelist = new ArrayList<String>();
+	String watchlistFilename;
+	String whitelistFilename;
 	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
 	public WatchlistController() {
 		super();
-		filename = "antony.watchlist.json";
+		watchlistFilename = "antony.watchlist.json";
+		whitelistFilename = "antony.watchlist.whitelist.json";
 	}
 	
 	// --------------------------------------------------
@@ -34,7 +37,8 @@ public class WatchlistController {
 	public boolean persistData() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			objectMapper.writeValue(new File(filename), watchlist);
+			objectMapper.writeValue(new File(watchlistFilename), watchlist);
+			objectMapper.writeValue(new File(whitelistFilename), whitelist);
 			return true;
 			
 		} catch (IOException e) {
@@ -51,48 +55,80 @@ public class WatchlistController {
 	 */
 	public void initData() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(filename);
+		File file = new File(watchlistFilename);
 		if(file.exists() && !file.isDirectory()) { 
 			this.watchlist = objectMapper.readValue(file, new TypeReference<List<String>>(){});
 		}
+		file = new File(whitelistFilename);
+		if(file.exists() && !file.isDirectory()) { 
+			this.whitelist = objectMapper.readValue(file, new TypeReference<List<String>>(){});
+		}
 	}
 	
-	@Override
-	public String toString() {
+	public String list() {
+		return list("watchlist");
+	}
+	
+	public String list(String listname) {
 		StringBuilder sb = new StringBuilder();
-		
-		if(watchlist.size() > 0) {
+		List<String> list = watchlist;
+		if(listname.toLowerCase().equals("whitelist")) {
+			list = whitelist;
+		}
+			
+		if(list.size() > 0) {
 			int counter = 1;
-			for(String word: watchlist) {
+			for(String word: list) {
 				sb.append(word);
-				if(counter < watchlist.size()) {
+				if(counter < list.size()) {
 					sb.append(", ");
 				}
 				counter++;
 			}
 		}else {
-			sb.append("Watchlist is empty.");
+			sb.append("List is empty.");
 		}
 		
 		return sb.toString();
 	}
 	
-	public void addString(String string) {
+	public void addWatchlistEntry(String string) {
 		if(!watchlist.contains(string)) {
 			watchlist.add(string);
 			persistData();
 		}
+		watchlist.sort(String.CASE_INSENSITIVE_ORDER);
 	}
 	
-	public void removeString(String string) {
+	public void addWhitelistEntry(String string) {
+		if(!whitelist.contains(string)) {
+			whitelist.add(string);
+			persistData();
+		}
+		whitelist.sort(String.CASE_INSENSITIVE_ORDER);
+	}
+	
+	public void removeWatchlistEntry(String string) {
 		if(watchlist.contains(string)) {
 			watchlist.remove(string);
 			persistData();
 		}
 	}
 	
-	public void clearList() {
+	public void removeWhitelistEntry(String string) {
+		if(whitelist.contains(string)) {
+			whitelist.remove(string);
+			persistData();
+		}
+	}
+	
+	public void clearWatchlist() {
 		watchlist = new ArrayList<String>();
+		persistData();
+	}
+	
+	public void clearWhitelist() {
+		whitelist = new ArrayList<String>();
 		persistData();
 	}
 
@@ -102,5 +138,9 @@ public class WatchlistController {
 	// --------------------------------------------------
 	public List<String> getWatchlist() {
 		return watchlist;
+	}
+	
+	public List<String> getWhitelist() {
+		return whitelist;
 	}
 }

@@ -30,6 +30,8 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("12.07.2021 - Version 2.6.2", "Die Watchlist wird nun gegen eine Whitelist geprüft, um Meldungen zu reduzieren, die nicht relevant sind."));
+				changeLog.add(new ChangeLogEntry("07.07.2021 - Version 2.6.1", "Weitere Willkommens-Nachricht hinzugefügt."));
 				changeLog.add(new ChangeLogEntry("13.06.2021 - Version 2.6.0", "Sie Funktion ***" + cmdPrefix + "serverstats***, mit der Serverstatistiken ausgegeben werden können, wurde implementiert."));
 				changeLog.add(new ChangeLogEntry("22.05.2021 - Version 2.5.4", "***" + cmdPrefix + "userinfo*** kann nun auch mit der ID des Benutzers verwendet werden."));
 				changeLog.add(new ChangeLogEntry("05.05.2021 - Version 2.5.3b", "Bugfix: Aufgrund konkurrierender Zugriffe auf die Liste der zu benachrichtigenden User wurde der Code angepasst."));

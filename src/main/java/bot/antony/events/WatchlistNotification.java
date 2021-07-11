@@ -26,6 +26,8 @@ public class WatchlistNotification extends ListenerAdapter {
 		// check which channel ...
 		if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().isBot()) {
 			List<String> watchlist = Antony.getWatchlistController().getWatchlist();
+			List<String> whitelist = Antony.getWatchlistController().getWhitelist();
+			String modifiedMessage = message;
 			final Guild guild = event.getGuild();
 			final TextChannel channel = event.getTextChannel();
 			GuildData guildData = new GuildData(guild);
@@ -45,8 +47,11 @@ public class WatchlistNotification extends ListenerAdapter {
 			}
 			*/
 			
+			for(String string: whitelist) {
+				modifiedMessage = modifiedMessage.replaceAll("(?i)" + Pattern.quote(string), "");
+			}
 			for(String string: watchlist) {
-				if(message.toLowerCase().contains(string)) {
+				if(modifiedMessage.toLowerCase().contains(string)) {
 					StringBuilder sb = new StringBuilder();
 					sb.append(":exclamation:Auffälliges Wort erkannt: **" + string + "**");
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZoneId.systemDefault());

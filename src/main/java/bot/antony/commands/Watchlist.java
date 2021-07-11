@@ -35,30 +35,71 @@ public class Watchlist implements ServerCommand {
 	
 				case "add":
 					if(userMessage.length > 2) {
-						Antony.getWatchlistController().addString(userMessage[2].toLowerCase());
+						Antony.getWatchlistController().addWatchlistEntry(userMessage[2].toLowerCase());
+					} else {
+						printHelp();
 					}
 					break;
 					
 				case "remove":
 					if(userMessage.length > 2) {
-						Antony.getWatchlistController().removeString(userMessage[2].toLowerCase());
+						Antony.getWatchlistController().removeWatchlistEntry(userMessage[2].toLowerCase());
+					} else {
+						printHelp();
 					}
 					break;
 					
 				case "list":
-					List<String> wlist = Antony.getWatchlistController().getWatchlist();
+					List<String> watchlist = Antony.getWatchlistController().getWatchlist();
 					StringBuilder sb = new StringBuilder();
-					if(wlist.size() > 0) {
+					if(watchlist.size() > 0) {
 						sb.append("Bei folgenden wörtern wird gewarnt:\n");
 					}
-					sb.append(Antony.getWatchlistController().toString());
-					channel.sendMessage(sb.toString()).queue();
+					sb.append(Antony.getWatchlistController().list());
+					getChannel().sendMessage(sb.toString()).queue();
 					break;
 					
 				case "clear":
-					Antony.getWatchlistController().clearList();
+					Antony.getWatchlistController().clearWatchlist();
+					getChannel().sendMessage("Watchlist geleert.").queue();
 					break;
 					
+				case "whitelist":
+					if (userMessage.length > 2) {
+						switch (userMessage[2].toLowerCase()) {
+							case "add":
+								if(userMessage.length > 3) {
+									Antony.getWatchlistController().addWhitelistEntry(userMessage[3].toLowerCase());
+								} else {
+									printWhitelistHelp();
+								}
+								break;
+							case "remove":
+								if(userMessage.length > 3) {
+									Antony.getWatchlistController().removeWhitelistEntry(userMessage[3].toLowerCase());
+								} else {
+									printHelp();
+								}
+								break;
+							case "list":
+								List<String> whitelist = Antony.getWatchlistController().getWhitelist();
+								StringBuilder sbuilder = new StringBuilder();
+								if(whitelist.size() > 0) {
+									sbuilder.append("Bei folgenden wörtern wird nicht gewarnt:\n");
+								}
+								sbuilder.append(Antony.getWatchlistController().list("whitelist"));
+								getChannel().sendMessage(sbuilder.toString()).queue();
+								break;
+							case "clear":
+								Antony.getWatchlistController().clearWhitelist();
+								getChannel().sendMessage("Whitelist geleert.").queue();
+								break;
+							default:
+								printWhitelistHelp();
+								break;
+						}
+					}
+					break;
 				default:
 					printHelp();
 					break;
@@ -71,7 +112,11 @@ public class Watchlist implements ServerCommand {
 	}
 	
 	private void printHelp() {
-		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "watchlist (add|remove|list|clear) [TextString]").queue();
+		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "watchlist (add|remove|list|clear|whitelist) [TextString]").queue();
+	}
+	
+	private void printWhitelistHelp() {
+		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "watchlist whitelist (add|remove|list|clear) [TextString]").queue();
 	}
 	
 	// --------------------------------------------------
