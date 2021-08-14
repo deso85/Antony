@@ -45,7 +45,10 @@ public class SpyReactionNotification extends ListenerAdapter {
 				StringBuilder sb = new StringBuilder();
 				sb.append("ID: " + message.getAuthor().getId() + "\n");
 				sb.append("Tag: " + message.getAuthor().getAsTag() + "\n");
-				sb.append("Nick: " + message.getAuthor().getName());
+				sb.append("Name: " + message.getAuthor().getName());
+				if(message.getMember().getNickname() != null) {
+					sb.append("\nNickname: " + message.getMember().getNickname());
+				}
 				guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(sb.toString()).queue();
 			}
 		}

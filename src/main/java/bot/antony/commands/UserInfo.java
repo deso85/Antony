@@ -112,6 +112,9 @@ public class UserInfo implements ServerCommand {
 				sb.append("ID: " + getMember().getId() + "\n");
 				sb.append("Tag: " + getMember().getUser().getAsTag() + "\n");
 				sb.append("Nick: " + getMember().getUser().getName() + "\n");
+				if(getMember().getNickname() != null) {
+					sb.append("Nickname: " + getMember().getNickname());
+				}
 				
 				channel.sendMessage(sb.toString()).queue();
 			} else {

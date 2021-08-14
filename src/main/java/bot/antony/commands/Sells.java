@@ -34,6 +34,7 @@ import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Sells implements ServerCommand {
@@ -58,6 +59,7 @@ public class Sells implements ServerCommand {
 
 			List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
 
+			// no ants found
 			if (species.isEmpty()) {
 				channel.sendMessage(
 						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\r\n"
@@ -161,61 +163,89 @@ public class Sells implements ServerCommand {
 		return sb.toString();
 	}
 
-	private void handleOnlyOneSpecieWithVariant(TextChannel channel, AntCheckClient client,
-		List<Specie> speciesWithVariants) {
+	private void handleOnlyOneSpecieWithVariant(TextChannel channel, AntCheckClient client, List<Specie> speciesWithVariants) {
 		Specie specie = speciesWithVariants.get(0);
 		List<Variant> variants = this.getVariants(client, specie.getId());
 		List<Variant> variantsWithShopIds = variants.stream()
 				.filter(v -> v.getShopid() != null && !v.getShopid().equals("-1")).collect(Collectors.toList());
 		Set<Shop> allShopsForVariants = new HashSet<>();
+		
 		for (Variant variant : variantsWithShopIds) {
 			List<Shop> shops = this.getShops(client, variant.getShopid());
 			allShopsForVariants.addAll(shops);
 		}
+		
 		// sort shops by name
 		List<Shop> sortedShopsForVariants = allShopsForVariants.stream()
 				.sorted(Comparator.comparing(Shop::getName, String.CASE_INSENSITIVE_ORDER))
 				.collect(Collectors.toList());
-		// build an embedded message
-		EmbedBuilder eb = new EmbedBuilder();
-		String specieName = specie.getName();
-		eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_"));
-		eb.setColor(Antony.getBaseColor());
-		eb.setDescription("Die folgenden Daten wurden von https://antcheck.info/ bereitgestellt.\n\n"
-				+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
-		String specieImageurl = specie.getImageurl();
-		if (specieImageurl != null && !specieImageurl.isEmpty()) {
-			eb.setThumbnail(specieImageurl);
-		} else {
-			eb.addField("Bild einreichen",
-					"Leider gibt es zu dieser Art noch kein passendes Bild. Du kannst helfen und [***hier***](https://antcheck.info/submit-image) ein Bild einreichen. Vielen Dank!",
-					true);
-		}
 
-		for (Shop shop : sortedShopsForVariants) {
-			StringBuilder messagePart = new StringBuilder();
-			List<Variant> variantsForShop = variantsWithShopIds.stream().filter(v -> v.getShopid().equals(shop.getId()))
-					.collect(Collectors.toList());
-
-			for (Variant variant : variantsForShop) {
-				messagePart.append(variant.getName());
-				messagePart.append(": [**" + String.format("%.2f", Double.parseDouble(variant.getPrice())) + " "
-						+ shop.getCurrency() + "**]");
-				messagePart.append("(" + variant.getUrl() + ")\n");
-
+			List<Field> shopFields = new ArrayList<Field>();
+			for(Shop shop : sortedShopsForVariants) {
+				
+				StringBuilder fieldPart = new StringBuilder();
+				List<Variant> variantsForShop = variantsWithShopIds.stream().filter(v -> v.getShopid().equals(shop.getId())).collect(Collectors.toList());
+	
+				String fieldTopic = ":flag_" + shop.getCountry() + ": " + shop.getName();
+				for(int i=0; i<variantsForShop.size(); i++) {
+					
+					if(i==5) {
+						fieldTopic = "";
+					}
+					
+					Variant variant = variantsForShop.get(i);
+					fieldPart.append(variant.getName());
+					fieldPart.append(": [**" + String.format("%.2f", Double.parseDouble(variant.getPrice())) + " "
+								+ shop.getCurrency() + "**]");
+					fieldPart.append("(" + variant.getUrl() + ")\n");
+					
+					if(((i+1) % 5 == 0) && (i+1)<variantsForShop.size()) {
+						Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
+						shopFields.add(shopField);
+						fieldPart = new StringBuilder();
+					}
+				}
+				
+				Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
+				shopFields.add(shopField);
 			}
-			// TODO Check if messagePart is more than 1024 chars (many variants offered) ->
-			// Count and add another field if needed
-			eb.addField(":flag_" + shop.getCountry() + ": " + shop.getName(), messagePart.toString(), false);
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		Date now = new Date();
-		StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
-		sb.append(sdf.format(now.getTime()));
-		sb.append(" 00:00 Uhr.");
-		eb.setFooter(sb.toString());
-		channel.sendMessage(eb.build()).queue();
+			
+			// build an embedded message
+			EmbedBuilder eb = new EmbedBuilder();
+			String specieName = specie.getName();
+			eb.setTitle("*" + specieName + "*", "https://antwiki.org/wiki/" + specieName.replace(" ", "_"));
+			eb.setColor(Antony.getBaseColor());
+			eb.setDescription("Die folgenden Daten wurden von https://antcheck.info/ bereitgestellt.\n\n"
+					+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
+			String specieImageurl = specie.getImageurl();
+			if (specieImageurl != null && !specieImageurl.isEmpty()) {
+				eb.setThumbnail(specieImageurl);
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+			Date now = new Date();
+			StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
+			sb.append(sdf.format(now.getTime()));
+			sb.append(" 00:00 Uhr.");
+			eb.setFooter(sb.toString());
+			
+			
+			int ebCharCount = 0;
+			for(int i=0; i<shopFields.size(); i++) {
+				Field shopField = shopFields.get(i);
+				int fieldSize = Math.addExact(shopField.getName().length(), shopField.getValue().length());
+				
+				if((fieldSize + ebCharCount) > 5000) {
+					channel.sendMessage(eb.build()).complete();
+					eb.clearFields();
+					ebCharCount = 0;
+				}
+				
+				ebCharCount += fieldSize;
+				eb.addField(shopField);
+			}
+			channel.sendMessage(eb.build()).complete();
+			
 	}
 
 	private void handleMultipleSpeciesWithVariantsFound(TextChannel channel, List<Specie> speciesWithVariants) {

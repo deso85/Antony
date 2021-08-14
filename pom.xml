@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>2.6.2</version>
+	<version>2.6.4</version>
 
 	<properties>
 		<resteasy.version>3.0.5.Final</resteasy.version>
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>4.2.1_265</version>
+			<version>4.3.0_307</version>
 			<exclusions>
 				<exclusion>
 					<groupId>club.minnced</groupId>
