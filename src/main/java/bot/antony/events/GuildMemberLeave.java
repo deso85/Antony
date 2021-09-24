@@ -1,11 +1,14 @@
 package bot.antony.events;
 
+import java.util.ArrayList;
+
 import bot.antony.Antony;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.user.UserData;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
@@ -13,10 +16,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildMemberLeave extends ListenerAdapter {
 
+	Guild guild;
+	Member member;
+	
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
 		NotificationController nc = Antony.getNotificationController();
-		final Guild guild = event.getGuild();
+		guild = event.getGuild();
+		member = event.getMember();
 	    final User user = event.getUser();
 	    final SelfUser selfUser = event.getJDA().getSelfUser();
 	    GuildData guildData = new GuildData(guild);
@@ -43,5 +50,22 @@ public class GuildMemberLeave extends ListenerAdapter {
 	    //update usercount
 	    Antony.setUsercount(Antony.getUsercount()-1);
 	    event.getJDA().getPresence().setActivity(Activity.listening(Antony.getCmdPrefix() + "antony | " + Antony.getUsercount() + " User | " + event.getJDA().getGuilds().size() + " Server"));
+	    
+	    //Send exit message about user
+	    Long exitChannelID;
+		if(Antony.isProdStage()) {
+			exitChannelID = 702534959625273446L;
+		} else {
+			exitChannelID = 778960519784169485L;
+		}
+		guild.getTextChannelById(exitChannelID).sendMessage(getRandomExitText()).queue();
+	}
+	
+	public String getRandomExitText() {
+		ArrayList<String> messages = new ArrayList<String>();
+		
+		messages.add("**" + member.getUser().getAsTag() + "** hat uns grade verlassen. 🙁");
+		
+		return messages.get((int) (System.currentTimeMillis() % messages.size()));
 	}
 }

@@ -30,6 +30,9 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("31.08.2021 - Version 2.6.7", "Antony teilt nun allen mit, wenn jemand den Server verlassen hat."));
+				changeLog.add(new ChangeLogEntry("28.08.2021 - Version 2.6.6", "Antony heißt nun alle neuen User auf dem Server willkommen."));
+				changeLog.add(new ChangeLogEntry("14.08.2021 - Version 2.6.5", "Die *Rote Flagge* Reaction löscht Nachrichten nur noch, wenn nicht zu viele Löschungen in letzter Zeit vorgenommen wurden."));
 				changeLog.add(new ChangeLogEntry("12.08.2021 - Version 2.6.4", "***" + cmdPrefix + "userinfo light*** gibt nun noch einen Nickname aus, sofern vorhanden."));
 				changeLog.add(new ChangeLogEntry("27.07.2021 - Version 2.6.3", "***" + cmdPrefix + "sells*** wurde so überarbeitet, dass nun auch größere Datenmengen ausgegeben werden können."));
 				changeLog.add(new ChangeLogEntry("12.07.2021 - Version 2.6.2", "Die Watchlist wird nun gegen eine Whitelist geprüft, um Meldungen zu reduzieren, die nicht relevant sind."));
@@ -77,19 +80,24 @@ public class AntonyHelp implements ServerCommand {
 						.setFooter("Version " + Antony.getVersion());
 				
 				// Add changelog entries to embedded message
+				int clecounter = 0;
 				for(ChangeLogEntry cle: changeLog) {
+					clecounter++;
 					eb.addField(cle.getTitle(), cle.getNotes(), false);
+					if(clecounter >= 10) {
+						break;
+					}
 				}
 				
-				channel.sendMessage(eb.build()).queue();
+				channel.sendMessageEmbeds(eb.build()).queue();
 				break;
 
 			default:
-				channel.sendMessage(getCommandList().build()).queue();
+				channel.sendMessageEmbeds(getCommandList().build()).queue();
 				break;
 			}
 		} else {
-			channel.sendMessage(getCommandList().build()).queue();
+			channel.sendMessageEmbeds(getCommandList().build()).queue();
 		}
 
 	}

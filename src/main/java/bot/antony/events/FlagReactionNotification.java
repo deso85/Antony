@@ -19,6 +19,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class FlagReactionNotification extends ListenerAdapter {
 
+	int deletedCount = 0;
+	Date lastDeleted = null;
+	
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
 		final Guild guild = event.getGuild();
@@ -83,15 +86,27 @@ public class FlagReactionNotification extends ListenerAdapter {
 					}
 				}
 				if(userCount >= flagsToDeleteMessage) {
-					if(message.getAttachments().size() > 0) {
-						guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("Folgende Attachments wurden gepostet:").complete();
-						for(Attachment attachment : message.getAttachments()) {
-							guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(attachment.getUrl()).complete();
-						}
+					//If last delete is 15min ago the counter gets reset
+					if(lastDeleted == null || lastDeleted.before(new Date(System.currentTimeMillis() - 900 * 1000)) ) {
+						deletedCount = 0;
 					}
-					message.delete().complete();
-					guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(":exclamation:" + flagsToDeleteMessage + " oder mehr berechtigte User haben die Nachricht markiert, weshalb sie entfernt wurde.").complete();
-					logMessage.append("\nBecause there were " + flagsToDeleteMessage + " flaggs or more the message has been deleted.");
+					if(deletedCount < 3) {
+						deletedCount++;
+						lastDeleted = new Date(System.currentTimeMillis());
+					
+						if(message.getAttachments().size() > 0) {
+							guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("Folgende Attachments wurden gepostet:").complete();
+							for(Attachment attachment : message.getAttachments()) {
+								guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(attachment.getUrl()).complete();
+							}
+						}
+						message.delete().complete();
+						guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(":exclamation:" + flagsToDeleteMessage + " oder mehr berechtigte User haben die Nachricht markiert, weshalb sie entfernt wurde.").complete();
+						logMessage.append("\nBecause there were " + flagsToDeleteMessage + " flaggs or more the message has been deleted.");
+					} else {
+						guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(":exclamation:" + flagsToDeleteMessage + " oder mehr berechtigte User haben die Nachricht markiert, sie wurde aber **nicht** gelöscht, weil zu viele Nachrichten in den letzten 15min gelöscht wurden. **Bitte dringend prüfen, ob jemand das System ausnutzt!**").complete();
+						logMessage.append("\nBecause there were " + flagsToDeleteMessage + " flaggs or more the message should have been deleted but there are too many deleted messages within the last 15min.");
+					}
 				}
 			}
 			Antony.getLogger().info(logMessage.toString());
