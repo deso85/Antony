@@ -137,7 +137,7 @@ public class Emergency implements ServerCommand {
 				
 				eb.setImage("https://www.antwiki.org/wiki/images/9/97/Crematogaster_ferrarii_with_Myrmozercon._Hong_Kong._Fran%C3%A7ois_Brassard_%281%29.jpg");
 				
-				getChannel().sendMessage(eb.build()).queue();
+				getChannel().sendMessageEmbeds(eb.build()).queue();
 				
 				break;
 			default:

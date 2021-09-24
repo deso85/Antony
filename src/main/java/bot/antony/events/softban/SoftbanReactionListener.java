@@ -44,7 +44,7 @@ public class SoftbanReactionListener extends ListenerAdapter {
 						.setDescription(message.getContentDisplay())
 						.addField("#" + event.getChannel().getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ")**", false)
 						.setFooter(formatter.format(date));
-				guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(eb.build()).queue();
+				guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessageEmbeds(eb.build()).queue();
 			}
 		}
 	}

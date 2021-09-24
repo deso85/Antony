@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import bot.antony.commands.types.ServerCommand;
 import bot.antony.utils.Utils;
@@ -31,17 +32,10 @@ public class UserInfo implements ServerCommand {
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 		guild = channel.getGuild();
-		setMemberList(new ArrayList<>());
+		setMemberList(guild.getMembers().stream().collect(Collectors.toList()));
 		String[] userMessage = message.getContentDisplay().split(" ");
 		boolean outputlight = false;
-
-		// fill memberList
-		for (Member member : channel.getGuild().getMembers()) {
-			if (!getMemberList().contains(member)) {
-				getMemberList().add(member);
-			}
-		}
-
+		
 		// sort memberList by joined Time
 		Collections.sort(getMemberList(), (member1, member2) -> {
 			return member1.getTimeJoined().compareTo(member2.getTimeJoined());
@@ -118,7 +112,7 @@ public class UserInfo implements ServerCommand {
 				
 				channel.sendMessage(sb.toString()).queue();
 			} else {
-				channel.sendMessage(getUserEB().build()).queue();
+				channel.sendMessageEmbeds(getUserEB().build()).queue();
 			}
 			
 

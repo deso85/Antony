@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("24.09.2021 - Version 2.7.0", "***" + cmdPrefix + "showavatar kann nun auch mit der User ID aufgerufen werden. Zudem kann der Avatar nun auch von Moderatoren über eine Reaction abgerufen werden."));
 				changeLog.add(new ChangeLogEntry("31.08.2021 - Version 2.6.7", "Antony teilt nun allen mit, wenn jemand den Server verlassen hat."));
 				changeLog.add(new ChangeLogEntry("28.08.2021 - Version 2.6.6", "Antony heißt nun alle neuen User auf dem Server willkommen."));
 				changeLog.add(new ChangeLogEntry("14.08.2021 - Version 2.6.5", "Die *Rote Flagge* Reaction löscht Nachrichten nur noch, wenn nicht zu viele Löschungen in letzter Zeit vorgenommen wurden."));

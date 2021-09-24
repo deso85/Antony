@@ -79,7 +79,7 @@ public class Map implements ServerCommand {
 							.setImage(imgUrl.toString())
 							.setFooter("Klicke auf den Titel, um zur interaktiven Karte von antmaps.org zu gelangen.\n\nAntony Version " + Antony.getVersion())
 					;
-					channel.sendMessage(eb.build()).queue();
+					channel.sendMessageEmbeds(eb.build()).queue();
 				}
 			}
 			

@@ -19,7 +19,7 @@ public class Utils {
 
 	public static void sendPM(User user, EmbedBuilder eb) {
 		try {
-			user.openPrivateChannel().complete().sendMessage(eb.build()).complete();
+			user.openPrivateChannel().complete().sendMessageEmbeds(eb.build()).complete();
 		} catch (ErrorResponseException e) {
 			LocalDateTime now = LocalDateTime.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -34,7 +34,7 @@ public class Utils {
 							+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
 							+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
 					.setFooter(now.format(formatter) + " Uhr");
-			channel.sendMessage(eb.build()).complete();
+			channel.sendMessageEmbeds(eb.build()).complete();
 			
 			Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + user.getAsTag() + " (ID " + user.getId() + ")");
 		}
@@ -77,7 +77,7 @@ public class Utils {
 			return false;
 		}
 		try {
-			long l = Long.parseLong(member);
+			Long.parseLong(member);
 		} catch (NumberFormatException nfe) {
 			return false;
 		}

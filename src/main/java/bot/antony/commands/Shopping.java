@@ -98,7 +98,7 @@ public class Shopping implements ServerCommand {
 				+ "\n[Watte](https://amzn.to/2O5YjUk)",									//B082VP8C3J
 				false);
 		
-		channel.sendMessage(eb.build()).queue();
+		channel.sendMessageEmbeds(eb.build()).queue();
 		
 	}
 

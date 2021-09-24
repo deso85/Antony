@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -12,12 +14,16 @@ public class ShowAvatar implements ServerCommand {
 
 	private Member member;
 	private String fullMemberName;
-
+	private Guild guild;
+	
 	
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
+		guild = channel.getGuild();
 		String[] userMessage = message.getContentDisplay().split(" ");
-		
+				
+		// initially set the member who called the function
+		setMember(m);
 		
 		// overwrite member
 		if (userMessage.length > 1) {
@@ -25,10 +31,17 @@ public class ShowAvatar implements ServerCommand {
 				setMember(message.getMentionedMembers().get(0));
 			} else {
 				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
-				setMember(findUserIn(channel, getFullMemberName()));
+				
+				if(Utils.isId(fullMemberName)) {
+					setMember(guild.getMemberById(Long.parseLong(fullMemberName)));
+					//In case the users name is a number
+					if (getMember() == null) {
+						setMember(findUserIn(channel, getFullMemberName()));
+					}
+				} else {
+					setMember(findUserIn(channel, getFullMemberName()));
+				}
 			}
-		} else {
-			setMember(m);
 		}
 
 		if (getMember() != null) {

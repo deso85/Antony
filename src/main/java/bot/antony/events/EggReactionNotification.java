@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.antony.Antony;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -42,15 +43,8 @@ public class EggReactionNotification extends ListenerAdapter {
 				//Roles which may use the command
 				allowedRoles.add("Admin");
 				allowedRoles.add("Soldat");
-				
-				boolean mayUse = false;
-				for(Role role: reactor.getRoles()) {
-					if(allowedRoles.contains(role.getName())) {
-						mayUse = true;
-					}
-				}
 
-				if(mayUse && member.getRoles().size() == 0) {
+				if(Utils.memberHasRole(reactor, allowedRoles) && member.getRoles().size() == 0) {
 					message.removeReaction(event.getReactionEmote().getName(), event.getUser()).queue();
 					Role role = guild.getRolesByName("Ei", false).get(0);
 					guild.addRoleToMember(member, role).complete();

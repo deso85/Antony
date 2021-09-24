@@ -21,6 +21,7 @@ import bot.antony.events.EggReactionNotification;
 import bot.antony.events.FlagReactionNotification;
 import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
+import bot.antony.events.ImageReactionNotification;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.OfferListener;
 import bot.antony.events.SpyReactionNotification;
@@ -75,6 +76,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new SoftbanReactionListener())
 					.addEventListeners(new EggReactionNotification())
+					.addEventListeners(new ImageReactionNotification())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members

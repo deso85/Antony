@@ -64,7 +64,7 @@ public class WatchlistNotification extends ListenerAdapter {
 							.setFooter(event.getMessage().getTimeCreated().format(formatter));
 					
 					guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(sb.toString()).queue();
-					guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(eb.build()).queue();
+					guild.getTextChannelById(Antony.getAntonyLogChannelId()).sendMessageEmbeds(eb.build()).queue();
 				}
 			}
 			

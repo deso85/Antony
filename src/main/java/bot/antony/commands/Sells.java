@@ -236,7 +236,7 @@ public class Sells implements ServerCommand {
 				int fieldSize = Math.addExact(shopField.getName().length(), shopField.getValue().length());
 				
 				if((fieldSize + ebCharCount) > 5000) {
-					channel.sendMessage(eb.build()).complete();
+					channel.sendMessageEmbeds(eb.build()).complete();
 					eb.clearFields();
 					ebCharCount = 0;
 				}
@@ -244,7 +244,7 @@ public class Sells implements ServerCommand {
 				ebCharCount += fieldSize;
 				eb.addField(shopField);
 			}
-			channel.sendMessage(eb.build()).complete();
+			channel.sendMessageEmbeds(eb.build()).complete();
 			
 	}
 

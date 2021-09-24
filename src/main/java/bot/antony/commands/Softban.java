@@ -43,7 +43,7 @@ public class Softban implements ServerCommand {
 									.setDescription(message.getContentDisplay())
 									.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + member.getGuild().getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
 									.setFooter(formatter.format(date));
-							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage(eb.build()).queue();
+							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessageEmbeds(eb.build()).queue();
 						}
 					}
 					break;

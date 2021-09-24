@@ -19,7 +19,6 @@ public class Serverstats implements ServerCommand {
 		Guild guild = channel.getGuild();
 		
 		//Prepare server stats
-		String region = guild.getRegion().getName();
 		int boostCount = guild.getBoostCount();
 		String boostTier = guild.getBoostTier().toString();
 		int emoteCount = guild.getEmotes().size();
@@ -84,8 +83,7 @@ public class Serverstats implements ServerCommand {
 		
 		//Basics
 		eb.addField("Allgemeines",
-				"Region: " + region
-				+ "\nServer-Boosts: " + boostCount
+				"Server-Boosts: " + boostCount
 				+ "\nBoost Tier: " + boostTier
 				+ "\nEmote Count: " + emoteCount + " / " + maxEmoteCount,
 				false);
@@ -130,7 +128,7 @@ public class Serverstats implements ServerCommand {
 				forCounter++;
 			}
 		}
-		channel.sendMessage(eb.build()).queue();
+		channel.sendMessageEmbeds(eb.build()).queue();
 		
 	}
 
