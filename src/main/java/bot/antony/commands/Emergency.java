@@ -140,6 +140,52 @@ public class Emergency implements ServerCommand {
 				getChannel().sendMessageEmbeds(eb.build()).queue();
 				
 				break;
+				
+			case "schimmel":
+				
+				eb.setTitle("Notfall - Schimmel", "https://de.wikipedia.org/wiki/Schimmelpilze");
+				
+				eb.addField("Allgemeines & Disclaimer",
+						"Schimmel in der Ameisenhaltung muss kein Problem sein. "
+						+ "Achte auch bei Schimmel darauf, wie deine Ameisen darauf reagieren. "
+						+ "So lange sie den Schimmel ignorieren, ist er vermutlich nicht schädlich und du brauchst dir auch keine großen Sorgen machen.",
+						false);
+				
+				eb.addField("Schimmel im Reagenzglas",
+						"Junge Kolonien werden in der Regel im Reagenzglas mit einer Wasserkammer gehalten. "
+						+ "Die Watte, die die Wasserkammer von den Ameisen trennt, ist häufig dreckig und dort kann schnell auch Schimmel wachsen. "
+						+ "Gegen diese Art von Schimmel kannst du leider nichts machen, wächst die Kolonie aber in der Regel schnell genug, um umzuziehen, bevor der Schimmel zu einem Problem wird. "
+						+ "Du kannst den Tieren aber auch frühzeitig **ein Nest oder ein neues Reagenzglas anbieten**.",
+						false);
+				
+				eb.addField("Futterreste",
+						"Futterreste können in der Haltung schnell schimmeln. "
+						+ "So lange sie in der Arena liegen, kann und sollte man die **Futterreste schnell entfernen**, andernfalls können sie schnell schimmeln oder locken Milben an. "
+						+ "\n\nWenn die Ameisen ihr Futter in das Nest ziehen und dort nicht komplett verwerten, können die Futterreste dort anfangen zu schimmeln. "
+						+ "Da es prinzipiell schlecht ist, das Nest zu öffnen, solltet ihr das nur im allergrößten Notfall machen. "
+						+ "Schimmel sollte kein solcher Notfall sein, lasst die Futterreste also im Nest. "
+						+ "Im Idealfall tragen die Ameisen die Futterreste irgendwann wieder raus. "
+						+ "\n\nAlternativ könnt ihr euch **Bodenpolizei besorgen**, die solche Reste verwerten. "
+						+ "Versucht lieber **häufiger kleine Portionen** zu füttern, wenn ihr euch unsicher seid, wie viel eure Ameisen annehmen. "
+						+ "Dadurch senkt ihr das Risiko, dass Futterreste übrig bleiben und beginnen zu schimmeln.",
+						false);
+				
+				eb.addField("Schimmel in der Arena",
+						"Aus der Natur entnommene Dekoration und Bodengrund neigt dazu schnell zu schimmeln. "
+						+ "Um unter anderem dem vorzubeugen kannst du die gesammelten Dinge **abkochen oder im Ofen/der Mikrowelle vorbehandeln**, bevor du sie in die Arena gibst. "
+						+ "\n\nGenenerell schimmelt es in der Arena schneller, wenn sie feucht ist. "
+						+ "Sollte es nicht notwendig sein, kannst du die **Arena** also **trocken lassen** und damit das Risiko minimieren. "
+						+ "\n\nBei z.B. Gips kann es möglich sein, dass dieser schimmelt. "
+						+ "Es könnte hilfreich sein, **Teile des Gips (oder ähnliches Material)** großzügig zu entfernen, damit sich der Schimmel nicht ausbreitet.",
+						false);
+				
+				eb.addField("Nützliche Links",
+						"Kauf: [Springschwänze (Bodenpolizei)](https://amzn.to/3D35HEt)",
+						false);
+				
+				getChannel().sendMessageEmbeds(eb.build()).queue();
+				
+				break;
 			default:
 				printHelp();
 				break;
@@ -154,7 +200,7 @@ public class Emergency implements ServerCommand {
 
 	private void printHelp() {
 		//TODO: Help ausformulieren
-		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "emergency (milben)").queue();
+		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "emergency (milben | schimmel)").queue();
 	}
 	
 	private EmbedBuilder getEB() {
