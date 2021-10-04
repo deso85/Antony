@@ -15,7 +15,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.commands.softban.SoftbanController;
-import bot.antony.commands.watchlist.WatchlistController;
+import bot.antony.controller.BlackListController;
+import bot.antony.controller.WatchListController;
+import bot.antony.controller.WhiteListController;
+import bot.antony.events.BlacklistNotification;
 import bot.antony.events.CommandListener;
 import bot.antony.events.EggReactionNotification;
 import bot.antony.events.FlagReactionNotification;
@@ -49,7 +52,9 @@ public class Antony extends ListenerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
-	private static WatchlistController watchlistController = new WatchlistController();
+	private static WhiteListController whitelistController = new WhiteListController();
+	private static WatchListController watchlistController = new WatchListController();
+	private static BlackListController blacklistController = new BlackListController();
 	private static SoftbanController softbanController = new SoftbanController();
 	private static long antonyLogChannelId;
 	private static int usercount = 0;
@@ -68,6 +73,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new CommandListener())			// Listener for commands
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new WatchlistNotification())		// listener which checks if posts contains blacklisted text strings
+					.addEventListeners(new BlacklistNotification())
 					.addEventListeners(new FlagReactionNotification())	// listener which informs mods about a used REDFLAG reaction as an alert
 					.addEventListeners(new SpyReactionNotification())	// listener which checks if a mod used a spy reaction to send a short userinfo about this user
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
@@ -124,7 +130,9 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
 			notificationController.initData();
+			whitelistController.initData();
 			watchlistController.initData();
+			blacklistController.initData();
 			softbanController.initData();
 			
 			//Thread which is used to send channel notifications 
@@ -296,8 +304,16 @@ public class Antony extends ListenerAdapter {
 	}
 
 
-	public static WatchlistController getWatchlistController() {
+	public static WhiteListController getWhitelistController() {
+		return whitelistController;
+	}
+	
+	public static WatchListController getWatchlistController() {
 		return watchlistController;
+	}
+	
+	public static BlackListController getBlacklistController() {
+		return blacklistController;
 	}
 
 

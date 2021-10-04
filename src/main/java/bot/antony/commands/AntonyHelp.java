@@ -30,6 +30,8 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.9.0", "***" + cmdPrefix + "whitelist wurde für Moderatoren hinzugefügt. Einige Klassen und Funktionen wurden refactored."));
+				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.8.0", "***" + cmdPrefix + "blacklist wurde für Moderatoren hinzugefügt, um schadhaften Content direkt herausfiltern zu lassen."));
 				changeLog.add(new ChangeLogEntry("29.09.2021 - Version 2.7.1", "***" + cmdPrefix + "emergency schimmel*** bietet nun auch eine kurze Info zu Schimmel."));
 				changeLog.add(new ChangeLogEntry("24.09.2021 - Version 2.7.0", "***" + cmdPrefix + "showavatar*** kann nun auch mit der User ID aufgerufen werden. Zudem kann der Avatar nun auch von Moderatoren über eine Reaction abgerufen werden."));
 				changeLog.add(new ChangeLogEntry("31.08.2021 - Version 2.6.7", "Antony teilt nun allen mit, wenn jemand den Server verlassen hat."));
@@ -144,12 +146,16 @@ public class AntonyHelp implements ServerCommand {
 		//Commands for mods
 		BotCommand softban = new BotCommand("softban", "Funktion zur Verwaltung von Usern, deren Inhalte direkt nach posten gelöscht werden sollen.", "add ID NAME");
 		BotCommand watchlist = new BotCommand("watchlist", "Funktion zur Verwaltung von Begriffen, über die das Mod-Team bei Verwendung eine Benachrichtigung erhalten möchte.", "add Ameisengesicht");
+		BotCommand whitelist = new BotCommand("whitelist", "Funktion zur Verwaltung von Begriffen, die keine moderativen Meldungen auslösen sollen.", "add Barsch");
 		modBotCommands.add(softban);
 		modBotCommands.add(watchlist);
+		modBotCommands.add(whitelist);
 		
 		//Commands for admins
+		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
 		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
 		BotCommand shutdown = new BotCommand("shutdown", "Funktion zum stoppen des Bots");
+		adminBotCommands.add(blacklist);
 		adminBotCommands.add(channel);
 		adminBotCommands.add(shutdown);
 		

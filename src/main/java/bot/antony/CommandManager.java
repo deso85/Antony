@@ -16,7 +16,9 @@ import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserInfo;
-import bot.antony.commands.Watchlist;
+import bot.antony.commands.lists.Blacklist;
+import bot.antony.commands.lists.Watchlist;
+import bot.antony.commands.lists.Whitelist;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -45,9 +47,11 @@ public class CommandManager {
 
 		// Mod
 		this.commands.put("watchlist", new Watchlist());
+		this.commands.put("whitelist", new Whitelist());
 		this.commands.put("softban", new Softban());
 
 		// Admin
+		this.commands.put("blacklist", new Blacklist());
 		this.commands.put("channel", new Channel());
 		this.commands.put("shutdown", new Shutdown());
 	}

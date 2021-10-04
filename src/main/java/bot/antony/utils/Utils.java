@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import bot.antony.Antony;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -82,6 +83,17 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+	
+	public static boolean isLogChannel(TextChannel channel) {
+		if(channel == channel.getGuild().getTextChannelById(Antony.getAntonyLogChannelId())) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static TextChannel getLogChannel(Guild guild) {
+		return guild.getTextChannelById(Antony.getAntonyLogChannelId());
 	}
 	
 	public static Consumer<? super Throwable> ERROR_RESPONSE_EXCEPTION_CONSUMER = exception -> {
