@@ -1,6 +1,5 @@
 package bot.antony.commands.softban;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +7,9 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import bot.antony.Antony;
 import bot.antony.events.softban.UserDataSB;
+import bot.antony.utils.Utils;
 
 public class SoftbanController {
 	private List<UserDataSB> bannedUser = new ArrayList<UserDataSB>();
@@ -36,23 +34,12 @@ public class SoftbanController {
 	}
 	
 	public boolean persistData() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			objectMapper.writeValue(new File(bannedUserFile), bannedUser);	//Map of softbanned user
-			return true;
-			
-		} catch (IOException e) {
-			Antony.getLogger().error("Could not store softbanned user data!", e);
-		}
-		return false;
+		return Utils.storeData(bannedUserFile, bannedUser);
 	}
 	
-	public void initData() throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(bannedUserFile);	//Map of softbanned user
-		if(file.exists() && !file.isDirectory()) { 
-			this.bannedUser = objectMapper.readValue(file, new TypeReference<List<UserDataSB>>(){});
-		}
+	@SuppressWarnings("unchecked")
+	public void initData() throws JsonParseException, JsonMappingException, IOException{
+		this.bannedUser = (List<UserDataSB>) Utils.loadData(bannedUserFile, new TypeReference<List<UserDataSB>>(){}, bannedUser);
 	}
 
 	public List<UserDataSB> getBannedUser() {

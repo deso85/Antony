@@ -6,6 +6,8 @@ bot.token.dev =
 bot.token.prod = 
 # Set pending timer for notifications in Minutes (60 = 1h, 1440 = 1d ...)
 notification.pending.time = 60
+# Path to store flatfiles
+flatfile.path = C:\\
 # Set SQLite database path
 sqlite.db.path = antony.db
 # Set Bot version from pom.xml

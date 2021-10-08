@@ -1,6 +1,7 @@
 package bot.antony.commands;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,9 +17,12 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Softban implements ServerCommand {
+	
+	TextChannel channel;
+	
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
-		
+		this.channel = channel;
 		List<String> allowedRoles = new ArrayList<String>();
 		
 		//Roles which may use the command
@@ -68,12 +72,31 @@ public class Softban implements ServerCommand {
 					}
 					channel.sendMessage(sb.toString()).queue();
 					break;
+				case "reload":
+					try {
+						Antony.getSoftbanController().initData();
+						channel.sendMessage("Die Liste wurde mit " + Antony.getSoftbanController().getBannedUser().size() + " Einträgen neu geladen.").queue();
+					} catch (IOException e) {
+						channel.sendMessage("Oh no! Die Liste konnte nicht geladen werden 🙁").queue();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
 				case "clear":
 					Antony.getSoftbanController().setBannedUser(new ArrayList<UserDataSB>());
 					Antony.getSoftbanController().persistData();
 					break;
+				default:
+					printHelp();
+					break;
 				}
+			} else {
+				printHelp();
 			}
 		}
+	}
+	
+	private void printHelp() {
+		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "softban (add | remove | list | reload | clear) [TextString]").queue();
 	}
 }

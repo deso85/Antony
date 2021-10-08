@@ -20,14 +20,11 @@ import bot.antony.controller.WatchListController;
 import bot.antony.controller.WhiteListController;
 import bot.antony.events.BlacklistNotification;
 import bot.antony.events.CommandListener;
-import bot.antony.events.EggReactionNotification;
-import bot.antony.events.FlagReactionNotification;
 import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
-import bot.antony.events.ImageReactionNotification;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.OfferListener;
-import bot.antony.events.SpyReactionNotification;
+import bot.antony.events.ReactionAddEvent;
 import bot.antony.events.WatchlistNotification;
 import bot.antony.events.softban.SoftbanFilterListener;
 import bot.antony.events.softban.SoftbanReactionListener;
@@ -49,6 +46,7 @@ public class Antony extends ListenerAdapter {
 	private static String cmdPrefix = getProperty("command.prefix");
 	private static long notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
 	private static String version = getProperty("bot.version");
+	private static String flatfilePath = getProperty("flatfile.path");
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
@@ -74,15 +72,12 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new WatchlistNotification())		// listener which checks if posts contains blacklisted text strings
 					.addEventListeners(new BlacklistNotification())
-					.addEventListeners(new FlagReactionNotification())	// listener which informs mods about a used REDFLAG reaction as an alert
-					.addEventListeners(new SpyReactionNotification())	// listener which checks if a mod used a spy reaction to send a short userinfo about this user
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
 					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new SoftbanReactionListener())
-					.addEventListeners(new EggReactionNotification())
-					.addEventListeners(new ImageReactionNotification())
+					.addEventListeners(new ReactionAddEvent())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
@@ -265,6 +260,10 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static boolean isProdStage() {
 		return prodStage;
+	}
+	
+	public static String getFlatfilePath() {
+		return flatfilePath;
 	}
 	
 	/**

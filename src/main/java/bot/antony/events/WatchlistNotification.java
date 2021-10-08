@@ -20,15 +20,16 @@ public class WatchlistNotification extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-
-		String message = event.getMessage().getContentDisplay();
-		final Guild guild = event.getGuild();
-		final TextChannel channel = event.getTextChannel();
 		
 		// check which channel ...
 		if (event.isFromType(ChannelType.TEXT) &&
 				!event.getAuthor().isBot() &&
-				!Utils.isLogChannel(channel)) {
+				!Utils.isLogChannel(event.getTextChannel())) {
+			
+			final Guild guild = event.getGuild();
+			final TextChannel channel = event.getTextChannel();
+			String message = event.getMessage().getContentDisplay();
+			
 			List<String> watchlist = Antony.getWatchlistController().getList();
 			List<String> whitelist = Antony.getWhitelistController().getList();
 			String modifiedMessage = message;

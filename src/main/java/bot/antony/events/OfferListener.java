@@ -1,9 +1,5 @@
 package bot.antony.events;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 import bot.antony.Antony;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,7 +12,6 @@ public class OfferListener extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		String message = event.getMessage().getContentDisplay();
 		User user = event.getAuthor();
 		String userString = user.getAsMention() + " (ID: " + user.getId() + ")";
 				
@@ -36,29 +31,9 @@ public class OfferListener extends ListenerAdapter {
 			
 			//Is a new offer
 			if(channel.getIdLong() == offerChannelId) {
-				//SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-				SimpleDateFormat sdformatter = new SimpleDateFormat("dd.MM.yyyy");
-				DateTimeFormatter dtformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-				Date now = new Date(System.currentTimeMillis());
-				
 				//TODO: may the user add a new offer?
 				
 				guild.getTextChannelById(offerLogChannelId).sendMessage(userString).queue();
-				
-				/*if(guild.getTextChannelById(offerLogChannelId).hasLatestMessage()) {
-					Message latestMessage = guild.getTextChannelById(offerLogChannelId).retrieveMessageById(guild.getTextChannelById(offerLogChannelId).getLatestMessageId()).complete();
-					//Shall the last post be updated / replaced?
-					if(latestMessage.getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(dtformatter).equals(sdformatter.format(now))) {
-						if(!latestMessage.getContentDisplay().contains(userString)) {
-							guild.getTextChannelById(offerLogChannelId).sendMessage(latestMessage.getContentDisplay() + ", " + userString).queue();
-							latestMessage.delete().queue();
-						}
-					} else {
-						guild.getTextChannelById(offerLogChannelId).sendMessage(sdformatter.format(now) + ": " + userString).queue();
-					}
-				} else {
-					guild.getTextChannelById(offerLogChannelId).sendMessage(sdformatter.format(now) + ": " + userString).queue();
-				}*/
 			}
 		}
 	}

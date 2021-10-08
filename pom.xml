@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>2.9.1</version>
+	<version>3.0.0</version>
 
 	<properties>
 		<resteasy.version>3.5.1.Final</resteasy.version>
 		<maven.compiler.release>8</maven.compiler.release>
-		<jackson.version>2.12.4</jackson.version>
-		<hibernate.version>5.4.29.Final</hibernate.version>
+		<jackson.version>2.12.5</jackson.version>
+		<hibernate.version>5.4.32.Final</hibernate.version>
 	</properties>
 
 	<build>
@@ -18,7 +18,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 				<configuration>
 					<release>8</release>
 					<encoding>UTF-8</encoding>
@@ -115,12 +115,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.11.3</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.11.3</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

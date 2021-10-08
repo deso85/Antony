@@ -1,5 +1,6 @@
 package bot.antony.commands.lists;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,6 +65,17 @@ public abstract class ListCommand implements ServerCommand {
 					channel.sendMessage(sb.toString()).queue();
 					break;
 					
+				case "reload":
+					try {
+						controller.initData();
+						channel.sendMessage("Die Liste wurde mit " + controller.getList().size() + " Einträgen neu geladen.").queue();
+					} catch (IOException e) {
+						channel.sendMessage("Oh no! Die Liste konnte nicht geladen werden 🙁").queue();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+					
 				case "clear":
 					controller.clear();
 					channel.sendMessage(listName + " geleert.").queue();
@@ -83,7 +95,7 @@ public abstract class ListCommand implements ServerCommand {
 	public abstract ListController getInstance();
 
 	private void printHelp() {
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + listName.toLowerCase() + " (add|remove|list|clear) [TextString]").queue();
+		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + listName.toLowerCase() + " (add | remove | list | reload | clear) [TextString]").queue();
 	}
 	
 }

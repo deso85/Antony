@@ -1,6 +1,5 @@
 package bot.antony.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +7,8 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import bot.antony.Antony;
+import bot.antony.utils.Utils;
 
 public class ListController {
 	protected List<String> list = new ArrayList<String>();
@@ -31,15 +29,7 @@ public class ListController {
 	 * @return	TRUE if data has been stored or FALSE if not
 	 */
 	public boolean persistData() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			objectMapper.writeValue(new File(fileName), list);
-			return true;
-			
-		} catch (IOException e) {
-			Antony.getLogger().error("Could not store list!", e);
-		}
-		return false;
+		return Utils.storeData(fileName, this.list);
 	}
 	
 	/**
@@ -48,12 +38,9 @@ public class ListController {
 	 * @throws	JsonMappingException
 	 * @throws	IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public void initData() throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(fileName);
-		if(file.exists() && !file.isDirectory()) { 
-			this.list = objectMapper.readValue(file, new TypeReference<List<String>>(){});
-		}
+		this.list = (List<String>) Utils.loadData(fileName, new TypeReference<List<String>>(){}, this.list);
 	}
 	
 	public String list() {
@@ -79,8 +66,7 @@ public class ListController {
 		if(!list.contains(string)) {
 			list.add(string);
 			list.sort(String.CASE_INSENSITIVE_ORDER);
-			persistData();
-			return true;
+			return persistData();
 		}
 		return false;
 	}
@@ -88,8 +74,7 @@ public class ListController {
 	public boolean remove(String string) {
 		if(list.contains(string)) {
 			list.remove(string);
-			persistData();
-			return true;
+			return persistData();
 		}
 		return false;
 	}

@@ -1,6 +1,5 @@
 package bot.antony.commands.notification;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +11,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
 import bot.antony.guild.GuildData;
@@ -416,18 +414,13 @@ public class NotificationController {
 				e.printStackTrace();
 			}
 		}
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			setWaiting(true);
-			objectMapper.writeValue(new File(getNotificationListConfigFileName()), getGCNLs());						//Notification Configuration
-			objectMapper.writeValue(new File(getPendingNotificationsFileName()), getPendingUserNotifications());	//Pending Notifications
-			setWaiting(false);
-			return true;
-			
-		} catch (IOException e) {
-			Antony.getLogger().error("Could not store notification config and/or pending notifications data!", e);
+		setWaiting(true);
+		boolean retVal = false;
+		if (Utils.storeData(getNotificationListConfigFileName(), getGCNLs()) &&	Utils.storeData(getPendingNotificationsFileName(), getPendingUserNotifications())) {
+			retVal = true;
 		}
-		return false;
+		setWaiting(false);
+		return retVal;
 	}
 	
 	/**
@@ -436,6 +429,7 @@ public class NotificationController {
 	 * @throws	JsonMappingException
 	 * @throws	IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public void initData() throws JsonParseException, JsonMappingException, IOException {
 		while(isWaiting()) {
 			try {
@@ -446,15 +440,8 @@ public class NotificationController {
 			}
 		}
 		setWaiting(true);
-		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(getNotificationListConfigFileName());	//Notification Configuration
-		if(file.exists() && !file.isDirectory()) { 
-			this.gcnls = objectMapper.readValue(file, new TypeReference<Map<String, GuildChannelNotificationList>>(){});
-		}
-		file = new File(getPendingNotificationsFileName());	//Pending Notifications
-		if(file.exists() && !file.isDirectory()) { 
-			this.pendingUserNotifications = objectMapper.readValue(file, new TypeReference<ArrayList<UserNotification>>(){});
-		}
+		this.gcnls = (Map<String, GuildChannelNotificationList>) Utils.loadData(getNotificationListConfigFileName(), new TypeReference<Map<String, GuildChannelNotificationList>>(){}, this.gcnls);
+		this.pendingUserNotifications = (ArrayList<UserNotification>) Utils.loadData(getPendingNotificationsFileName(), new TypeReference<ArrayList<UserNotification>>(){}, this.pendingUserNotifications);
 		setWaiting(false);
 	}
 	

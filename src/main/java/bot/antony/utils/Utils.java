@@ -1,10 +1,17 @@
 package bot.antony.utils;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Consumer;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -96,6 +103,27 @@ public class Utils {
 		return guild.getTextChannelById(Antony.getAntonyLogChannelId());
 	}
 	
+	public static boolean storeData(String filename, Object file) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			objectMapper.writeValue(new File(Antony.getFlatfilePath() + filename), file);
+			return true;
+			
+		} catch (IOException e) {
+			Antony.getLogger().error("Could not store " + filename + " data!", e);
+		}
+		return false;
+	}
+	
+	public static Object loadData(String filename, TypeReference<?> tr, Object objectOrigin) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		File file = new File(Antony.getFlatfilePath() + filename);
+		if(file.exists() && !file.isDirectory()) { 
+			return objectMapper.readValue(file, tr);
+		}
+		return objectOrigin;
+	}
+	
 	public static Consumer<? super Throwable> ERROR_RESPONSE_EXCEPTION_CONSUMER = exception -> {
 		if (exception instanceof ErrorResponseException) {
 			int errorCode = ((ErrorResponseException) exception).getErrorCode();
@@ -117,4 +145,12 @@ public class Utils {
 			exception.printStackTrace();
 		}
 	};
+	
+	public Role findRole(Member member, String name) {
+	    List<Role> roles = member.getRoles();
+	    return roles.stream()
+	                .filter(role -> role.getName().equals(name)) // filter by role name
+	                .findFirst() // take first result
+	                .orElse(null); // else return null
+	}
 }
