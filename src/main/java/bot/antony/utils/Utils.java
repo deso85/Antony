@@ -100,7 +100,19 @@ public class Utils {
 	}
 	
 	public static TextChannel getLogChannel(Guild guild) {
-		return guild.getTextChannelById(Antony.getAntonyLogChannelId());
+		if(guild.getChannels().stream().filter(c -> c.getIdLong() == Antony.getAntonyLogChannelId()).count() > 0) {
+			return guild.getTextChannelById(Antony.getAntonyLogChannelId());
+		} else {
+			return null;
+		}
+	}
+	
+	public static TextChannel getLogChannel(Guild guild, TextChannel altChannel) {
+		if(guild.getChannels().stream().filter(chan -> chan.getIdLong() == Antony.getAntonyLogChannelId()).count() > 0) {
+			return guild.getTextChannelById(Antony.getAntonyLogChannelId());
+		} else {
+			return altChannel;
+		}
 	}
 	
 	public static boolean storeData(String filename, Object file) {

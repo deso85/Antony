@@ -129,9 +129,10 @@ public class Emergency implements ServerCommand {
 				}
 				
 				eb.addField("Nützliche Links",
-						"Video: [Medoin vs. Milben](https://www.youtube.com/watch?v=eWLORXbY5SY)"
-						+ "\nVideo: [AntsCanda - Ants vs. Mites](https://www.youtube.com/watch?v=NLZxm7CuPpY) ab ca. der 2. Hälfte des Videos"
-						+ "\nVideo: [Ants Kingdom Asia: Zitronenscheibe gegen Milben](https://www.youtube.com/watch?v=tLmxFvE7qeE)"
+						"Video: [natur J' Ameisen: Milben bei Ameisen | Was tun?](https://youtu.be/bnOXuhYAF-0)"
+						+ "\nVideo: [Medoin vs. Milben](https://youtu.be/eWLORXbY5SY)"
+						+ "\nVideo: [AntsCanda - Ants vs. Mites](https://youtu.be/NLZxm7CuPpY) ab ca. der 2. Hälfte des Videos"
+						+ "\nVideo: [Ants Kingdom Asia: Zitronenscheibe gegen Milben](https://youtu.be/tLmxFvE7qeE)"
 						+ "\nWebsite: [Ameisenwiki](https://ameisenwiki.de/index.php/Milben)",
 						false);
 				

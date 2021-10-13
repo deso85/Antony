@@ -14,8 +14,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.commands.notification.NotificationController;
-import bot.antony.commands.softban.SoftbanController;
 import bot.antony.controller.BlackListController;
+import bot.antony.controller.SoftbanController;
 import bot.antony.controller.WatchListController;
 import bot.antony.controller.WhiteListController;
 import bot.antony.events.BlacklistNotification;
@@ -27,7 +27,6 @@ import bot.antony.events.OfferListener;
 import bot.antony.events.ReactionAddEvent;
 import bot.antony.events.WatchlistNotification;
 import bot.antony.events.softban.SoftbanFilterListener;
-import bot.antony.events.softban.SoftbanReactionListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -76,7 +75,6 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
 					.addEventListeners(new SoftbanFilterListener())
-					.addEventListeners(new SoftbanReactionListener())
 					.addEventListeners(new ReactionAddEvent())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled

@@ -30,10 +30,11 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("13.10.2021 - Version 3.1.0", "***" + cmdPrefix + "softban*** wurde angepasst. Die 🔨 Reaction wurde an das neue Reaction-Handling angepasst und kann nun auch zum entbannen verwendet werden."));
 				changeLog.add(new ChangeLogEntry("08.10.2021 - Version 3.0.0", "Das Reaction-Handling wurde komplett überarbeitet, einige Fehler ausgebessert und es gibt ein paar Änderungen beim Speichern und Laden von Daten."));
 				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.9.1", "Fehlerbehebungen für einzelne Funktionen (Downgrade von Libraries)."));
-				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.9.0", "***" + cmdPrefix + "whitelist wurde für Moderatoren hinzugefügt. Einige Klassen und Funktionen wurden refactored."));
-				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.8.0", "***" + cmdPrefix + "blacklist wurde für Moderatoren hinzugefügt, um schadhaften Content direkt herausfiltern zu lassen."));
+				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.9.0", "***" + cmdPrefix + "whitelist*** wurde für Moderatoren hinzugefügt. Einige Klassen und Funktionen wurden refactored."));
+				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.8.0", "***" + cmdPrefix + "blacklist*** wurde für Moderatoren hinzugefügt, um schadhaften Content direkt herausfiltern zu lassen."));
 				changeLog.add(new ChangeLogEntry("29.09.2021 - Version 2.7.1", "***" + cmdPrefix + "emergency schimmel*** bietet nun auch eine kurze Info zu Schimmel."));
 				changeLog.add(new ChangeLogEntry("24.09.2021 - Version 2.7.0", "***" + cmdPrefix + "showavatar*** kann nun auch mit der User ID aufgerufen werden. Zudem kann der Avatar nun auch von Moderatoren über eine Reaction abgerufen werden."));
 				changeLog.add(new ChangeLogEntry("31.08.2021 - Version 2.6.7", "Antony teilt nun allen mit, wenn jemand den Server verlassen hat."));

@@ -33,7 +33,7 @@ public class RedFlagReaction extends MessageReaction {
 		super(event);
 		allowedRoles = new ArrayList<>(Arrays.asList("everyone"));
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
-		responseChannel = event.getGuild().getTextChannelById(Antony.getAntonyLogChannelId());
+		responseChannel = Utils.getLogChannel(guild, message.getTextChannel());
 		userList = event.getReaction().retrieveUsers().complete();
 		if(Antony.isProdStage()) {
 			flagsToDeleteMessage = 5;

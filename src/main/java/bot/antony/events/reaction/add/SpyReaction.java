@@ -1,6 +1,6 @@
 package bot.antony.events.reaction.add;
 
-import bot.antony.Antony;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class SpyReaction extends MessageReaction {
@@ -11,7 +11,7 @@ public class SpyReaction extends MessageReaction {
 	public SpyReaction(MessageReactionAddEvent event) {
 		super(event);
 		allowedRoles.add("Intermorphe");
-		responseChannel = event.getGuild().getTextChannelById(Antony.getAntonyLogChannelId());
+		responseChannel = Utils.getLogChannel(guild, message.getTextChannel());
 	}
 	
 	// --------------------------------------------------

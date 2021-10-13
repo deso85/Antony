@@ -1,4 +1,4 @@
-package bot.antony.commands.softban;
+package bot.antony.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;

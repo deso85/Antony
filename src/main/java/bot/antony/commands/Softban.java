@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -12,33 +13,35 @@ import bot.antony.commands.types.ServerCommand;
 import bot.antony.events.softban.UserDataSB;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Softban implements ServerCommand {
 	
+	Guild guild;
 	TextChannel channel;
+	TextChannel logChannel;
 	
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		this.channel = channel;
-		List<String> allowedRoles = new ArrayList<String>();
+		guild = channel.getGuild();
+		logChannel = Utils.getLogChannel(guild, channel);
+		List<String> allowedRoles = new ArrayList<>(Arrays.asList("Admin", "Soldat", "Intermorphe"));	//Roles which may use the command
 		
-		//Roles which may use the command
-		allowedRoles.add("Admin");
-		allowedRoles.add("Soldat");
-		allowedRoles.add("Intermorphe");
-		
-		if(Utils.memberHasRole(member, allowedRoles)) {
+		if(member.hasPermission(Permission.BAN_MEMBERS) || Utils.memberHasRole(member, allowedRoles)) {
 			String[] userMessage = message.getContentDisplay().split(" ");
 			if (userMessage.length > 1) {
+				StringBuilder sb = new StringBuilder();
 				switch (userMessage[1].toLowerCase()) {
 				case "add":
 					if (userMessage.length > 3) {
 						UserDataSB user = new UserDataSB(userMessage[2], userMessage[3]);
 						if(Antony.getSoftbanController().ban(user)) {
-							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessage("🔨 User manually soft banned by " + member.getUser().getAsMention()).queue();
+							logChannel.sendMessage("🔨 User \"" + userMessage[3] + "\" manually soft banned by " + member.getUser().getAsMention()).queue();
 							Date date = new Date(System.currentTimeMillis());
 							SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 							EmbedBuilder eb = new EmbedBuilder()
@@ -47,7 +50,9 @@ public class Softban implements ServerCommand {
 									.setDescription(message.getContentDisplay())
 									.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + member.getGuild().getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
 									.setFooter(formatter.format(date));
-							member.getGuild().getTextChannelById(Antony.getAntonyLogChannelId()).sendMessageEmbeds(eb.build()).queue();
+							logChannel.sendMessageEmbeds(eb.build()).queue();
+						} else {
+							sb.append("User \"" + userMessage[3] + "\" konnte nicht gebannt werden.");
 						}
 					}
 					break;
@@ -55,22 +60,23 @@ public class Softban implements ServerCommand {
 					if (userMessage.length > 3) {
 						UserDataSB user = new UserDataSB(userMessage[2], userMessage[3]);
 						if(Antony.getSoftbanController().unban(user)) {
-							//System.out.println("Unbanned user");
+							sb.append("User \"" + userMessage[3] + "\" wurde entbannt.");
+						} else {
+							sb.append("User \"" + userMessage[3] + "\" konnte nicht entbannt werden.");
 						}
 					}
 					break;
 				case "list":
-					StringBuilder sb = new StringBuilder();
+					
 					if(Antony.getSoftbanController().getBannedUser().size() > 0) {
 						sb.append("Folgende User sind softbanned:\n");
 						for(UserDataSB user: Antony.getSoftbanController().getBannedUser()) {
 							sb.append("- " + user.getName() + " (" + user.getId() + ")\n");
-							//System.out.println("- " + user.getName() + " (" + user.getId() + ")");
 						}
 					} else {
 						sb.append("Es sind keine User softbanned.");
 					}
-					channel.sendMessage(sb.toString()).queue();
+					
 					break;
 				case "reload":
 					try {
@@ -90,6 +96,9 @@ public class Softban implements ServerCommand {
 					printHelp();
 					break;
 				}
+				if(sb.length() > 0) {
+					channel.sendMessage(sb.toString()).queue();
+				}
 			} else {
 				printHelp();
 			}
@@ -97,6 +106,6 @@ public class Softban implements ServerCommand {
 	}
 	
 	private void printHelp() {
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "softban (add | remove | list | reload | clear) [TextString]").queue();
+		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "softban (add | remove | list | reload | clear) [ID NAME]").queue();
 	}
 }

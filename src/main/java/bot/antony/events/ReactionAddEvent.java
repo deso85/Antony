@@ -26,6 +26,8 @@ public class ReactionAddEvent extends ListenerAdapter {
 				return new SpyReaction(event);
 			case "🖼️":
 				return new ImageReaction(event);
+			case "🔨":
+				return new HammerReaction(event);
 			case "redflag":
 				return new RedFlagReaction(event);
 			default:
