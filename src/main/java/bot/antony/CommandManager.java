@@ -4,7 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.Channel;
-import bot.antony.commands.Emergency;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Map;
 import bot.antony.commands.Notify;
@@ -16,6 +15,7 @@ import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserInfo;
+import bot.antony.commands.emergency.Emergency;
 import bot.antony.commands.lists.Blacklist;
 import bot.antony.commands.lists.Watchlist;
 import bot.antony.commands.lists.Whitelist;
