@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("13.10.2021 - Version 3.2.0", "Es wurden einige Verbesserungen am Quelltext vorgenommen."));
 				changeLog.add(new ChangeLogEntry("13.10.2021 - Version 3.1.0", "***" + cmdPrefix + "softban*** wurde angepasst. Die 🔨 Reaction wurde an das neue Reaction-Handling angepasst und kann nun auch zum entbannen verwendet werden."));
 				changeLog.add(new ChangeLogEntry("08.10.2021 - Version 3.0.0", "Das Reaction-Handling wurde komplett überarbeitet, einige Fehler ausgebessert und es gibt ein paar Änderungen beim Speichern und Laden von Daten."));
 				changeLog.add(new ChangeLogEntry("04.10.2021 - Version 2.9.1", "Fehlerbehebungen für einzelne Funktionen (Downgrade von Libraries)."));
