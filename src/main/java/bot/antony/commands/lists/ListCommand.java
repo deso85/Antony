@@ -1,6 +1,5 @@
 package bot.antony.commands.lists;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,14 +65,8 @@ public abstract class ListCommand implements ServerCommand {
 					break;
 					
 				case "reload":
-					try {
-						controller.initData();
-						channel.sendMessage("Die Liste wurde mit " + controller.getList().size() + " Einträgen neu geladen.").queue();
-					} catch (IOException e) {
-						channel.sendMessage("Oh no! Die Liste konnte nicht geladen werden 🙁").queue();
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					controller.initData();
+					channel.sendMessage("Die Liste wurde mit " + controller.getList().size() + " Einträgen neu geladen.").queue();
 					break;
 					
 				case "clear":

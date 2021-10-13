@@ -1,7 +1,6 @@
 package bot.antony.commands;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ public class Softban implements ServerCommand {
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		this.channel = channel;
 		guild = channel.getGuild();
-		logChannel = Utils.getLogChannel(guild, channel);
+		logChannel = Utils.getLogChannel(channel);
 		List<String> allowedRoles = new ArrayList<>(Arrays.asList("Admin", "Soldat", "Intermorphe"));	//Roles which may use the command
 		
 		if(member.hasPermission(Permission.BAN_MEMBERS) || Utils.memberHasRole(member, allowedRoles)) {
@@ -79,22 +78,19 @@ public class Softban implements ServerCommand {
 					
 					break;
 				case "reload":
-					try {
-						Antony.getSoftbanController().initData();
-						channel.sendMessage("Die Liste wurde mit " + Antony.getSoftbanController().getBannedUser().size() + " Einträgen neu geladen.").queue();
-					} catch (IOException e) {
-						channel.sendMessage("Oh no! Die Liste konnte nicht geladen werden 🙁").queue();
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					Antony.getSoftbanController().initData();
+					channel.sendMessage("Die Liste wurde mit " + Antony.getSoftbanController().getBannedUser().size() + " Einträgen neu geladen.").queue();
 					break;
+					
 				case "clear":
 					Antony.getSoftbanController().setBannedUser(new ArrayList<UserDataSB>());
 					Antony.getSoftbanController().persistData();
 					break;
+					
 				default:
 					printHelp();
 					break;
+					
 				}
 				if(sb.length() > 0) {
 					channel.sendMessage(sb.toString()).queue();

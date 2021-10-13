@@ -8,5 +8,6 @@ public class WhiteListController extends ListController {
 	public WhiteListController() {
 		super();
 		fileName = "antony.whitelist.json";
+		initData();
 	}
 }

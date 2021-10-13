@@ -97,7 +97,7 @@ public class Notify implements ServerCommand {
 				eb = addEbFields(guild, channelsRemovedFrom, eb, "Benachrichtigungen deaktiviert");
 				eb = addEbFields(guild, channelsUnchanged, eb, "Keine Änderungen");
 				
-				Utils.sendPM(message.getAuthor(), eb);
+				Utils.sendPM(message.getMember(), eb);
 				
 				message.addReaction("👌").queue();
 			}
@@ -131,7 +131,7 @@ public class Notify implements ServerCommand {
 							.setDescription(msgText.toString())
 							.setFooter("Antony | Version " + Antony.getVersion());
 					
-					Utils.sendPM(message.getAuthor(), eb);
+					Utils.sendPM(message.getMember(), eb);
 					
 					break;
 				case "off": // if user wants to receive no more notifications for this guild

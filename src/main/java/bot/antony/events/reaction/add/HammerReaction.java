@@ -19,7 +19,7 @@ public class HammerReaction extends MessageReaction {
 	public HammerReaction(MessageReactionAddEvent event) {
 		super(event);
 		allowedRoles.add("Intermorphe");
-		responseChannel = Utils.getLogChannel(guild, message.getTextChannel());
+		responseChannel = Utils.getLogChannel(message.getTextChannel());
 	}
 	
 	

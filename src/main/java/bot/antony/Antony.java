@@ -10,9 +10,6 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.BlackListController;
 import bot.antony.controller.SoftbanController;
@@ -122,11 +119,6 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("] ");
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
-			notificationController.initData();
-			whitelistController.initData();
-			watchlistController.initData();
-			blacklistController.initData();
-			softbanController.initData();
 			
 			//Thread which is used to send channel notifications 
 			Thread sendPendingNotifications = new Thread() {
@@ -150,10 +142,6 @@ public class Antony extends ListenerAdapter {
 			logger.error("Could not login to Discord!", e);
 		} catch (InterruptedException e) {
 			logger.error("Antony thread is interrupted while waiting!", e);
-		} catch (JsonParseException | JsonMappingException e) {
-			logger.error("Could not parse GCNL data!", e);
-		} catch (IOException e) {
-			logger.error("Could not read GCNL file!", e);
 		}/* catch (SQLException e) {
 		}
 			logger.error("Could not connect to database!", e);

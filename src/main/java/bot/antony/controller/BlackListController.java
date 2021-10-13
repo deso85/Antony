@@ -8,5 +8,6 @@ public class BlackListController extends ListController {
 	public BlackListController() {
 		super();
 		fileName = "antony.blacklist.json";
+		initData();
 	}
 }

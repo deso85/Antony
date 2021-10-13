@@ -1,20 +1,29 @@
 package bot.antony.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import bot.antony.events.softban.UserDataSB;
 import bot.antony.utils.Utils;
 
 public class SoftbanController {
 	private List<UserDataSB> bannedUser = new ArrayList<UserDataSB>();
-	private String bannedUserFile = "antony.softbanneduser.json";
+	private String fileName;
 	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public SoftbanController() {
+		super();
+		fileName = "antony.softbanneduser.json";
+		initData();
+	}
+	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	public boolean ban(UserDataSB user) {
 		if(!bannedUser.contains(user)) {
 			bannedUser.add(user);
@@ -34,14 +43,17 @@ public class SoftbanController {
 	}
 	
 	public boolean persistData() {
-		return Utils.storeData(bannedUserFile, bannedUser);
+		return Utils.storeData(fileName, bannedUser);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void initData() throws JsonParseException, JsonMappingException, IOException{
-		this.bannedUser = (List<UserDataSB>) Utils.loadData(bannedUserFile, new TypeReference<List<UserDataSB>>(){}, bannedUser);
+	public void initData() {
+		this.bannedUser = (List<UserDataSB>) Utils.loadData(fileName, new TypeReference<List<UserDataSB>>(){}, bannedUser);
 	}
 
+	// --------------------------------------------------
+	// Getter & Setter
+	// --------------------------------------------------
 	public List<UserDataSB> getBannedUser() {
 		return bannedUser;
 	}
@@ -50,12 +62,12 @@ public class SoftbanController {
 		this.bannedUser = bannedUser;
 	}
 
-	public String getBannedUserFile() {
-		return bannedUserFile;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setBannedUserFile(String bannedUserFile) {
-		this.bannedUserFile = bannedUserFile;
+	public void setFileName(String filename) {
+		this.fileName = filename;
 	}
 	
 	

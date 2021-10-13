@@ -6,6 +6,7 @@ import java.util.List;
 
 import bot.antony.Antony;
 import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -42,6 +43,9 @@ public class MessageReaction {
 	// Functions
 	// --------------------------------------------------
 	public boolean shallTrigger() {
+		if(reactor.hasPermission(Permission.ADMINISTRATOR) || reactor.hasPermission(Permission.BAN_MEMBERS)) {
+			return true;
+		}
 		return Utils.memberHasRole(reactor, allowedRoles);
 	}
 	

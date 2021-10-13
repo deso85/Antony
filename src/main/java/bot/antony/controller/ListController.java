@@ -39,7 +39,7 @@ public class ListController {
 	 * @throws	IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public void initData() throws JsonParseException, JsonMappingException, IOException {
+	public void initData() {
 		this.list = (List<String>) Utils.loadData(fileName, new TypeReference<List<String>>(){}, this.list);
 	}
 	

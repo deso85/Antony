@@ -8,5 +8,6 @@ public class WatchListController extends ListController {
 	public WatchListController() {
 		super();
 		fileName = "antony.watchlist.json";
+		initData();
 	}
 }

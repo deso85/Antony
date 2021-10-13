@@ -1,7 +1,6 @@
 package bot.antony.events.reaction.add;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,7 @@ public class RedFlagReaction extends MessageReaction {
 		super(event);
 		allowedRoles = new ArrayList<>(Arrays.asList("everyone"));
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
-		responseChannel = Utils.getLogChannel(guild, message.getTextChannel());
+		responseChannel = Utils.getLogChannel(message.getTextChannel());
 		userList = event.getReaction().retrieveUsers().complete();
 		if(Antony.isProdStage()) {
 			flagsToDeleteMessage = 5;
@@ -134,12 +133,7 @@ public class RedFlagReaction extends MessageReaction {
 	}
 	
 	public void loadDeletionPair() {
-		try {
-			delPair = (DeletionPair) Utils.loadData(deletionPairFileName, new TypeReference<DeletionPair>(){}, delPair);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		delPair = (DeletionPair) Utils.loadData(deletionPairFileName, new TypeReference<DeletionPair>(){}, delPair);
 	}
 }
 

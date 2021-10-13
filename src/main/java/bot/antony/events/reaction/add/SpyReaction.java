@@ -11,7 +11,7 @@ public class SpyReaction extends MessageReaction {
 	public SpyReaction(MessageReactionAddEvent event) {
 		super(event);
 		allowedRoles.add("Intermorphe");
-		responseChannel = Utils.getLogChannel(guild, message.getTextChannel());
+		responseChannel = Utils.getLogChannel(message.getTextChannel());
 	}
 	
 	// --------------------------------------------------

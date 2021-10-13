@@ -15,36 +15,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 public class Utils {
 
-	public static void sendPM(User user, EmbedBuilder eb) {
+	public static void sendPM(Member member, EmbedBuilder eb) {
 		try {
-			user.openPrivateChannel().complete().sendMessageEmbeds(eb.build()).complete();
+			member.getUser().openPrivateChannel().complete().sendMessageEmbeds(eb.build()).complete();
 		} catch (ErrorResponseException e) {
 			LocalDateTime now = LocalDateTime.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 			
-			TextChannel channel = (TextChannel) user.getJDA().getGuildChannelById(ChannelType.TEXT, Antony.getAntonyLogChannelId());
+			TextChannel channel = getLogChannel(member.getGuild());
+			
 			channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
 			eb = new EmbedBuilder()
 					.setColor(Color.red)
-					.setAuthor(user.getAsTag() + " | ID: " + user.getId(), null, user.getAvatarUrl())
-					.setDescription("Ich konnte keine PN an den User " + user.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
+					.setAuthor(member.getUser().getAsTag() + " | ID: " + member.getId(), null, member.getUser().getAvatarUrl())
+					.setDescription("Ich konnte keine PN an den User " + member.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
 							+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
 							+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
 							+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
 					.setFooter(now.format(formatter) + " Uhr");
 			channel.sendMessageEmbeds(eb.build()).complete();
 			
-			Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + user.getAsTag() + " (ID " + user.getId() + ")");
+			Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + member.getUser().getAsTag() + " (ID " + member.getId() + ")");
 		}
 	}
 	
@@ -107,9 +106,9 @@ public class Utils {
 		}
 	}
 	
-	public static TextChannel getLogChannel(Guild guild, TextChannel altChannel) {
-		if(guild.getChannels().stream().filter(chan -> chan.getIdLong() == Antony.getAntonyLogChannelId()).count() > 0) {
-			return guild.getTextChannelById(Antony.getAntonyLogChannelId());
+	public static TextChannel getLogChannel(TextChannel altChannel) {
+		if(altChannel.getGuild().getChannels().stream().filter(chan -> chan.getIdLong() == Antony.getAntonyLogChannelId()).count() > 0) {
+			return altChannel.getGuild().getTextChannelById(Antony.getAntonyLogChannelId());
 		} else {
 			return altChannel;
 		}
@@ -122,16 +121,22 @@ public class Utils {
 			return true;
 			
 		} catch (IOException e) {
-			Antony.getLogger().error("Could not store " + filename + " data!", e);
+			Antony.getLogger().error("Could not store \"" + Antony.getFlatfilePath() + filename + "\"!", e);
 		}
 		return false;
 	}
 	
-	public static Object loadData(String filename, TypeReference<?> tr, Object objectOrigin) throws JsonParseException, JsonMappingException, IOException {
+	public static Object loadData(String filename, TypeReference<?> tr, Object objectOrigin) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		File file = new File(Antony.getFlatfilePath() + filename);
 		if(file.exists() && !file.isDirectory()) { 
-			return objectMapper.readValue(file, tr);
+			try {
+				return objectMapper.readValue(file, tr);
+			} catch (JsonParseException | JsonMappingException e) {
+				Antony.getLogger().error("Could not parse " + Antony.getFlatfilePath() + filename + " data!", e);
+			} catch (IOException e) {
+				Antony.getLogger().error("Could not read " + Antony.getFlatfilePath() + filename + "!", e);
+			}
 		}
 		return objectOrigin;
 	}

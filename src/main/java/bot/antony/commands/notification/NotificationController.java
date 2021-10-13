@@ -20,7 +20,7 @@ import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Member;
 
 /**
  * NotificationController controls all notifications
@@ -38,17 +38,14 @@ public class NotificationController {
 	// Constructor
 	// --------------------------------------------------
 	public NotificationController() {
-		setNotificationListConfigFileName("antony.notifications.config.json");
-		setPendingNotificationsFileName("antony.notifications.pending.json");
-		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
-		
-		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
+		this("antony.notifications.config.json", "antony.notifications.pending.json");
 	}
 	
 	public NotificationController(String configFileName, String pendingFileName) {
 		setNotificationListConfigFileName(configFileName);
 		setPendingNotificationsFileName(pendingFileName);
 		setNextUpdateDate(LocalDateTime.now().plusMinutes(Antony.getNotificationPendingTime()).truncatedTo(ChronoUnit.HOURS));
+		initData();
 		
 		Antony.getLogger().info("Created notification controller. Next notification: " + nextUpdateDateTime.format(dtFormatter));
 	}
@@ -338,7 +335,7 @@ public class NotificationController {
 					//If user is a member of the guild
 					if(guild.getMemberById(userData.getId()) != null && channels.size() > 0) {
 					
-						User user = guild.getMemberById(userData.getId()).getUser();
+						Member member = guild.getMemberById(userData.getId());
 						StringBuilder logMessage = new StringBuilder();
 						logMessage.append("On server [" + guildData.toString() + "] ");
 						logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
@@ -389,7 +386,7 @@ public class NotificationController {
 							eb.addField("", text, false);
 						}
 						
-						Utils.sendPM(user, eb);
+						Utils.sendPM(member, eb);
 	
 					}
 				}
@@ -430,7 +427,7 @@ public class NotificationController {
 	 * @throws	IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public void initData() throws JsonParseException, JsonMappingException, IOException {
+	public void initData() {
 		while(isWaiting()) {
 			try {
 				Thread.sleep(5000);
