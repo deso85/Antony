@@ -43,12 +43,12 @@ public class SoftbanController {
 	}
 	
 	public boolean persistData() {
-		return Utils.storeData(fileName, bannedUser);
+		return Utils.storeJSONData(fileName, bannedUser);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void initData() {
-		this.bannedUser = (List<UserDataSB>) Utils.loadData(fileName, new TypeReference<List<UserDataSB>>(){}, bannedUser);
+		this.bannedUser = (List<UserDataSB>) Utils.loadJSONData(fileName, new TypeReference<List<UserDataSB>>(){}, bannedUser);
 	}
 
 	// --------------------------------------------------

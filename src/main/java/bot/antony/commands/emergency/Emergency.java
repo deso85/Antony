@@ -51,7 +51,7 @@ public class Emergency implements ServerCommand {
 			
 			// Load data and prepare output
 			EmergencyData data = new EmergencyData();
-			data = (EmergencyData) Utils.loadData(fileName.toString(), new TypeReference<EmergencyData>(){}, data);
+			data = (EmergencyData) Utils.loadJSONData(fileName.toString(), new TypeReference<EmergencyData>(){}, data);
 			if(data.hasTitle()) {
 				EmbedBuilder eb = new EmbedBuilder()
 					.setColor(Antony.getBaseColor())

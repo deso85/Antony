@@ -29,7 +29,7 @@ public class ListController {
 	 * @return	TRUE if data has been stored or FALSE if not
 	 */
 	public boolean persistData() {
-		return Utils.storeData(fileName, this.list);
+		return Utils.storeJSONData(fileName, this.list);
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class ListController {
 	 */
 	@SuppressWarnings("unchecked")
 	public void initData() {
-		this.list = (List<String>) Utils.loadData(fileName, new TypeReference<List<String>>(){}, this.list);
+		this.list = (List<String>) Utils.loadJSONData(fileName, new TypeReference<List<String>>(){}, this.list);
 	}
 	
 	public String list() {

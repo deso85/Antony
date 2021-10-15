@@ -42,7 +42,7 @@ public class Antony extends ListenerAdapter {
 	private static String cmdPrefix = getProperty("command.prefix");
 	private static long notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
 	private static String version = getProperty("bot.version");
-	private static String flatfilePath = getProperty("flatfile.path");
+	private static String dataPath = getProperty("flatfile.path");
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
 	private static NotificationController notificationController = new NotificationController();
@@ -106,26 +106,21 @@ public class Antony extends ListenerAdapter {
 
 			
 			// Create log output after startup
-			StringBuilder postStartLogEntry = new StringBuilder();
-			postStartLogEntry.append("[");
+			String stage = "PROD";
 			if(prodStage) {
-				postStartLogEntry.append("PROD");
-				//TODO: Has to be variable
-				antonyLogChannelId = 824652244464173096L;
+				antonyLogChannelId = 824652244464173096L; //TODO: load from db/config file
 			} else {
-				postStartLogEntry.append("DEV/TEST");
+				stage = "DEV/TEST";
 				antonyLogChannelId = 824405937979654154L;
 			}
-			postStartLogEntry.append("] ");
-			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
-			logger.info(postStartLogEntry.toString());
+			String postStartLogEntry = "[" + stage + "] Antony (v" + getVersion() + ") started";
+			logger.info(postStartLogEntry);
 			
 			//Thread which is used to send channel notifications 
 			Thread sendPendingNotifications = new Thread() {
 				public void run() {
 					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
 						try {
-							
 							//System.out.println(counter + " Thread Running");
 							notificationController.sendPendingNotifications(jda);
 							Thread.sleep(60000);	//60sec
@@ -143,13 +138,16 @@ public class Antony extends ListenerAdapter {
 		} catch (InterruptedException e) {
 			logger.error("Antony thread is interrupted while waiting!", e);
 		}/* catch (SQLException e) {
-		}
 			logger.error("Could not connect to database!", e);
 			//e1.printStackTrace();
 		}*/
 		
 	}
 
+	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 
 	/**
 	 * Function to get value for key from antony.properties file
@@ -248,8 +246,8 @@ public class Antony extends ListenerAdapter {
 		return prodStage;
 	}
 	
-	public static String getFlatfilePath() {
-		return flatfilePath;
+	public static String getDataPath() {
+		return dataPath;
 	}
 	
 	/**

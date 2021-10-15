@@ -114,28 +114,28 @@ public class Utils {
 		}
 	}
 	
-	public static boolean storeData(String filename, Object file) {
+	public static boolean storeJSONData(String filename, Object file) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			objectMapper.writeValue(new File(Antony.getFlatfilePath() + filename), file);
+			objectMapper.writeValue(new File(Antony.getDataPath() + filename), file);
 			return true;
 			
 		} catch (IOException e) {
-			Antony.getLogger().error("Could not store \"" + Antony.getFlatfilePath() + filename + "\"!", e);
+			Antony.getLogger().error("Could not store \"" + Antony.getDataPath() + filename + "\"!", e);
 		}
 		return false;
 	}
 	
-	public static Object loadData(String filename, TypeReference<?> tr, Object objectOrigin) {
+	public static Object loadJSONData(String filename, TypeReference<?> tr, Object objectOrigin) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		File file = new File(Antony.getFlatfilePath() + filename);
+		File file = new File(Antony.getDataPath() + filename);
 		if(file.exists() && !file.isDirectory()) { 
 			try {
 				return objectMapper.readValue(file, tr);
 			} catch (JsonParseException | JsonMappingException e) {
-				Antony.getLogger().error("Could not parse " + Antony.getFlatfilePath() + filename + " data!", e);
+				Antony.getLogger().error("Could not parse " + Antony.getDataPath() + filename + " data!", e);
 			} catch (IOException e) {
-				Antony.getLogger().error("Could not read " + Antony.getFlatfilePath() + filename + "!", e);
+				Antony.getLogger().error("Could not read " + Antony.getDataPath() + filename + "!", e);
 			}
 		}
 		return objectOrigin;

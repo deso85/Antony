@@ -413,7 +413,7 @@ public class NotificationController {
 		}
 		setWaiting(true);
 		boolean retVal = false;
-		if (Utils.storeData(getNotificationListConfigFileName(), getGCNLs()) &&	Utils.storeData(getPendingNotificationsFileName(), getPendingUserNotifications())) {
+		if (Utils.storeJSONData(getNotificationListConfigFileName(), getGCNLs()) &&	Utils.storeJSONData(getPendingNotificationsFileName(), getPendingUserNotifications())) {
 			retVal = true;
 		}
 		setWaiting(false);
@@ -437,8 +437,8 @@ public class NotificationController {
 			}
 		}
 		setWaiting(true);
-		this.gcnls = (Map<String, GuildChannelNotificationList>) Utils.loadData(getNotificationListConfigFileName(), new TypeReference<Map<String, GuildChannelNotificationList>>(){}, this.gcnls);
-		this.pendingUserNotifications = (ArrayList<UserNotification>) Utils.loadData(getPendingNotificationsFileName(), new TypeReference<ArrayList<UserNotification>>(){}, this.pendingUserNotifications);
+		this.gcnls = (Map<String, GuildChannelNotificationList>) Utils.loadJSONData(getNotificationListConfigFileName(), new TypeReference<Map<String, GuildChannelNotificationList>>(){}, this.gcnls);
+		this.pendingUserNotifications = (ArrayList<UserNotification>) Utils.loadJSONData(getPendingNotificationsFileName(), new TypeReference<ArrayList<UserNotification>>(){}, this.pendingUserNotifications);
 		setWaiting(false);
 	}
 	
