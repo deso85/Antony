@@ -1,16 +1,25 @@
 package bot.antony.commands;
 
+import java.io.File;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -130,7 +139,58 @@ public class UserInfo implements ServerCommand {
 	}
 
 	private EmbedBuilder getUserEB() {
+		LocalDateTime date;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+		String subfolder = "guilds" + File.separator + guild.getId() + " - " + guild.getName() + File.separator + "user" + File.separator;
+		String fileName = getMember().getId() + ".json";
+		UserData user = new UserData();
+		
+		//Load user data if exists
+		user = (UserData) Utils.loadJSONData(subfolder, fileName, new TypeReference<UserData>(){}, user);
+		
+		//If it is the first nickname change
+		if(user.getId() == null || user.getId() == "") {
+			user = new UserData(getMember());
+		}
+		
+		//Set last online
+		String lastOnline;
+		if(getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
+			lastOnline = "jetzt";
+			user.setLastOnline(System.currentTimeMillis());
+		} else {
+			if(user.getLastOnline() != null) {
+				date = LocalDateTime.ofInstant(Instant.ofEpochMilli(user.getLastOnline()), ZoneId.systemDefault());
+				lastOnline = date.format(formatter);
+			} else {
+				lastOnline = "?";
+			}
+		}
+		
+		//Set nicknames
+		StringBuilder nicknames = new StringBuilder();
+		int counter = 0;
+		TreeMap<Long, String> sorted = new TreeMap<Long, String>(Collections.reverseOrder());
+		sorted.putAll(user.getNicknames());
+		for (HashMap.Entry<Long, String> entry: sorted.entrySet()) {
+			counter++;
+			date = LocalDateTime.ofInstant(Instant.ofEpochMilli(entry.getKey().longValue()), ZoneId.systemDefault());
+			nicknames.append(date.format(formatter) + ": ");
+			if(entry.getValue() != null) {
+				nicknames.append(entry.getValue() + "\n");
+			} else {
+				nicknames.append("-\n");
+			}
+			if(counter == 5) {
+				break;
+			}
+		}
+		if(nicknames.length() == 0) {
+			nicknames.append("-");
+		}
+		
+		//Save updated user data
+		Utils.storeJSONData(subfolder, fileName, user);
 
 		//Build Title or Author
 		StringBuilder ebHeadline = new StringBuilder();
@@ -170,6 +230,8 @@ public class UserInfo implements ServerCommand {
 						+ ChronoUnit.DAYS.between(getMember().getTimeCreated(), OffsetDateTime.now()) + " Tagen)", true)
 				.addField("Server beigetreten", getMember().getTimeJoined().format(formatter) + "\n(Vor "
 						+ ChronoUnit.DAYS.between(getMember().getTimeJoined(), OffsetDateTime.now()) + " Tagen)", true)*/
+				.addField("Zuletzt online gesehen", lastOnline, false)
+				.addField("Letzte Nicknames", nicknames.toString(), false)
 				.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());
 		
 		//Build Roles String

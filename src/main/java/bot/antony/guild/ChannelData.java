@@ -1,4 +1,4 @@
-package bot.antony.guild.channel;
+package bot.antony.guild;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 

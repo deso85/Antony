@@ -1,4 +1,6 @@
-package bot.antony.guild.user;
+package bot.antony.guild;
+
+import java.util.HashMap;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -9,7 +11,8 @@ import net.dv8tion.jda.api.entities.User;
 public class UserData {
 	private String id;
 	private String name;
-	
+	private HashMap<Long, String> nicknames = new HashMap<Long, String>();
+	private Long lastOnline;
 	
 	// --------------------------------------------------
 	// Constructor
@@ -71,6 +74,10 @@ public class UserData {
 		return false;
 	}
 	
+	public void addNickname(Long time, String nick) {
+		nicknames.put(time, nick);
+	}
+	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
@@ -88,5 +95,21 @@ public class UserData {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public HashMap<Long, String> getNicknames() {
+		return nicknames;
+	}
+
+	public void setNicknames(HashMap<Long, String> nicknames) {
+		this.nicknames = nicknames;
+	}
+
+	public Long getLastOnline() {
+		return lastOnline;
+	}
+
+	public void setLastOnline(Long lastOnline) {
+		this.lastOnline = lastOnline;
 	}
 }

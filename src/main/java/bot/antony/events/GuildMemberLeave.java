@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import bot.antony.Antony;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.guild.GuildData;
-import bot.antony.guild.user.UserData;
+import bot.antony.guild.UserData;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

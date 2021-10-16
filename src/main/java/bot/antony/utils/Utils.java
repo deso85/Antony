@@ -114,6 +114,15 @@ public class Utils {
 		}
 	}
 	
+	public static boolean storeJSONData(String subFolderPath, String filename, Object file) {
+		File directory = new File(Antony.getDataPath() + subFolderPath);
+	    if (! directory.exists()){
+	        directory.mkdirs();
+	    }
+		
+		return storeJSONData(subFolderPath + filename, file);
+	}
+	
 	public static boolean storeJSONData(String filename, Object file) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -124,6 +133,15 @@ public class Utils {
 			Antony.getLogger().error("Could not store \"" + Antony.getDataPath() + filename + "\"!", e);
 		}
 		return false;
+	}
+	
+	public static Object loadJSONData(String subFolderPath, String filename, TypeReference<?> tr, Object objectOrigin) {
+		File directory = new File(Antony.getDataPath() + subFolderPath);
+	    if (! directory.exists()){
+	        directory.mkdirs();
+	    }
+		
+	    return loadJSONData(subFolderPath + filename, tr, objectOrigin);
 	}
 	
 	public static Object loadJSONData(String filename, TypeReference<?> tr, Object objectOrigin) {

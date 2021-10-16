@@ -6,8 +6,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bot.antony.Antony;
+import bot.antony.guild.ChannelData;
 import bot.antony.guild.GuildData;
-import bot.antony.guild.channel.ChannelData;
 
 /**
  * GuildChannelNotificationList stores a List with all discord servers including the ChannelNotificationLists

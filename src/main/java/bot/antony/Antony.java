@@ -19,9 +19,12 @@ import bot.antony.events.BlacklistNotification;
 import bot.antony.events.CommandListener;
 import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
+import bot.antony.events.GuildMemberUpdateNickname;
+import bot.antony.events.GuildUpdateName;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.OfferListener;
 import bot.antony.events.ReactionAddEvent;
+import bot.antony.events.UserUpdateOnlineStatus;
 import bot.antony.events.WatchlistNotification;
 import bot.antony.events.softban.SoftbanFilterListener;
 import net.dv8tion.jda.api.JDA;
@@ -71,6 +74,9 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
+					.addEventListeners(new GuildMemberUpdateNickname())
+					.addEventListeners(new GuildUpdateName())
+					.addEventListeners(new UserUpdateOnlineStatus())
 					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new ReactionAddEvent())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds

@@ -2,9 +2,9 @@ package bot.antony.commands.notification;
 
 import java.util.ArrayList;
 
+import bot.antony.guild.ChannelData;
 import bot.antony.guild.GuildData;
-import bot.antony.guild.channel.ChannelData;
-import bot.antony.guild.user.UserData;
+import bot.antony.guild.UserData;
 
 public class UserNotification {
 	UserData user;

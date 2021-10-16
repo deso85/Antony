@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bot.antony.Antony;
-import bot.antony.guild.channel.ChannelData;
-import bot.antony.guild.user.UserData;
+import bot.antony.guild.ChannelData;
+import bot.antony.guild.UserData;
 
 /**
  * ChannelNotificationList stores all user which have to be notified on updates for a specific channel
