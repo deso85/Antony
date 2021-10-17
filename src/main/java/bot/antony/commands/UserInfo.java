@@ -155,7 +155,9 @@ public class UserInfo implements ServerCommand {
 		
 		//Set last online
 		String lastOnline;
-		if(getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
+		if(getMember().getOnlineStatus().equals(OnlineStatus.ONLINE) ||
+				getMember().getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB) ||
+				getMember().getOnlineStatus().equals(OnlineStatus.IDLE)) {
 			lastOnline = "jetzt";
 			user.setLastOnline(System.currentTimeMillis());
 		} else {
@@ -170,9 +172,9 @@ public class UserInfo implements ServerCommand {
 		//Set nicknames
 		StringBuilder nicknames = new StringBuilder();
 		int counter = 0;
-		TreeMap<Long, String> sorted = new TreeMap<Long, String>(Collections.reverseOrder());
-		sorted.putAll(user.getNicknames());
-		for (HashMap.Entry<Long, String> entry: sorted.entrySet()) {
+		TreeMap<Long, String> sortedNicknames = new TreeMap<Long, String>(Collections.reverseOrder());
+		sortedNicknames.putAll(user.getNicknames());
+		for (HashMap.Entry<Long, String> entry: sortedNicknames.entrySet()) {
 			counter++;
 			date = LocalDateTime.ofInstant(Instant.ofEpochMilli(entry.getKey().longValue()), ZoneId.systemDefault());
 			nicknames.append(date.format(formatter) + ": ");
@@ -185,8 +187,24 @@ public class UserInfo implements ServerCommand {
 				break;
 			}
 		}
-		if(nicknames.length() == 0) {
-			nicknames.append("-");
+		
+		//Set names
+		StringBuilder names = new StringBuilder();
+		counter = 0;
+		TreeMap<Long, String> sortedNames = new TreeMap<Long, String>(Collections.reverseOrder());
+		sortedNames.putAll(user.getNames());
+		for (HashMap.Entry<Long, String> entry: sortedNames.entrySet()) {
+			counter++;
+			date = LocalDateTime.ofInstant(Instant.ofEpochMilli(entry.getKey().longValue()), ZoneId.systemDefault());
+			names.append(date.format(formatter) + ": ");
+			if(entry.getValue() != null) {
+				names.append(entry.getValue() + "\n");
+			} else {
+				names.append("-\n");
+			}
+			if(counter == 5) {
+				break;
+			}
 		}
 		
 		//Save updated user data
@@ -230,9 +248,16 @@ public class UserInfo implements ServerCommand {
 						+ ChronoUnit.DAYS.between(getMember().getTimeCreated(), OffsetDateTime.now()) + " Tagen)", true)
 				.addField("Server beigetreten", getMember().getTimeJoined().format(formatter) + "\n(Vor "
 						+ ChronoUnit.DAYS.between(getMember().getTimeJoined(), OffsetDateTime.now()) + " Tagen)", true)*/
-				.addField("Zuletzt online gesehen", lastOnline, false)
-				.addField("Letzte Nicknames", nicknames.toString(), false)
-				.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());
+				.addField("Zuletzt online gesehen", lastOnline, false);
+		
+		if(names.length() >= 1) {
+			eb.addField("Bekannte Namen", names.toString(), false);
+		}
+		if(nicknames.length() >= 1) {
+			eb.addField("Bekannte Nicknames", nicknames.toString(), false);
+		}
+				
+		eb.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());
 		
 		//Build Roles String
 		if(getMember().getRoles().size() > 0) {

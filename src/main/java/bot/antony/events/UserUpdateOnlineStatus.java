@@ -15,7 +15,9 @@ public class UserUpdateOnlineStatus extends ListenerAdapter {
 		Long now = System.currentTimeMillis();
 		
 		//If user isn't online anymore
-		if(event.getOldOnlineStatus().equals(OnlineStatus.ONLINE)) {
+		if(event.getOldOnlineStatus().equals(OnlineStatus.ONLINE) ||
+				event.getOldOnlineStatus().equals(OnlineStatus.IDLE) ||
+				event.getOldOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB)) {
 			user.setLastOnline(now);
 		
 			//Save updated user data

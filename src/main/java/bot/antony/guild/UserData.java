@@ -12,6 +12,7 @@ public class UserData {
 	private String id;
 	private String name;
 	private HashMap<Long, String> nicknames = new HashMap<Long, String>();
+	private HashMap<Long, String> names = new HashMap<Long, String>();
 	private Long lastOnline;
 	
 	// --------------------------------------------------
@@ -103,6 +104,14 @@ public class UserData {
 
 	public void setNicknames(HashMap<Long, String> nicknames) {
 		this.nicknames = nicknames;
+	}
+
+	public HashMap<Long, String> getNames() {
+		return names;
+	}
+
+	public void setNames(HashMap<Long, String> names) {
+		this.names = names;
 	}
 
 	public Long getLastOnline() {

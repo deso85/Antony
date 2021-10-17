@@ -20,6 +20,7 @@ public class UserUpdateName extends ListenerAdapter {
 			if(member != null) {
 				UserData user = Utils.loadUserData(member);
 				user.setName(event.getNewName());
+				user.getNames().put(System.currentTimeMillis(), event.getNewName());
 				Utils.storeUserData(user, guild);
 			}
 		}
