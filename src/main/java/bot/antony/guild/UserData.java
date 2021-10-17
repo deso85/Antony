@@ -30,17 +30,23 @@ public class UserData {
 	public UserData(String id, String name) {
 		setId(id);
 		setName(name);
+		addName(System.currentTimeMillis(), name);
 	}
 	
 	public UserData(User user) {
 		setId(user.getId());
 		setName(user.getName());
+		addName(System.currentTimeMillis(), user.getName());
 	}
 	
 	public UserData(Member member) {
 		User user = member.getUser();
 		setId(user.getId());
 		setName(user.getName());
+		addName(System.currentTimeMillis(), user.getName());
+		if(member.getNickname() != null && member.getNickname() != "") {
+			addNickname(System.currentTimeMillis(), member.getNickname());
+		}
 	}
 	
 	
@@ -77,6 +83,10 @@ public class UserData {
 	
 	public void addNickname(Long time, String nick) {
 		nicknames.put(time, nick);
+	}
+	
+	public void addName(Long time, String name) {
+		names.put(time, name);
 	}
 	
 	// --------------------------------------------------

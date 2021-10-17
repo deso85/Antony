@@ -171,6 +171,7 @@ public class Utils {
 		//If it is the first nickname change
 		if(user.getId() == null || user.getId() == "") {
 			user = new UserData(member);
+			storeUserData(user, member.getGuild());
 		}
 		
 		return user;

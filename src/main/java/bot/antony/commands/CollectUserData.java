@@ -21,13 +21,13 @@ public class CollectUserData implements ServerCommand {
 			boolean store = false;
 			UserData user = Utils.loadUserData(memba);
 			if(user.getNames().size() == 0) {
-				user.getNames().put(System.currentTimeMillis(), user.getName());
+				user.addName(System.currentTimeMillis(), user.getName());
 				store = true;
 			}
 			if(user.getNicknames().size() == 0 &&
 					memba.getNickname() != null &&
 					memba.getNickname() != "") {
-				user.getNicknames().put(System.currentTimeMillis(), memba.getNickname());
+				user.addNickname(System.currentTimeMillis(), memba.getNickname());
 				store = true;
 			}
 			if(store) {

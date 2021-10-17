@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import bot.antony.Antony;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -22,9 +22,10 @@ public class GuildMemberJoin extends ListenerAdapter {
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
 		guild = event.getGuild();
 		member = event.getMember();
-	    User user = event.getUser();
 	    GuildData guildData = new GuildData(guild);
-	    UserData userData = new UserData(user);
+	    UserData userData = Utils.loadUserData(member);
+	    userData.setLastOnline(System.currentTimeMillis());
+	    Utils.storeUserData(userData, guild);
 	    
 		StringBuilder logMessage = new StringBuilder();
 		logMessage.append("User [" + userData.toString() + "] ");
