@@ -24,6 +24,7 @@ import bot.antony.events.GuildUpdateName;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.OfferListener;
 import bot.antony.events.ReactionAddEvent;
+import bot.antony.events.UserUpdateName;
 import bot.antony.events.UserUpdateOnlineStatus;
 import bot.antony.events.WatchlistNotification;
 import bot.antony.events.softban.SoftbanFilterListener;
@@ -77,6 +78,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new GuildMemberUpdateNickname())
 					.addEventListeners(new GuildUpdateName())
 					.addEventListeners(new UserUpdateOnlineStatus())
+					.addEventListeners(new UserUpdateName())
 					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new ReactionAddEvent())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
