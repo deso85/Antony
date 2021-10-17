@@ -1,6 +1,8 @@
 package bot.antony.events;
 
 import bot.antony.Antony;
+import bot.antony.guild.UserData;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -16,6 +18,12 @@ public class CommandListener extends ListenerAdapter {
 		//check which channel ...
 		if(event.isFromType(ChannelType.TEXT)) {
 			final TextChannel channel = event.getTextChannel();
+			
+			if(event.getMember() != null) {
+				UserData user = Utils.loadUserData(event.getMember());
+				user.setLastOnline(System.currentTimeMillis());
+				Utils.storeUserData(user, event.getGuild());
+			}
 			
 			//!cmd arg0 arg1 arg2 ...
 			if(message.startsWith(Antony.getCmdPrefix())) {
