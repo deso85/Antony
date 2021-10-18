@@ -1,8 +1,8 @@
 package bot.antony.events;
 
 import bot.antony.Antony;
+import bot.antony.controller.UserController;
 import bot.antony.guild.UserData;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -21,9 +21,10 @@ public class CommandListener extends ListenerAdapter {
 			final TextChannel channel = event.getTextChannel();
 			
 			if(event.getMember() != null && !event.getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-				UserData user = Utils.loadUserData(event.getMember());
+				UserController usrCntrl = Antony.getUserController();
+				UserData user = usrCntrl.loadUserData(event.getMember());
 				user.setLastOnline(System.currentTimeMillis());
-				Utils.storeUserData(user, event.getGuild());
+				usrCntrl.saveUserData(user, event.getGuild());
 			}
 			
 			//!cmd arg0 arg1 arg2 ...

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
-import bot.antony.guild.UserData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -115,16 +114,16 @@ public class Utils {
 		}
 	}
 	
-	public static boolean storeJSONData(String subFolderPath, String filename, Object file) {
+	public static boolean saveJSONData(String subFolderPath, String filename, Object file) {
 		File directory = new File(Antony.getDataPath() + subFolderPath);
 	    if (! directory.exists()){
 	        directory.mkdirs();
 	    }
 		
-		return storeJSONData(subFolderPath + filename, file);
+		return saveJSONData(subFolderPath + filename, file);
 	}
 	
-	public static boolean storeJSONData(String filename, Object file) {
+	public static boolean saveJSONData(String filename, Object file) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			objectMapper.writeValue(new File(Antony.getDataPath() + filename), file);
@@ -158,30 +157,6 @@ public class Utils {
 			}
 		}
 		return objectOrigin;
-	}
-	
-	public static UserData loadUserData(Member member) {
-		UserData user = new UserData();
-		String subfolder = "guilds" + File.separator + member.getGuild().getId() + " - " + member.getGuild().getName() + File.separator + "user" + File.separator;
-		String fileName = member.getId() + ".json";
-		
-		//Load user data if exists
-		user = (UserData) Utils.loadJSONData(subfolder, fileName, new TypeReference<UserData>(){}, user);
-		
-		//If it is the first nickname change
-		if(user.getId() == null || user.getId() == "") {
-			user = new UserData(member);
-			storeUserData(user, member.getGuild());
-		}
-		
-		return user;
-	}
-	
-	public static void storeUserData(UserData user, Guild guild) {
-		String subfolder = "guilds" + File.separator + guild.getId() + " - " + guild.getName() + File.separator + "user" + File.separator;
-		String fileName = user.getId() + ".json";
-		
-		storeJSONData(subfolder, fileName, user);
 	}
 	
 	public static Consumer<? super Throwable> ERROR_RESPONSE_EXCEPTION_CONSUMER = exception -> {

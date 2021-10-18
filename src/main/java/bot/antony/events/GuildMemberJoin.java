@@ -3,9 +3,9 @@ package bot.antony.events;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
+import bot.antony.controller.UserController;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -20,12 +20,13 @@ public class GuildMemberJoin extends ListenerAdapter {
 	
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+		UserController usrCntrl = Antony.getUserController();
 		guild = event.getGuild();
 		member = event.getMember();
 	    GuildData guildData = new GuildData(guild);
-	    UserData userData = Utils.loadUserData(member);
+	    UserData userData = usrCntrl.loadUserData(member);
 	    userData.setLastOnline(System.currentTimeMillis());
-	    Utils.storeUserData(userData, guild);
+	    usrCntrl.saveUserData(userData, guild);
 	    
 		StringBuilder logMessage = new StringBuilder();
 		logMessage.append("User [" + userData.toString() + "] ");

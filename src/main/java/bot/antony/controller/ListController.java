@@ -29,7 +29,7 @@ public class ListController {
 	 * @return	TRUE if data has been stored or FALSE if not
 	 */
 	public boolean persistData() {
-		return Utils.storeJSONData(fileName, this.list);
+		return Utils.saveJSONData(fileName, this.list);
 	}
 	
 	/**

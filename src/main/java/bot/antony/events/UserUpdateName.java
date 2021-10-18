@@ -2,8 +2,9 @@ package bot.antony.events;
 
 import java.util.List;
 
+import bot.antony.Antony;
+import bot.antony.controller.UserController;
 import bot.antony.guild.UserData;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
@@ -18,10 +19,10 @@ public class UserUpdateName extends ListenerAdapter {
 		for(Guild guild : guilds) {
 			Member member = guild.getMember(event.getUser());
 			if(member != null) {
-				UserData user = Utils.loadUserData(member);
+				UserController usrCntrl = Antony.getUserController();
+				UserData user = usrCntrl.loadUserData(member);
 				user.setName(event.getNewName());
-				user.addName(System.currentTimeMillis(), event.getNewName());
-				Utils.storeUserData(user, guild);
+				usrCntrl.saveUserData(user, guild);
 			}
 		}
 	}

@@ -208,7 +208,7 @@ public class UserInfo implements ServerCommand {
 		}
 		
 		//Save updated user data
-		Utils.storeJSONData(subfolder, fileName, user);
+		Utils.saveJSONData(subfolder, fileName, user);
 
 		//Build Title or Author
 		StringBuilder ebHeadline = new StringBuilder();

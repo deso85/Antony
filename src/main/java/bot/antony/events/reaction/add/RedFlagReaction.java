@@ -129,7 +129,7 @@ public class RedFlagReaction extends MessageReaction {
 	}
 	
 	public void saveDeletionPair() {
-		Utils.storeJSONData(deletionPairFileName, delPair);
+		Utils.saveJSONData(deletionPairFileName, delPair);
 	}
 	
 	public void loadDeletionPair() {

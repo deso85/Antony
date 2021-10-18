@@ -1,6 +1,9 @@
 package bot.antony.guild;
 
-import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -10,9 +13,8 @@ import net.dv8tion.jda.api.entities.User;
  */
 public class UserData {
 	private String id;
-	private String name;
-	private HashMap<Long, String> nicknames = new HashMap<Long, String>();
-	private HashMap<Long, String> names = new HashMap<Long, String>();
+	private TreeMap<Long, String> names = new TreeMap<Long, String>();
+	private TreeMap<Long, String> nicknames = new TreeMap<Long, String>();
 	private Long lastOnline;
 	
 	// --------------------------------------------------
@@ -30,22 +32,19 @@ public class UserData {
 	public UserData(String id, String name) {
 		setId(id);
 		setName(name);
-		addName(System.currentTimeMillis(), name);
 	}
 	
 	public UserData(User user) {
 		setId(user.getId());
 		setName(user.getName());
-		addName(System.currentTimeMillis(), user.getName());
 	}
 	
 	public UserData(Member member) {
 		User user = member.getUser();
 		setId(user.getId());
 		setName(user.getName());
-		addName(System.currentTimeMillis(), user.getName());
 		if(member.getNickname() != null && member.getNickname() != "") {
-			addNickname(System.currentTimeMillis(), member.getNickname());
+			setNickname(member.getNickname());
 		}
 	}
 	
@@ -53,10 +52,6 @@ public class UserData {
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
-	public void update(User user) {
-		setName(user.getName());
-	}
-	
 	@Override
 	public String toString() {
 		return "id: " + getId() + ", name: " + getName();
@@ -100,28 +95,52 @@ public class UserData {
 		this.id = id;
 	}
 	
+	@JsonIgnore
 	public String getName() {
-		return name;
+		Entry<Long, String> lastEntry = getNames().lastEntry();
+		if(lastEntry != null) {
+			return lastEntry.getValue();
+		}
+		return "";
 	}
 	
+	@JsonIgnore
 	public void setName(String name) {
-		this.name = name;
+		if(getName() != name) {
+			addName(System.currentTimeMillis(), name);
+		}
 	}
-
-	public HashMap<Long, String> getNicknames() {
-		return nicknames;
+	
+	@JsonIgnore
+	public String getNickname() {
+		Entry<Long, String> lastEntry = getNicknames().lastEntry();
+		if(lastEntry != null) {
+			return lastEntry.getValue();
+		}
+		return "";
 	}
-
-	public void setNicknames(HashMap<Long, String> nicknames) {
-		this.nicknames = nicknames;
+	
+	@JsonIgnore
+	public void setNickname(String nickname) {
+		if(getNickname() != nickname) {
+			addNickname(System.currentTimeMillis(), nickname);
+		}
 	}
-
-	public HashMap<Long, String> getNames() {
+	
+	public TreeMap<Long, String> getNames() {
 		return names;
 	}
 
-	public void setNames(HashMap<Long, String> names) {
+	public void setNames(TreeMap<Long, String> names) {
 		this.names = names;
+	}
+	
+	public TreeMap<Long, String> getNicknames() {
+		return nicknames;
+	}
+
+	public void setNicknames(TreeMap<Long, String> nicknames) {
+		this.nicknames = nicknames;
 	}
 
 	public Long getLastOnline() {
@@ -131,4 +150,5 @@ public class UserData {
 	public void setLastOnline(Long lastOnline) {
 		this.lastOnline = lastOnline;
 	}
+
 }

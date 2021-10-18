@@ -43,7 +43,7 @@ public class SoftbanController {
 	}
 	
 	public boolean persistData() {
-		return Utils.storeJSONData(fileName, bannedUser);
+		return Utils.saveJSONData(fileName, bannedUser);
 	}
 	
 	@SuppressWarnings("unchecked")

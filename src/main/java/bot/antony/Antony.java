@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.BlackListController;
 import bot.antony.controller.SoftbanController;
+import bot.antony.controller.UserController;
 import bot.antony.controller.WatchListController;
 import bot.antony.controller.WhiteListController;
 import bot.antony.events.BlacklistNotification;
@@ -54,6 +55,7 @@ public class Antony extends ListenerAdapter {
 	private static WatchListController watchlistController = new WatchListController();
 	private static BlackListController blacklistController = new BlackListController();
 	private static SoftbanController softbanController = new SoftbanController();
+	private static UserController userController = new UserController();
 	private static long antonyLogChannelId;
 	private static int usercount = 0;
 	//private static DbController dbcontroller = new DbController();
@@ -305,6 +307,10 @@ public class Antony extends ListenerAdapter {
 	
 	public static BlackListController getBlacklistController() {
 		return blacklistController;
+	}
+	
+	public static UserController getUserController() {
+		return userController;
 	}
 
 

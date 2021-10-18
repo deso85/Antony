@@ -413,7 +413,7 @@ public class NotificationController {
 		}
 		setWaiting(true);
 		boolean retVal = false;
-		if (Utils.storeJSONData(getNotificationListConfigFileName(), getGCNLs()) &&	Utils.storeJSONData(getPendingNotificationsFileName(), getPendingUserNotifications())) {
+		if (Utils.saveJSONData(getNotificationListConfigFileName(), getGCNLs()) &&	Utils.saveJSONData(getPendingNotificationsFileName(), getPendingUserNotifications())) {
 			retVal = true;
 		}
 		setWaiting(false);
