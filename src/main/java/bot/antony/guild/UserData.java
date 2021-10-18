@@ -119,10 +119,24 @@ public class UserData {
 	
 	@JsonIgnore
 	public boolean setNickname(String nickname) {
+		//Both are null
+		if(nickname == null && getNickname() == null) {
+			return false;
+		}
+		
+		//1 is null
+		if(nickname == null || getNickname() == null) {
+			addNickname(System.currentTimeMillis(), nickname);
+			return true;
+		}
+		
+		//Both are Strings and can be compared
 		if(!getNickname().equals(nickname)) {
 			addNickname(System.currentTimeMillis(), nickname);
 			return true;
 		}
+		
+		//Both Strings have the same value
 		return false;
 	}
 	
