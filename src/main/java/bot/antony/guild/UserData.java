@@ -1,6 +1,5 @@
 package bot.antony.guild;
 
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,9 +42,7 @@ public class UserData {
 		User user = member.getUser();
 		setId(user.getId());
 		setName(user.getName());
-		if(member.getNickname() != null && member.getNickname() != "") {
-			setNickname(member.getNickname());
-		}
+		setNickname(member.getNickname());
 	}
 	
 	
@@ -97,34 +94,36 @@ public class UserData {
 	
 	@JsonIgnore
 	public String getName() {
-		Entry<Long, String> lastEntry = getNames().lastEntry();
-		if(lastEntry != null) {
-			return lastEntry.getValue();
+		if(getNames().lastEntry() != null) {
+			return getNames().lastEntry().getValue();
 		}
 		return "";
 	}
 	
 	@JsonIgnore
-	public void setName(String name) {
-		if(getName() != name) {
+	public boolean setName(String name) {
+		if(!getName().equals(name)) {
 			addName(System.currentTimeMillis(), name);
+			return true;
 		}
+		return false;
 	}
 	
 	@JsonIgnore
 	public String getNickname() {
-		Entry<Long, String> lastEntry = getNicknames().lastEntry();
-		if(lastEntry != null) {
-			return lastEntry.getValue();
+		if(getNicknames().lastEntry() != null) {
+			return getNicknames().lastEntry().getValue();
 		}
 		return "";
 	}
 	
 	@JsonIgnore
-	public void setNickname(String nickname) {
-		if(getNickname() != nickname) {
+	public boolean setNickname(String nickname) {
+		if(!getNickname().equals(nickname)) {
 			addNickname(System.currentTimeMillis(), nickname);
+			return true;
 		}
+		return false;
 	}
 	
 	public TreeMap<Long, String> getNames() {

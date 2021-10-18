@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -49,16 +50,19 @@ public class UserController {
 	}
 	
 	public void updateGuildMember(Member member) {
-		boolean save = false;
+		updateGuildMember(member, false);
+	}
+	
+	public void updateGuildMember(Member member, boolean force) {
+		boolean save = force;
 		UserData user = loadUserData(member);
-
-		if(user.getNames().size() == 0 || user.getName() != member.getUser().getName()) {
-			user.setName(member.getUser().getName());
+		
+		if(member.getOnlineStatus().equals(OnlineStatus.ONLINE) || member.getOnlineStatus().equals(OnlineStatus.DO_NOT_DISTURB) || member.getOnlineStatus().equals(OnlineStatus.IDLE)) {
+			user.setLastOnline(System.currentTimeMillis());
 			save = true;
 		}
-		if((member.getNickname() != null && member.getNickname() != "") &&
-				(user.getNicknames().size() == 0 || user.getNickname() != member.getNickname())) {
-			user.setNickname(member.getNickname());
+		
+		if(user.setName(member.getUser().getName()) || user.setNickname(member.getNickname())) {
 			save = true;
 		}
 		
@@ -68,14 +72,13 @@ public class UserController {
 	}
 	
 	public void updateAllGuildMember(Guild guild) {
-		List<Member> members = guild.getMembers();
-		for(Member member : members) {
-			updateGuildMember(member);
-		}
+		updateAllGuildMember(guild, false);
 	}
 	
-	
-	// --------------------------------------------------
-	// Getter & Setter
-	// --------------------------------------------------
+	public void updateAllGuildMember(Guild guild, boolean force) {
+		List<Member> members = guild.getMembers();
+		for(Member member : members) {
+			updateGuildMember(member, force);
+		}
+	}
 }

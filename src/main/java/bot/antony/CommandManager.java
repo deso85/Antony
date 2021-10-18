@@ -14,6 +14,7 @@ import bot.antony.commands.Shopping;
 import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
+import bot.antony.commands.User;
 import bot.antony.commands.UserInfo;
 import bot.antony.commands.emergency.Emergency;
 import bot.antony.commands.lists.Blacklist;
@@ -46,6 +47,7 @@ public class CommandManager {
 		this.commands.put("userinfo", new UserInfo());
 
 		// Mod
+		this.commands.put("user", new User());
 		this.commands.put("watchlist", new Watchlist());
 		this.commands.put("whitelist", new Whitelist());
 		this.commands.put("softban", new Softban());
