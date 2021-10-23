@@ -37,7 +37,11 @@ public class Guild implements ServerCommand {
 							returnMessage.append("Log Channel gesetzt.");
 							Antony.getLogger().info("Log channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
 						} else {
-							printHelp();
+							if(guildController.getLogChannel(message.getGuild()) != null) {
+								returnMessage.append("Log Channel ist: " + guildController.getLogChannel(message.getGuild()).getAsMention());
+							} else {
+								returnMessage.append("Es ist kein Log Channel gesetzt.");
+							}
 						}
 						break;
 						
@@ -48,7 +52,11 @@ public class Guild implements ServerCommand {
 							returnMessage.append("Welcome Channel gesetzt.");
 							Antony.getLogger().info("Welcome channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
 						} else {
-							printHelp();
+							if(guildController.getWelcomeChannel(message.getGuild()) != null) {
+								returnMessage.append("Welcome Channel ist: " + guildController.getWelcomeChannel(message.getGuild()).getAsMention());
+							} else {
+								returnMessage.append("Es ist kein Welcome Channel gesetzt.");
+							}
 						}
 						break;
 						
