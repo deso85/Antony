@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.Channel;
 import bot.antony.commands.Giveaway;
+import bot.antony.commands.Guild;
 import bot.antony.commands.Map;
 import bot.antony.commands.Notify;
 import bot.antony.commands.PnLink;
@@ -48,13 +49,14 @@ public class CommandManager {
 
 		// Mod
 		this.commands.put("user", new User());
+		this.commands.put("softban", new Softban());
 		this.commands.put("watchlist", new Watchlist());
 		this.commands.put("whitelist", new Whitelist());
-		this.commands.put("softban", new Softban());
 
 		// Admin
 		this.commands.put("blacklist", new Blacklist());
 		this.commands.put("channel", new Channel());
+		this.commands.put("guild", new Guild());
 		this.commands.put("shutdown", new Shutdown());
 	}
 

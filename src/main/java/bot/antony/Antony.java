@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.BlackListController;
+import bot.antony.controller.GuildController;
 import bot.antony.controller.SoftbanController;
 import bot.antony.controller.UserController;
 import bot.antony.controller.WatchListController;
@@ -55,8 +56,8 @@ public class Antony extends ListenerAdapter {
 	private static WatchListController watchlistController = new WatchListController();
 	private static BlackListController blacklistController = new BlackListController();
 	private static SoftbanController softbanController = new SoftbanController();
+	private static GuildController guildController = new GuildController();
 	private static UserController userController = new UserController();
-	private static long antonyLogChannelId;
 	private static int usercount = 0;
 	//private static DbController dbcontroller = new DbController();
 	private static boolean prodStage = false;
@@ -117,11 +118,8 @@ public class Antony extends ListenerAdapter {
 			
 			// Create log output after startup
 			String stage = "PROD";
-			if(prodStage) {
-				antonyLogChannelId = 824652244464173096L; //TODO: load from db/config file
-			} else {
+			if(!prodStage) {
 				stage = "DEV/TEST";
-				antonyLogChannelId = 824405937979654154L;
 			}
 			String postStartLogEntry = "[" + stage + "] Antony (v" + getVersion() + ") started";
 			logger.info(postStartLogEntry);
@@ -309,15 +307,14 @@ public class Antony extends ListenerAdapter {
 		return blacklistController;
 	}
 	
+	public static GuildController getGuildController() {
+		return guildController;
+	}
+
+
 	public static UserController getUserController() {
 		return userController;
 	}
-
-
-	public static long getAntonyLogChannelId() {
-		return antonyLogChannelId;
-	}
-
 
 	public static int getUsercount() {
 		return usercount;

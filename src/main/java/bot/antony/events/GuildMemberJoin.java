@@ -37,18 +37,16 @@ public class GuildMemberJoin extends ListenerAdapter {
 	    event.getJDA().getPresence().setActivity(Activity.listening(Antony.getCmdPrefix() + "antony | " + Antony.getUsercount() + " User | " + event.getJDA().getGuilds().size() + " Server"));
 	    
 	    //Welcome user to the server
-	    Long welcomeChannelID;
-		if(Antony.isProdStage()) {
-			welcomeChannelID = 554261873483055114L;
-		} else {
-			welcomeChannelID = 778960515895918627L;
+	    TextChannel welcomeChannel = Antony.getGuildController().getWelcomeChannel(guild);
+		if(welcomeChannel != null) {
+			welcomeChannel.sendMessage(getRandomWelcomeText()).complete();
 		}
-		guild.getTextChannelById(welcomeChannelID).sendMessage(getRandomWelcomeText()).queue();
 	    
 	    Antony.getLogger().info(logMessage.toString());
 	}
 	
 	public String getRandomWelcomeText() {
+		//TODO: Usefull for every guild? -> add to GuildData
 		TextChannel activation;
 		if(Antony.isProdStage()) {
 			activation = guild.getTextChannelById(724583172586864690L);

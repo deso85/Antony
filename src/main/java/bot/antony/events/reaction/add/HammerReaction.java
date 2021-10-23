@@ -6,7 +6,6 @@ import java.util.Date;
 
 import bot.antony.Antony;
 import bot.antony.events.softban.UserDataSB;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -19,7 +18,7 @@ public class HammerReaction extends MessageReaction {
 	public HammerReaction(MessageReactionAddEvent event) {
 		super(event);
 		allowedRoles.add("Intermorphe");
-		responseChannel = Utils.getLogChannel(message.getTextChannel());
+		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 	
 	
@@ -31,12 +30,22 @@ public class HammerReaction extends MessageReaction {
 		if(shallTrigger()) {
 			UserDataSB user = new UserDataSB(message.getAuthor().getId(), message.getAuthor().getName());
 			removeReaction();
+			String logMsg = "";
 			if(Antony.getSoftbanController().ban(user)) {
-				responseChannel.sendMessage("🔨 User soft banned by " + reactor.getAsMention()).queue();
-				responseChannel.sendMessageEmbeds(getEmbedBuilder().build()).queue();
+				logMsg = "🔨 User soft banned by " + reactor.getAsMention();
+				if(responseChannel != null) {
+					responseChannel.sendMessage(logMsg).complete();
+					responseChannel.sendMessageEmbeds(getEmbedBuilder().build()).complete();
+				}
 			} else {
 				Antony.getSoftbanController().unban(user);
-				responseChannel.sendMessage("🔨 Softban removed from user \"" + user.getName() + "\" by " + reactor.getAsMention()).queue();
+				logMsg = "🔨 Softban removed from user \"" + user.getName() + "\" by " + reactor.getAsMention();
+				if(responseChannel != null) {
+					responseChannel.sendMessage(logMsg).complete();
+				}
+			}
+			if(logMsg.length() > 0) {
+				Antony.getLogger().info(logMsg);
 			}
 		}
 	}

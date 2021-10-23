@@ -32,7 +32,7 @@ public class RedFlagReaction extends MessageReaction {
 		super(event);
 		allowedRoles = new ArrayList<>(Arrays.asList("everyone"));
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
-		responseChannel = Utils.getLogChannel(message.getTextChannel());
+		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 		userList = event.getReaction().retrieveUsers().complete();
 		if(Antony.isProdStage()) {
 			flagsToDeleteMessage = 5;
@@ -68,7 +68,9 @@ public class RedFlagReaction extends MessageReaction {
 				deleteMessage();
 			} else {
 				logMessage.append("\nBecause there were " + getNormalizedUserCount() + " authorized flaggs the message should have been deleted but there are too many deleted messages within the last 15min.");
-				responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, sie wurde aber **nicht** gelöscht, weil zu viele Nachrichten in den letzten 15min gelöscht wurden. **Bitte dringend prüfen, ob jemand das System ausnutzt!**").complete();
+				if(responseChannel != null) {
+					responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, sie wurde aber **nicht** gelöscht, weil zu viele Nachrichten in den letzten 15min gelöscht wurden. **Bitte dringend prüfen, ob jemand das System ausnutzt!**").complete();
+				}
 			}
 		}
 		log();
@@ -94,7 +96,9 @@ public class RedFlagReaction extends MessageReaction {
 			}
 		}
 		
-		responseChannel.sendMessage(sb.toString()).complete();
+		if(responseChannel != null) {
+			responseChannel.sendMessage(sb.toString()).complete();
+		}
 	}
 	
 	public void printMessageEmbed() {
@@ -106,7 +110,10 @@ public class RedFlagReaction extends MessageReaction {
 				.setDescription(message.getContentDisplay())
 				.addField("#" + message.getChannel().getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + message.getChannel().getId() + "/" + message.getId() + ")**", false)
 				.setFooter(formatter.format(date));
-		responseChannel.sendMessageEmbeds(eb.build()).complete();
+		
+		if(responseChannel != null) {
+			responseChannel.sendMessageEmbeds(eb.build()).complete();
+		}
 	}
 	
 	public void deleteMessage() {
@@ -115,7 +122,10 @@ public class RedFlagReaction extends MessageReaction {
 		delPair.setLastDeleted(new Date(System.currentTimeMillis()));
 		saveDeletionPair();
 		message.delete().complete();
-		responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, weshalb sie entfernt wurde.").complete();
+		
+		if(responseChannel != null) {
+			responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, weshalb sie entfernt wurde.").complete();
+		}
 	}
 	
 	public int getNormalizedUserCount() {

@@ -28,6 +28,7 @@ public class WatchlistNotification extends ListenerAdapter {
 			
 			final Guild guild = event.getGuild();
 			final TextChannel channel = event.getTextChannel();
+			TextChannel responseChannel = Antony.getGuildController().getLogChannel(guild);
 			String message = event.getMessage().getContentDisplay();
 			
 			List<String> watchlist = Antony.getWatchlistController().getList();
@@ -51,8 +52,10 @@ public class WatchlistNotification extends ListenerAdapter {
 							.addField("#" + event.getMessage().getChannel().getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + "/" + event.getMessageId() + ")**", false)
 							.setFooter(event.getMessage().getTimeCreated().format(formatter));
 					
-					Utils.getLogChannel(guild).sendMessage(sb.toString()).queue();
-					Utils.getLogChannel(guild).sendMessageEmbeds(eb.build()).queue();
+					if(responseChannel != null) {
+						responseChannel.sendMessage(sb.toString()).complete();
+						responseChannel.sendMessageEmbeds(eb.build()).complete();
+					}
 				}
 			}
 			

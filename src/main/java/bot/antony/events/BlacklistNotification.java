@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import bot.antony.Antony;
+import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -28,6 +29,7 @@ public class BlacklistNotification extends ListenerAdapter {
 			
 			final Guild guild = event.getGuild();
 			final TextChannel channel = event.getTextChannel();
+			TextChannel responseChannel = Antony.getGuildController().getLogChannel(guild);
 			String message = event.getMessage().getContentDisplay();
 			
 			List<String> blacklist = Antony.getBlacklistController().getList();
@@ -52,15 +54,20 @@ public class BlacklistNotification extends ListenerAdapter {
 							.addField("#" + event.getMessage().getChannel().getName(), "**[Hier klicken, um zum Kanal zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + "/" + ")**", false)
 							.setFooter(event.getMessage().getTimeCreated().format(formatter));
 					
-					Utils.getLogChannel(guild).sendMessage(sb.toString()).complete();
-					Utils.getLogChannel(guild).sendMessageEmbeds(eb.build()).complete();
+					if(responseChannel != null) {
+						responseChannel.sendMessage(sb.toString()).complete();
+						responseChannel.sendMessageEmbeds(eb.build()).complete();
 					
-					if(event.getMessage().getAttachments().size() > 0) {
-						Utils.getLogChannel(guild).sendMessage("Vorsicht! Folgende Attachments wurden gepostet:").complete();
-						for(Attachment attachment : event.getMessage().getAttachments()) {
-							Utils.getLogChannel(guild).sendMessage(attachment.getUrl()).complete();
+						if(event.getMessage().getAttachments().size() > 0) {
+							responseChannel.sendMessage("Vorsicht! Folgende Attachments wurden gepostet:").complete();
+							for(Attachment attachment : event.getMessage().getAttachments()) {
+								responseChannel.sendMessage(attachment.getUrl()).complete();
+							}
 						}
 					}
+					
+					UserData usrData = new UserData(event.getAuthor());
+					Antony.getLogger().info("🚨 Message from " + usrData.toString() + " deleted because of blacklisted word: " + string);
 					
 					event.getMessage().delete().complete();
 				}

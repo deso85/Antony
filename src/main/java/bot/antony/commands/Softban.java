@@ -22,13 +22,13 @@ public class Softban implements ServerCommand {
 	
 	Guild guild;
 	TextChannel channel;
-	TextChannel logChannel;
+	TextChannel responseChannel;
 	
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		this.channel = channel;
 		guild = channel.getGuild();
-		logChannel = Utils.getLogChannel(channel);
+		responseChannel = Antony.getGuildController().getLogChannel(channel.getGuild());
 		List<String> allowedRoles = new ArrayList<>(Arrays.asList("Admin", "Soldat", "Intermorphe"));	//Roles which may use the command
 		
 		if(member.hasPermission(Permission.BAN_MEMBERS) || Utils.memberHasRole(member, allowedRoles)) {
@@ -40,7 +40,9 @@ public class Softban implements ServerCommand {
 					if (userMessage.length > 3) {
 						UserDataSB user = new UserDataSB(userMessage[2], userMessage[3]);
 						if(Antony.getSoftbanController().ban(user)) {
-							logChannel.sendMessage("🔨 User \"" + userMessage[3] + "\" manually soft banned by " + member.getUser().getAsMention()).queue();
+							if(responseChannel != null) {
+								responseChannel.sendMessage("🔨 User \"" + userMessage[3] + "\" manually soft banned by " + member.getUser().getAsMention()).complete();
+							}
 							Date date = new Date(System.currentTimeMillis());
 							SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 							EmbedBuilder eb = new EmbedBuilder()
@@ -49,7 +51,9 @@ public class Softban implements ServerCommand {
 									.setDescription(message.getContentDisplay())
 									.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + member.getGuild().getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
 									.setFooter(formatter.format(date));
-							logChannel.sendMessageEmbeds(eb.build()).queue();
+							if(responseChannel != null) {
+								responseChannel.sendMessageEmbeds(eb.build()).complete();
+							}
 						} else {
 							sb.append("User \"" + userMessage[3] + "\" konnte nicht gebannt werden.");
 						}

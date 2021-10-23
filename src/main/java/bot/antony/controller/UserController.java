@@ -34,7 +34,7 @@ public class UserController {
 		user = (UserData) Utils.loadJSONData(subfolder, fileName, new TypeReference<UserData>(){}, user);
 		
 		//If user is unknown
-		if(user.getId() == null || user.getId() == "") {
+		if(user.getId() == null || user.getId().equals("")) {
 			user = new UserData(member);
 			saveUserData(user, member.getGuild());
 		}

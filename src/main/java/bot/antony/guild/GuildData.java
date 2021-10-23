@@ -8,7 +8,8 @@ import net.dv8tion.jda.api.entities.Guild;
 public class GuildData {
 	private String id;
 	private String name;
-
+	private long logChannelID;
+	private long welcomeChannelID;
 
 	// --------------------------------------------------
 	// Constructor
@@ -30,6 +31,7 @@ public class GuildData {
 	public GuildData(Guild guild) {
 		setId(guild.getId());
 		setName(guild.getName());
+		setWelcomeChannelID(guild.getSystemChannel().getIdLong());
 	}
 	
 	
@@ -83,4 +85,21 @@ public class GuildData {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public long getLogChannelID() {
+		return logChannelID;
+	}
+
+	public void setLogChannelID(long logChannelID) {
+		this.logChannelID = logChannelID;
+	}
+
+	public long getWelcomeChannelID() {
+		return welcomeChannelID;
+	}
+
+	public void setWelcomeChannelID(long welcomeChannelID) {
+		this.welcomeChannelID = welcomeChannelID;
+	}
+	
 }
