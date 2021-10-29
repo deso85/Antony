@@ -30,6 +30,8 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("29.10.2021 - Version 4.2.0", "***" + cmdPrefix + "archive*** gibt nun ein formatiertes HTML-Dokument anstelle einer Text-Datei zurück."));
+				changeLog.add(new ChangeLogEntry("27.10.2021 - Version 4.1.0", "***" + cmdPrefix + "archive*** wurde hinzugefügt und bietet eine neue moderative Funktion, mit der sich Kanalinhalte herunterladen lassen."));
 				changeLog.add(new ChangeLogEntry("23.10.2021 - Version 4.0.0", "***" + cmdPrefix + "guild*** wurde hinzugefügt und bietet künftig Funktionen zur Administration des Discord Servers."));
 				changeLog.add(new ChangeLogEntry("19.10.2021 - Version 3.5.0", "***" + cmdPrefix + "userinfo*** gibt historische Daten nun anders formatiert aus. Der zugrunde liegende Quellcode wurde überarbeitet. Der Befehl ***" + cmdPrefix + "user*** wurde hinzugefügt, über den künftig weitere moderative Funktionen bereitgestellt werden."));
 				changeLog.add(new ChangeLogEntry("17.10.2021 - Version 3.4.1", "***" + cmdPrefix + "userinfo*** zeigt nun auch alle bekannten Namen an, gibt aber keine Elemente mehr aus, die keine Inhalte haben."));
@@ -164,10 +166,12 @@ public class AntonyHelp implements ServerCommand {
 		modBotCommands.add(whitelist);
 		
 		//Commands for admins
+		BotCommand archive = new BotCommand("archive", "Funktion zur Verwaltung zur Archivierung von Kanalinhalten.", "#Kanal [Anzahl Nachrichten]");
 		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
 		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
 		BotCommand guild = new BotCommand("guild", "Funktion zur Verwaltung des Discord Servers.");
 		BotCommand shutdown = new BotCommand("shutdown", "Funktion zum stoppen des Bots");
+		adminBotCommands.add(archive);
 		adminBotCommands.add(blacklist);
 		adminBotCommands.add(channel);
 		adminBotCommands.add(guild);

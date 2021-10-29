@@ -37,6 +37,10 @@ public class GuildController {
 		return guild.getSystemChannel();
 	}
 	
+	public String getStoragePath(Guild guild) {
+		return Antony.getDataPath() + "guilds" + File.separator + guild.getId() + " - " + guild.getName();
+	}
+	
 	public void changeGuildName(Guild guild, String oldName, String newName) {
 		// Rename directory
 		String oldDir = Antony.getDataPath() + "guilds" + File.separator + guild.getId() + " - " + oldName;
