@@ -92,13 +92,6 @@ public class Utils {
 		return true;
 	}
 	
-	public static boolean isLogChannel(TextChannel channel) {
-		if(channel == Antony.getGuildController().getLogChannel(channel.getGuild())) {
-			return true;
-		}
-		return false;
-	}
-	
 	public static boolean saveJSONData(String subFolderPath, String filename, Object file) {
 		File directory = new File(Antony.getDataPath() + subFolderPath);
 	    if (! directory.exists()){

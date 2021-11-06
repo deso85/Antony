@@ -139,4 +139,10 @@ public class GuildController {
 		return false;	
 	}
 	
+	public boolean isLogChannel(TextChannel channel) {
+		if(channel == getLogChannel(channel.getGuild())) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -17,19 +17,18 @@ import bot.antony.controller.SoftbanController;
 import bot.antony.controller.UserController;
 import bot.antony.controller.WatchListController;
 import bot.antony.controller.WhiteListController;
-import bot.antony.events.BlacklistNotification;
 import bot.antony.events.CommandListener;
 import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
 import bot.antony.events.GuildMemberUpdateNickname;
 import bot.antony.events.GuildUpdateName;
+import bot.antony.events.MessageReceived;
+import bot.antony.events.MessageUpdate;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.OfferListener;
 import bot.antony.events.ReactionAddEvent;
 import bot.antony.events.UserUpdateName;
 import bot.antony.events.UserUpdateOnlineStatus;
-import bot.antony.events.WatchlistNotification;
-import bot.antony.events.softban.SoftbanFilterListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -72,9 +71,9 @@ public class Antony extends ListenerAdapter {
 			// build bot
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
 					.addEventListeners(new CommandListener())			// Listener for commands
+					.addEventListeners(new MessageReceived())
+					.addEventListeners(new MessageUpdate())
 					.addEventListeners(new NotificationListener())		// Listener for notification function
-					.addEventListeners(new WatchlistNotification())		// listener which checks if posts contains blacklisted text strings
-					.addEventListeners(new BlacklistNotification())
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
@@ -82,7 +81,6 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new GuildUpdateName())
 					.addEventListeners(new UserUpdateOnlineStatus())
 					.addEventListeners(new UserUpdateName())
-					.addEventListeners(new SoftbanFilterListener())
 					.addEventListeners(new ReactionAddEvent())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled

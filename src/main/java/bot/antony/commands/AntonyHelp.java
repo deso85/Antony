@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("07.11.2021 - Version 5.1.0", "Nachrichten werden nun auch ausgewertet, wenn sie bearbeitet werden."));
 				changeLog.add(new ChangeLogEntry("06.11.2021 - Version 5.0.0", "***" + cmdPrefix + "guild*** kann jetzt genutzt werden, um moderative und administrative Rollen zu konfigurieren. Darüber hinaus wurde das Berechtigungskonzept vollständig überarbeitet."));
 				changeLog.add(new ChangeLogEntry("29.10.2021 - Version 4.2.0", "***" + cmdPrefix + "archive*** gibt nun ein formatiertes HTML-Dokument anstelle einer Text-Datei zurück."));
 				changeLog.add(new ChangeLogEntry("27.10.2021 - Version 4.1.0", "***" + cmdPrefix + "archive*** wurde hinzugefügt und bietet eine neue moderative Funktion, mit der sich Kanalinhalte herunterladen lassen."));
