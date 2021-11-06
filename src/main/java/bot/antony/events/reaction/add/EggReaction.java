@@ -3,26 +3,19 @@ package bot.antony.events.reaction.add;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class EggReaction extends MessageReaction {
 
-	Long welcomeChannelID;
+
 	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
 	public EggReaction(MessageReactionAddEvent event) {
 		super(event);
-		
-		if(Antony.isProdStage()) {
-			welcomeChannelID = 554261873483055114L;
-		} else {
-			welcomeChannelID = 778960515895918627L;
-		}
 	}
 	
 	
@@ -40,8 +33,8 @@ public class EggReaction extends MessageReaction {
 	
 	@Override
 	public boolean shallTrigger() {
-		if(Utils.memberHasRole(reactor, allowedRoles)
-				&& message.getChannel().getIdLong() == welcomeChannelID
+		if(Antony.getGuildController().memberIsAdmin(reactor)
+				&& Antony.getGuildController().getWelcomeChannel(guild) == message.getChannel()
 				&& message.getMember().getRoles().size() == 0) {
 			return true;
 		}

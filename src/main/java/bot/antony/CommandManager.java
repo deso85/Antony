@@ -29,45 +29,64 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class CommandManager {
 
-	public ConcurrentHashMap<String, ServerCommand> commands;
+	public ConcurrentHashMap<String, ServerCommand> usrCommands;
+	public ConcurrentHashMap<String, ServerCommand> modCommands;
+	public ConcurrentHashMap<String, ServerCommand> adminCommands;
 
 	public CommandManager() {
 		
-		this.commands = new ConcurrentHashMap<>();
+		this.usrCommands = new ConcurrentHashMap<>();
+		this.modCommands = new ConcurrentHashMap<>();
+		this.adminCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		this.commands.put("antony", new AntonyHelp());
-		this.commands.put("emergency", new Emergency());
-		this.commands.put("giveaway", new Giveaway());
-		this.commands.put("map", new Map());
-		this.commands.put("notify", new Notify());
-		this.commands.put("pnlink", new PnLink());
-		this.commands.put("sells", new Sells());
-		this.commands.put("serverstats", new Serverstats());
-		this.commands.put("shopping", new Shopping());
-		this.commands.put("showavatar", new ShowAvatar());
-		this.commands.put("userinfo", new UserInfo());
+		this.usrCommands.put("antony", new AntonyHelp());
+		this.usrCommands.put("emergency", new Emergency());
+		this.usrCommands.put("giveaway", new Giveaway());
+		this.usrCommands.put("map", new Map());
+		this.usrCommands.put("notify", new Notify());
+		this.usrCommands.put("pnlink", new PnLink());
+		this.usrCommands.put("sells", new Sells());
+		this.usrCommands.put("serverstats", new Serverstats());
+		this.usrCommands.put("shopping", new Shopping());
+		this.usrCommands.put("showavatar", new ShowAvatar());
+		this.usrCommands.put("userinfo", new UserInfo());
 
 		// Mod
-		this.commands.put("user", new User());
-		this.commands.put("softban", new Softban());
-		this.commands.put("watchlist", new Watchlist());
-		this.commands.put("whitelist", new Whitelist());
+		this.modCommands.put("user", new User());
+		this.modCommands.put("softban", new Softban());
+		this.modCommands.put("watchlist", new Watchlist());
+		this.modCommands.put("whitelist", new Whitelist());
 
 		// Admin
-		this.commands.put("archive", new Archive());
-		this.commands.put("blacklist", new Blacklist());
-		this.commands.put("channel", new Channel());
-		this.commands.put("guild", new Guild());
-		this.commands.put("shutdown", new Shutdown());
+		this.adminCommands.put("archive", new Archive());
+		this.adminCommands.put("blacklist", new Blacklist());
+		this.adminCommands.put("channel", new Channel());
+		this.adminCommands.put("guild", new Guild());
+		this.adminCommands.put("shutdown", new Shutdown());
 	}
 
-	public boolean perform(String command, Member m, TextChannel channel, Message message) {
+	public boolean perform(String command, Member member, TextChannel channel, Message message) {
 
 		ServerCommand cmd;
-		if ((cmd = this.commands.get(command.toLowerCase())) != null) {
-			cmd.performCommand(m, channel, message);
+		//Commands for everyone
+		if ((cmd = this.usrCommands.get(command.toLowerCase())) != null) {
+			cmd.performCommand(member, channel, message);
 			return true;
+		}
+		//Commands for mods
+		if ((cmd = this.modCommands.get(command.toLowerCase())) != null) {
+			if(Antony.getGuildController().memberIsMod(member)) {
+				cmd.performCommand(member, channel, message);
+				return true;
+			}
+		}
+		//Commands for admins
+		if ((cmd = this.adminCommands.get(command.toLowerCase())) != null) {
+			if(Antony.getGuildController().memberIsAdmin(member)) {
+				cmd.performCommand(member, channel, message);
+				return true;
+			}
 		}
 
 		return false;

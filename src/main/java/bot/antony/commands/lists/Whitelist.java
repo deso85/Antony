@@ -10,7 +10,6 @@ public class Whitelist extends ListCommand {
 	// --------------------------------------------------
 	public Whitelist() {
 		super();
-		allowedRoles.add("Intermorphe");
 		listName = "Whitelist";
 	}
 	

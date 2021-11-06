@@ -17,7 +17,6 @@ public class HammerReaction extends MessageReaction {
 	// --------------------------------------------------
 	public HammerReaction(MessageReactionAddEvent event) {
 		super(event);
-		allowedRoles.add("Intermorphe");
 		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 	
@@ -25,6 +24,11 @@ public class HammerReaction extends MessageReaction {
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
+	@Override
+	public boolean shallTrigger() {
+		return Antony.getGuildController().memberIsMod(reactor);
+	}
+	
 	@Override
 	public void play() {
 		if(shallTrigger()) {

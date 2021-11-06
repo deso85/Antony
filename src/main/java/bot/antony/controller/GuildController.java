@@ -1,13 +1,17 @@
 package bot.antony.controller;
 
 import java.io.File;
+import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import bot.antony.Antony;
 import bot.antony.guild.GuildData;
 import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class GuildController {
@@ -35,6 +39,16 @@ public class GuildController {
 			return guild.getTextChannelById(guildData.getWelcomeChannelID());
 		}
 		return guild.getSystemChannel();
+	}
+	
+	public List<String> getAdminRoles(Guild guild){
+		GuildData guildData = loadGuildData(guild);
+		return guildData.getAdminRoles();
+	}
+	
+	public List<String> getModRoles(Guild guild){
+		GuildData guildData = loadGuildData(guild);
+		return guildData.getModRoles();
 	}
 	
 	public String getStoragePath(Guild guild) {
@@ -88,6 +102,41 @@ public class GuildController {
 		String fileName = guild.getId() + ".json";
 		
 		Utils.saveJSONData(subfolder, fileName, guildData);
+	}
+	
+	public boolean memberIsAdmin(Member member) {
+		GuildData guildData = loadGuildData(member.getGuild());
+		if(member.isOwner()) {
+			return true;
+		}
+		
+		if(member.hasPermission(Permission.ADMINISTRATOR)) {
+			return true;
+		}
+		
+		for(Role memRole : member.getRoles()) {
+			if(guildData.getAdminRoles().contains(memRole.getName())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	public boolean memberIsMod(Member member) {
+		//Admins are mods
+		GuildData guildData = loadGuildData(member.getGuild());
+		if(memberIsAdmin(member)) {
+			return true;
+		}
+		
+		for(Role memRole : member.getRoles()) {
+			if(guildData.getModRoles().contains(memRole.getName())) {
+				return true;
+			}
+		}
+
+		return false;	
 	}
 	
 }

@@ -10,13 +10,17 @@ public class ImageReaction extends MessageReaction {
 	// --------------------------------------------------
 	public ImageReaction(MessageReactionAddEvent event) {
 		super(event);
-		allowedRoles.add("Intermorphe");
 		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
+	@Override
+	public boolean shallTrigger() {
+		return Antony.getGuildController().memberIsMod(reactor);
+	}
+	
 	@Override
 	public void play() {
 		if(shallTrigger()) {

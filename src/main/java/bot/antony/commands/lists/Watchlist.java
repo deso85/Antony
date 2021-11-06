@@ -10,7 +10,6 @@ public class Watchlist extends ListCommand {
 	// --------------------------------------------------
 	public Watchlist() {
 		super();
-		allowedRoles.add("Intermorphe");
 		listName = "Watchlist";
 	}
 

@@ -41,7 +41,7 @@ public class BlacklistNotification extends ListenerAdapter {
 				modifiedMessage = modifiedMessage.replaceAll("(?i)" + Pattern.quote(string), "");
 			}
 			for(String string: blacklist) {
-				if(modifiedMessage.toLowerCase().contains(string)) {
+				if(!Antony.getGuildController().memberIsMod(event.getMember()) && modifiedMessage.toLowerCase().contains(string)) {
 					StringBuilder sb = new StringBuilder();
 					sb.append("🚨 Auffälliges Wort erkannt: **" + string + "**");
 					sb.append("\nDie Nachricht wurde sofort gelöscht!");

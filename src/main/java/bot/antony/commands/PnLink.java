@@ -11,7 +11,7 @@ public class PnLink implements ServerCommand {
 	private TextChannel channel;
 
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member member, TextChannel channel, Message message) {
 
 		setChannel(channel);
 
@@ -19,7 +19,7 @@ public class PnLink implements ServerCommand {
 
 		if (userMessage.length > 1 && message.getMentionedChannels().size() > 0) {
 
-			channel.sendMessage("Hier ist der Link zu deinem Kanal: <#" + message.getMentionedChannels().get(0).getId() + " >").queue();
+			channel.sendMessage("Hier ist der Link zu deinem Kanal: <#" + message.getMentionedChannels().get(0).getId() + " >").complete();
 			
 		} else {
 			printHelp();
@@ -29,7 +29,7 @@ public class PnLink implements ServerCommand {
 
 
 	private void printHelp() {
-		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "pnlink #Kanal").queue();
+		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "pnlink #Kanal").complete();
 	}
 
 	

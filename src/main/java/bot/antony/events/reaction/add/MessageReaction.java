@@ -1,12 +1,6 @@
 package bot.antony.events.reaction.add;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import bot.antony.Antony;
-import bot.antony.utils.Utils;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -19,7 +13,6 @@ public class MessageReaction {
 
 	protected ReactionEmote emote;
 	protected Guild guild;
-	protected List<String> allowedRoles;	//Roles which may use the command
 	protected Message message;
 	protected TextChannel responseChannel;	//Channel to respond to reaction
 	protected Member reactor;
@@ -35,7 +28,6 @@ public class MessageReaction {
 		this.message = event.retrieveMessage().complete();
 		responseChannel = message.getTextChannel();
 		reactor = event.getMember();
-		allowedRoles = new ArrayList<>(Arrays.asList("Admin", "Soldat"));
 	}
 	
 	
@@ -43,10 +35,7 @@ public class MessageReaction {
 	// Functions
 	// --------------------------------------------------
 	public boolean shallTrigger() {
-		if(reactor.hasPermission(Permission.ADMINISTRATOR) || reactor.hasPermission(Permission.BAN_MEMBERS)) {
-			return true;
-		}
-		return Utils.memberHasRole(reactor, allowedRoles);
+		return Antony.getGuildController().memberIsAdmin(reactor);
 	}
 	
 	public void removeReaction() {

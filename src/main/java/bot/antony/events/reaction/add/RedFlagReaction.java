@@ -30,7 +30,6 @@ public class RedFlagReaction extends MessageReaction {
 	// --------------------------------------------------
 	public RedFlagReaction(MessageReactionAddEvent event) {
 		super(event);
-		allowedRoles = new ArrayList<>(Arrays.asList("everyone"));
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
 		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 		userList = event.getReaction().retrieveUsers().complete();

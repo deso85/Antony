@@ -1,5 +1,8 @@
 package bot.antony.guild;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.dv8tion.jda.api.entities.Guild;
 
 /**
@@ -10,6 +13,8 @@ public class GuildData {
 	private String name;
 	private long logChannelID;
 	private long welcomeChannelID;
+	private List<String> adminRoles = new ArrayList<String>();
+	private List<String> modRoles = new ArrayList<String>();
 
 	// --------------------------------------------------
 	// Constructor
@@ -66,6 +71,37 @@ public class GuildData {
 		return false;
 	}
 	
+	public boolean addAdminRole(String roleName) {
+		if(!adminRoles.contains(roleName)) {
+			adminRoles.add(roleName);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean removeAdminRole(String roleName) {
+		if(adminRoles.contains(roleName)) {
+			adminRoles.remove(roleName);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean addModRole(String roleName) {
+		if(!modRoles.contains(roleName)) {
+			modRoles.add(roleName);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean removeModRole(String roleName) {
+		if(modRoles.contains(roleName)) {
+			modRoles.remove(roleName);
+			return true;
+		}
+		return false;
+	}
 	
 	// --------------------------------------------------
 	// Getter & Setter
@@ -84,6 +120,22 @@ public class GuildData {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<String> getAdminRoles() {
+		return adminRoles;
+	}
+
+	public void setAdminRoles(List<String> adminRoles) {
+		this.adminRoles = adminRoles;
+	}
+
+	public List<String> getModRoles() {
+		return modRoles;
+	}
+
+	public void setModRoles(List<String> modRoles) {
+		this.modRoles = modRoles;
 	}
 
 	public long getLogChannelID() {
