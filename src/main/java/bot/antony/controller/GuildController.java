@@ -105,6 +105,10 @@ public class GuildController {
 	}
 	
 	public boolean memberIsAdmin(Member member) {
+		if(member == null) {
+			return false;
+		}
+			
 		GuildData guildData = loadGuildData(member.getGuild());
 		if(member.isOwner()) {
 			return true;
@@ -124,6 +128,10 @@ public class GuildController {
 	}
 	
 	public boolean memberIsMod(Member member) {
+		if(member == null) {
+			return false;
+		}
+		
 		//Admins are mods
 		GuildData guildData = loadGuildData(member.getGuild());
 		if(memberIsAdmin(member)) {

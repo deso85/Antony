@@ -30,7 +30,8 @@ public class Shopping implements ServerCommand {
 				false);
 		
 		eb.addField("Beheizung / Klimatisierung",
-				"[Heizkabel](https://amzn.to/3q0n9SZ)"					//B003YO8WL8
+				"[Bluetooth Thermometer](https://amzn.to/3FCqyjy)"		//B08SQCY5JN
+				+ "\n[Heizkabel](https://amzn.to/3q0n9SZ)"				//B003YO8WL8
 				+ "\n[Heizmatte](https://amzn.to/2ZWUm78)"				//B07JYJQKNH
 				+ "\n[Steckdosenthermostat](https://amzn.to/2ZWqdoK)",	//B07DC8B4SV
 				false);

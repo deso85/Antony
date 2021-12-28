@@ -16,7 +16,8 @@ public class MessageUpdate extends ListenerAdapter {
 				!event.getAuthor().equals(event.getJDA().getSelfUser())) {
 			
 			//Message parts on blacklist?
-			if(Antony.getGuildController().memberIsMod(event.getMember()) || !Antony.getBlacklistController().checkBlacklistedContent(event.getMessage())) {
+			if(Antony.getGuildController().memberIsMod(event.getMember()) ||
+					!Antony.getBlacklistController().checkBlacklistedContent(event.getMessage())) {
 				
 				//User is softbanned?
 				UserDataSB user = new UserDataSB(event.getAuthor().getId(), event.getAuthor().getName());
