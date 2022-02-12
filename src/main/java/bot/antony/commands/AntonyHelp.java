@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("12.02.2022 - Version 5.2.0", "***" + cmdPrefix + "category*** wurde als neue administrative Funktion hinzugefügt."));
 				changeLog.add(new ChangeLogEntry("28.12.2021 - Version 5.1.1", "Es wurde ein Artikel für die Kaufempfehlungen hinzugefügt und es wurden Fehler behoben, die durch Nachrichten in privaten Kanälen entstanden sind."));
 				changeLog.add(new ChangeLogEntry("07.11.2021 - Version 5.1.0", "Nachrichten werden nun auch ausgewertet, wenn sie bearbeitet werden."));
 				changeLog.add(new ChangeLogEntry("06.11.2021 - Version 5.0.0", "***" + cmdPrefix + "guild*** kann jetzt genutzt werden, um moderative und administrative Rollen zu konfigurieren. Darüber hinaus wurde das Berechtigungskonzept vollständig überarbeitet."));
@@ -171,11 +172,13 @@ public class AntonyHelp implements ServerCommand {
 		//Commands for admins
 		BotCommand archive = new BotCommand("archive", "Funktion zur Archivierung von Kanalinhalten.", "#Kanal [Anzahl Nachrichten]");
 		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
+		BotCommand category = new BotCommand("category", "Funktion zur Administration von Server-Kategorien.", "sort CategoryName");
 		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
 		BotCommand guild = new BotCommand("guild", "Funktion zur Verwaltung des Discord Servers.");
 		BotCommand shutdown = new BotCommand("shutdown", "Funktion zum stoppen des Bots");
 		adminBotCommands.add(archive);
 		adminBotCommands.add(blacklist);
+		adminBotCommands.add(category);
 		adminBotCommands.add(channel);
 		adminBotCommands.add(guild);
 		adminBotCommands.add(shutdown);

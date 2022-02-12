@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.Archive;
+import bot.antony.commands.Category;
 import bot.antony.commands.Channel;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Guild;
@@ -61,6 +62,7 @@ public class CommandManager {
 		// Admin
 		this.adminCommands.put("archive", new Archive());
 		this.adminCommands.put("blacklist", new Blacklist());
+		this.adminCommands.put("category", new Category());
 		this.adminCommands.put("channel", new Channel());
 		this.adminCommands.put("guild", new Guild());
 		this.adminCommands.put("shutdown", new Shutdown());
