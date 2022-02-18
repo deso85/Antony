@@ -26,7 +26,10 @@ public class HammerReaction extends MessageReaction {
 	// --------------------------------------------------
 	@Override
 	public boolean shallTrigger() {
-		return Antony.getGuildController().memberIsMod(reactor);
+		if(Antony.getGuildController().memberIsMod(reactor) && !Antony.getGuildController().memberIsMod(message.getMember())) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
