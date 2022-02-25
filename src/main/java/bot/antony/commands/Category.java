@@ -58,29 +58,7 @@ public class Category implements ServerCommand {
 					List<net.dv8tion.jda.api.entities.Category> categories = guild.getCategoriesByName(catName, false);
 					
 					if(categories.size() > 0) {
-						int curPos = categories.get(0).getChannels().get(0).getPosition();
-						GuildChannel topChan = null;
-
-						TreeMap<String, GuildChannel> channels = new TreeMap<>();
-						for(GuildChannel chan : categories.get(0).getChannels()) {
-							if(chan.getName().contains("chat-hb")) {
-								topChan = chan;
-							} else {
-								channels.put(chan.getName(), chan);
-							}
-						}
-
-						if(topChan != null) {
-							topChan.getManager().setPosition(curPos).complete();
-							curPos++;
-						}
-						
-						for (HashMap.Entry<String, GuildChannel> entry : channels.entrySet()) {
-						    GuildChannel chan = entry.getValue();
-						    chan.getManager().setPosition(curPos).complete();
-						    curPos++;
-						}
-						
+						sort(categories.get(0));
 						getChannel().sendMessage("Die Kanäle in der Kategorie **" + catName + "** wurden alphabetisch sortiert.").complete();
 						
 					} else {
@@ -105,6 +83,31 @@ public class Category implements ServerCommand {
 		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "category (list | sort) [category name]").queue();
 	}
 
+	private void sort(net.dv8tion.jda.api.entities.Category category) {
+		int curPos = category.getChannels().get(0).getPosition();
+		GuildChannel topChan = null;
+
+		TreeMap<String, GuildChannel> channels = new TreeMap<>();
+		for(GuildChannel chan : category.getChannels()) {
+			if(chan.getName().contains("chat-hb")) {
+				topChan = chan;
+			} else {
+				channels.put(chan.getName(), chan);
+			}
+		}
+
+		if(topChan != null) {
+			topChan.getManager().setPosition(curPos).complete();
+			curPos++;
+		}
+		
+		for (HashMap.Entry<String, GuildChannel> entry : channels.entrySet()) {
+		    GuildChannel chan = entry.getValue();
+		    chan.getManager().setPosition(curPos).complete();
+		    curPos++;
+		}
+	}
+	
 	
 	// --------------------------------------------------
 	// Getter & Setter

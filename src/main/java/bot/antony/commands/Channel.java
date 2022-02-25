@@ -1,8 +1,11 @@
 package bot.antony.commands;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
@@ -21,13 +24,86 @@ public class Channel implements ServerCommand {
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		setChannel(channel);
-
 		String[] userMessage = message.getContentDisplay().split(" ");
 		Guild guild = message.getGuild();
 		
 		if (userMessage.length > 1) {
 
 			switch (userMessage[1].toLowerCase()) {
+			case "add":
+				
+				if(userMessage.length > 2) {
+					String channelName = userMessage[userMessage.length-1];
+					TextChannel refChannel = getChannel();
+					if(message.getMentionedChannels().size() > 0) {
+						refChannel = message.getMentionedChannels().get(0);
+					}
+					StringBuilder chanTopic = new StringBuilder();
+					
+					
+					//Create channel with category permissions 
+					TextChannel newChan = refChannel.getParent().createTextChannel(channelName).syncPermissionOverrides().complete();
+					
+					//If there is a channel owner it will be mentioned in the topic
+					if(message.getMentionedMembers().size() > 0) {
+						chanTopic.append("Kanal von: ");
+					}
+					int counter = 1;
+					for(Member menMem : message.getMentionedMembers()) {
+						//Add read/write permission
+						ArrayList<Permission> allow = new ArrayList<Permission>();
+						allow.add(Permission.MESSAGE_READ);
+						allow.add(Permission.MESSAGE_WRITE);
+						allow.add(Permission.MESSAGE_ATTACH_FILES);
+						allow.add(Permission.MESSAGE_EMBED_LINKS);
+						newChan.getManager().putMemberPermissionOverride(menMem.getIdLong(), allow, null).complete();
+						
+						//Add name to channel topic
+						chanTopic.append(menMem.getEffectiveName());
+						if(counter < message.getMentionedMembers().size()) {
+							chanTopic.append(", ");
+						}
+						
+						counter++;
+					}
+					
+					//Add creation date to channel topic
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+					LocalDateTime date = LocalDateTime.now();
+					chanTopic.append("\nErstellt: " + date.format(formatter) + " Uhr (von " + member.getEffectiveName() + ")");
+					
+					//Set channel topic
+					newChan.getManager().setTopic(chanTopic.toString()).complete();
+					
+					//Send notification to channel owner if necessary
+					if(message.getMentionedMembers().size() > 0) {
+						StringBuilder notifyMsg = new StringBuilder();
+						
+						counter = 1;
+						for(Member menMem : message.getMentionedMembers()) {
+							notifyMsg.append(menMem.getAsMention());
+							if(counter < message.getMentionedMembers().size()) {
+								notifyMsg.append(" ");
+							}
+							counter++;
+						}
+						notifyMsg.append(" hier ist");
+						if(message.getMentionedMembers().size() == 1) {
+							notifyMsg.append(" dein");
+						} else {
+							notifyMsg.append(" euer");
+						}
+						notifyMsg.append(" neue Kanal. Viel Spaß beim Schreiben 🙂");
+						
+						//TODO catch exception SEVERE: RestAction queue returned failure: [ErrorResponseException] 10008: Unknown Message
+						newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
+					}
+					
+				} else {
+					printHelp();
+				}
+				
+				break;
 			case "list":
 				
 				if(userMessage.length > 2) {
@@ -125,8 +201,9 @@ public class Channel implements ServerCommand {
 
 
 	private void printHelp() {
-		//TODO: Help ausformulieren
-		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "channel (list (abandoned|verlassen)) [monate]").queue();
+		getChannel().sendMessage("Benutzung:\n"
+		+ Antony.getCmdPrefix() + "channel add [@referenceChannel, @Member] channelName\n"
+		+ Antony.getCmdPrefix() + "channel list (abandoned | verlassen) [monate]").queue();
 	}
 
 	
