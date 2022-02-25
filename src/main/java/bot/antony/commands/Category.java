@@ -55,14 +55,14 @@ public class Category implements ServerCommand {
 			case "sort":
 				if (userMessage.length > 2) {
 					String catName = message.getContentDisplay().substring(userMessage[0].length() + userMessage[1].length() + 2);
-					List<net.dv8tion.jda.api.entities.Category> categories = guild.getCategoriesByName(catName, false);
+					List<net.dv8tion.jda.api.entities.Category> categories = guild.getCategoriesByName(catName, true);
 					
 					if(categories.size() > 0) {
 						sort(categories.get(0));
-						getChannel().sendMessage("Die Kanäle in der Kategorie **" + catName + "** wurden alphabetisch sortiert.").complete();
+						getChannel().sendMessage("Die Kanäle in der Kategorie **" + categories.get(0).getName() + "** wurden alphabetisch sortiert.").complete();
 						
 					} else {
-						getChannel().sendMessage("Es wurde keine Kategorie mit dem Namen \"" + catName + "\" gefunden.").complete();
+						getChannel().sendMessage("Es wurde keine Kategorie mit dem Namen \"" + categories.get(0).getName() + "\" gefunden.").complete();
 					}
 				} else {
 					printHelp();

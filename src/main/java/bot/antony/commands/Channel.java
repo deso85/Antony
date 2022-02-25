@@ -99,6 +99,9 @@ public class Channel implements ServerCommand {
 						newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
 					}
 					
+					//feedback
+					getChannel().sendMessage(newChan.getAsMention() + " wurde angelegt.").complete();
+					
 				} else {
 					printHelp();
 				}
