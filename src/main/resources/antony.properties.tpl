@@ -4,6 +4,8 @@ command.prefix = !
 bot.token.dev = 
 # Set Discord Bot Token for your Prod Discord Bot
 bot.token.prod = 
+# Set Owner ID
+bot.owner.id = 
 # Set pending timer for notifications in Minutes (60 = 1h, 1440 = 1d ...)
 notification.pending.time = 60
 # Path to store flatfiles
