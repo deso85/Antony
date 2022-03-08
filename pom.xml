@@ -12,6 +12,7 @@
 		<hibernate.validator.version>7.0.3.Final</hibernate.validator.version>
 		<jda.utilities.version>3.0.5</jda.utilities.version>
 		<jda.version>5.0.0-alpha.9</jda.version>
+		<jda.version>4.4.0_352</jda.version>
 		<sqlite.version>3.36.0.3</sqlite.version>
 		<sqlite.dialect.version>0.1.2</sqlite.dialect.version>
 		<jaxrs.version>2.0.2.Final</jaxrs.version>
