@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class Antony extends ListenerAdapter {
 	
+	private static JDA jda = null;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static boolean prodStage = false;
 
@@ -37,7 +38,12 @@ public class Antony extends ListenerAdapter {
 
 		try {
 			
+			long enable = System.currentTimeMillis();
+			
 			new Antony();
+			
+			String stage = prodStage ? "PROD" : "DEV/TEST";
+			logger.info("[" + stage + "] " + getBotName() + " (v" + getVersion() + ") started in " + (System.currentTimeMillis() - enable) + "ms!");
 			
 		} catch (LoginException e) {
 			logger.error("Could not login to Discord!", e);
@@ -49,25 +55,19 @@ public class Antony extends ListenerAdapter {
 	
 	private Antony() throws LoginException, InterruptedException {
 		// build bot
-		JDA jda = JDABuilder.createDefault(getToken(prodStage))		// The token of the account that is logging in.
-				.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
-				.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
-				.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
-				.enableCache(CacheFlag.CLIENT_STATUS)				// To get client status
-				.enableCache(CacheFlag.EMOTE)						// To get guilds emotes
-				.enableIntents(GatewayIntent.GUILD_MEMBERS)			// Has to be set to use MemberCachePolicy.ALL
-				.enableIntents(GatewayIntent.GUILD_PRESENCES)		// Has to be set to use CacheFlag.ACTIVITY
-				.build();
+		JDA jda = getJDA();
+		String helpWord = getBotName().toLowerCase();
 		
 		CommandClientBuilder builder = new CommandClientBuilder();
-		builder.setPrefix(getProperty("command.prefix"));
-		builder.setOwnerId(getProperty("bot.owner.id"));
-		builder.setHelpWord(jda.getSelfUser().getName().toLowerCase());
-		builder.setStatus(OnlineStatus.ONLINE);
-		builder.setActivity(Activity.listening(getProperty("command.prefix") + jda.getSelfUser().getName().toLowerCase()));
 		builder.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
-		builder.addCommand(new ShutdownCommand());
+		builder.setOwnerId(getProperty("bot.owner.id"));
+		builder.setActivity(Activity.listening(getCommandPrefix() + helpWord));
+		builder.setPrefix(getCommandPrefix());
+		builder.setHelpWord(helpWord);
+		builder.setStatus(OnlineStatus.ONLINE);
+		
 		builder.addCommand(new PingCommand());
+		builder.addCommand(new ShutdownCommand());
 		
 		jda.addEventListener(builder.build());
 		jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.
@@ -78,6 +78,21 @@ public class Antony extends ListenerAdapter {
 	// Functions
 	// --------------------------------------------------
 
+	private static JDA getJDA() throws LoginException {
+		if(jda == null) {
+			jda = JDABuilder.createDefault(getToken(prodStage))		// The token of the account that is logging in.
+				.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
+				.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
+				.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
+				.enableCache(CacheFlag.CLIENT_STATUS)				// To get client status
+				.enableCache(CacheFlag.EMOTE)						// To get guilds emotes
+				.enableIntents(GatewayIntent.GUILD_MEMBERS)			// Has to be set to use MemberCachePolicy.ALL
+				.enableIntents(GatewayIntent.GUILD_PRESENCES)		// Has to be set to use CacheFlag.ACTIVITY
+				.build();
+		} 
+		return jda;
+	}
+	
 	/**
 	 * Function to get value for key from antony.properties file
 	 * @param	key
@@ -113,6 +128,16 @@ public class Antony extends ListenerAdapter {
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
+	private static String getBotName() {
+		return jda.getSelfUser().getName();
+	}
 	
+	private static String getCommandPrefix() {
+		return getProperty("command.prefix");
+	}
+	
+	private static String getVersion() {
+		return getProperty("bot.version");
+	}
 	
 }
