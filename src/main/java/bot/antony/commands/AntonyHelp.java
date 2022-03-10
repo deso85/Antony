@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("10.03.2022 - Version 5.3.2", "Ein kleiner Fehlerteufel wurde aus einem Text heraus exorziert. 😈"));
 				changeLog.add(new ChangeLogEntry("25.02.2022 - Version 5.3.1", "Die Sortierfunktion für Kategorien ist nun nicht mehr Case sensitiv und nach Anlage eines neuen Kanals gibt Antony jetzt Feedback im jeweiligen Kanal."));
 				changeLog.add(new ChangeLogEntry("25.02.2022 - Version 5.3.0", "***" + cmdPrefix + "channel*** kann nun dafür genutzt werden, neue Kanäle anzulegen."));
 				changeLog.add(new ChangeLogEntry("18.02.2022 - Version 5.2.1", "Mods werden nun nicht mehr durch die 🔨 Reaction soft gebannt."));

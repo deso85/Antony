@@ -93,7 +93,7 @@ public class Channel implements ServerCommand {
 						} else {
 							notifyMsg.append(" euer");
 						}
-						notifyMsg.append(" neue Kanal. Viel Spaß beim Schreiben 🙂");
+						notifyMsg.append(" neuer Kanal. Viel Spaß beim Schreiben 🙂");
 						
 						//TODO catch exception SEVERE: RestAction queue returned failure: [ErrorResponseException] 10008: Unknown Message
 						newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
