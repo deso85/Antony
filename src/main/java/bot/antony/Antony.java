@@ -1,5 +1,6 @@
 package bot.antony;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -10,8 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.jagrosh.jdautilities.examples.command.PingCommand;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.jagrosh.jdautilities.examples.command.AboutCommand;
+import com.jagrosh.jdautilities.examples.command.GuildlistCommand;
+import com.jagrosh.jdautilities.examples.command.RoleinfoCommand;
+import com.jagrosh.jdautilities.examples.command.ServerinfoCommand;
 
+import bot.antony.commands.PingCommand;
 import bot.antony.commands.ShutdownCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -66,6 +72,10 @@ public class Antony extends ListenerAdapter {
 		builder.setHelpWord(helpWord);
 		builder.setStatus(OnlineStatus.ONLINE);
 		
+		builder.addCommand(new AboutCommand(Color.CYAN, "ein schöner Bot", new String[] {"a","b"}, null));
+		builder.addCommand(new GuildlistCommand(new EventWaiter()));
+		builder.addCommand(new RoleinfoCommand());
+		builder.addCommand(new ServerinfoCommand());
 		builder.addCommand(new PingCommand());
 		builder.addCommand(new ShutdownCommand());
 		
