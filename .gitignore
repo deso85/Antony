@@ -34,4 +34,5 @@ org.eclipse.*
 /target/
 antony.properties
 antony.db
+antony.sqlite.db
 antony.*.json

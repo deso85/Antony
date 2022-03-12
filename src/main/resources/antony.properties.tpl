@@ -11,6 +11,6 @@ notification.pending.time = 60
 # Path to store flatfiles
 flatfile.path = C:\\Antony\\
 # Set SQLite database path
-sqlite.db.path = antony.db
+sqlite.db.path = antony.sqlite.db
 # Set Bot version from pom.xml
 bot.version = ${project.version}
