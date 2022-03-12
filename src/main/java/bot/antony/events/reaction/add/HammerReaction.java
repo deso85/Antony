@@ -58,7 +58,7 @@ public class HammerReaction extends MessageReaction {
 	}
 	
 	public EmbedBuilder getEmbedBuilder() {
-		Date date = new Date(System.currentTimeMillis());
+		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 		TextChannel txtChan = message.getTextChannel();
 		EmbedBuilder eb = new EmbedBuilder()

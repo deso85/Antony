@@ -214,10 +214,10 @@ public class UserInfo implements ServerCommand {
 				.setDescription(sbStatus.toString())
 				.setColor(getMember().getColor())
 				.setThumbnail(getMember().getUser().getEffectiveAvatarUrl())
-				.addField("Discord beigetreten", getMember().getTimeCreated().format(formatter) + "\n(Vor "
+				.addField("Discord beigetreten", getMember().getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + "\n(Vor "
 						+ getFormattedPeriod(getMember().getTimeCreated(), formatter) + ")",
 						false)
-				.addField("Server beigetreten", getMember().getTimeJoined().format(formatter) + "\n(Vor "
+				.addField("Server beigetreten", getMember().getTimeJoined().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + "\n(Vor "
 						+ getFormattedPeriod(getMember().getTimeJoined(), formatter) + ")",
 						false)
 				.addField("Zuletzt online gesehen", lastOnline, false);
@@ -250,7 +250,7 @@ public class UserInfo implements ServerCommand {
 	private String getFormattedPeriod(OffsetDateTime odt, DateTimeFormatter formatter) {
 		StringBuilder sb = new StringBuilder();
 		LocalDate currentDate = LocalDate.now();
-		LocalDate passedDate = LocalDate.parse(odt.format(formatter), formatter);
+		LocalDate passedDate = LocalDate.parse(odt.atZoneSameInstant(ZoneId.systemDefault()).format(formatter), formatter);
 		Period period = Period.between(passedDate, currentDate);
 		//Years
 		if(period.getYears() > 0) {

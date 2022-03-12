@@ -101,7 +101,7 @@ public class RedFlagReaction extends MessageReaction {
 	}
 	
 	public void printMessageEmbed() {
-		Date date = new Date(System.currentTimeMillis());
+		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Color.red)
@@ -118,7 +118,7 @@ public class RedFlagReaction extends MessageReaction {
 	public void deleteMessage() {
 		delPair.setDelCount(delPair.getDelCount()+1);
 		delPair.setDelSum(delPair.getDelSum()+1);
-		delPair.setLastDeleted(new Date(System.currentTimeMillis()));
+		delPair.setLastDeleted(new Date());
 		saveDeletionPair();
 		message.delete().complete();
 		

@@ -37,7 +37,7 @@ public class Softban implements ServerCommand {
 						if(responseChannel != null) {
 							responseChannel.sendMessage("🔨 User \"" + userMessage[3] + "\" manually soft banned by " + member.getUser().getAsMention()).complete();
 						}
-						Date date = new Date(System.currentTimeMillis());
+						Date date = new Date();
 						SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 						EmbedBuilder eb = new EmbedBuilder()
 								.setColor(Color.red)
