@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("10.05.2022 - Version 5.3.5", "***" + cmdPrefix + "category*** sync hinzugefügt, um die Berechtigungen zu synchronisieren."));
 				changeLog.add(new ChangeLogEntry("22.03.2022 - Version 5.3.4", "API URL für antcheck.info geändert, um die Funktionalität für z.B. den ***" + cmdPrefix + "sells*** Befehl wieder herzustellen."));
 				changeLog.add(new ChangeLogEntry("12.03.2022 - Version 5.3.3", "Die Zeitzonen wurden geprüft und aktualisiert, damit die Ausgabe korrekt ist."));
 				changeLog.add(new ChangeLogEntry("10.03.2022 - Version 5.3.2", "Ein kleiner Fehlerteufel wurde aus einem Text heraus exorziert. 😈"));

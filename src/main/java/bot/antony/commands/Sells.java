@@ -222,11 +222,12 @@ public class Sells implements ServerCommand {
 				eb.setThumbnail(specieImageurl);
 			}
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+			/*SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 			Date now = new Date();
 			StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
 			sb.append(sdf.format(now.getTime()));
-			sb.append(" 00:00 Uhr.");
+			sb.append(" 00:00 Uhr.");*/
+			StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten werden alle 10min aktualisiert. ");
 			eb.setFooter(sb.toString());
 			
 			
