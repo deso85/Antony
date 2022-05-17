@@ -1,9 +1,6 @@
 package bot.antony.events;
 
 import bot.antony.Antony;
-import bot.antony.controller.UserController;
-import bot.antony.guild.UserData;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

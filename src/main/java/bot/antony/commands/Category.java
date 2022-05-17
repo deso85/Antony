@@ -100,7 +100,7 @@ public class Category implements ServerCommand {
 
 	private void printHelp() {
 		//TODO: Help ausformulieren
-		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "category (list | sort) [category name]").queue();
+		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "category (list | sort  [category name] | sync [channel name])").queue();
 	}
 
 	private void sort(net.dv8tion.jda.api.entities.Category category) {
