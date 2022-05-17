@@ -1,7 +1,10 @@
 package bot.antony.events;
 
 import bot.antony.Antony;
+import bot.antony.controller.UserController;
 import bot.antony.events.softban.UserDataSB;
+import bot.antony.guild.UserData;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,6 +17,13 @@ public class MessageReceived extends ListenerAdapter {
 		// check which channel ...
 		if (event.isFromType(ChannelType.TEXT) &&
 				!event.getAuthor().equals(event.getJDA().getSelfUser())) {
+			
+			if(event.getMember() != null && !event.getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
+				UserController usrCntrl = Antony.getUserController();
+				UserData user = usrCntrl.loadUserData(event.getMember());
+				user.setLastOnline(System.currentTimeMillis());
+				usrCntrl.saveUserData(user, event.getGuild());
+			}
 			
 			//Message parts on blacklist?
 			if(Antony.getGuildController().memberIsMod(event.getMember()) ||

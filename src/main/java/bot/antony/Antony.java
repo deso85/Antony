@@ -70,8 +70,8 @@ public class Antony extends ListenerAdapter {
 		try {
 			// build bot
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
-					.addEventListeners(new CommandListener())			// Listener for commands
 					.addEventListeners(new MessageReceived())
+					.addEventListeners(new CommandListener())			// Listener for commands
 					.addEventListeners(new MessageUpdate())
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted

@@ -20,13 +20,6 @@ public class CommandListener extends ListenerAdapter {
 		if(event.isFromType(ChannelType.TEXT)) {
 			final TextChannel channel = event.getTextChannel();
 			
-			if(event.getMember() != null && !event.getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-				UserController usrCntrl = Antony.getUserController();
-				UserData user = usrCntrl.loadUserData(event.getMember());
-				user.setLastOnline(System.currentTimeMillis());
-				usrCntrl.saveUserData(user, event.getGuild());
-			}
-			
 			//!cmd arg0 arg1 arg2 ...
 			if(message.startsWith(Antony.getCmdPrefix())) {
 				String[] args = message.substring(Antony.getCmdPrefix().length()).split(" ");
