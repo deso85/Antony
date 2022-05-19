@@ -22,6 +22,9 @@ import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
 import bot.antony.events.GuildMemberUpdateNickname;
 import bot.antony.events.GuildUpdateName;
+import bot.antony.events.GuildVoiceJoin;
+import bot.antony.events.GuildVoiceLeave;
+import bot.antony.events.GuildVoiceMove;
 import bot.antony.events.MessageReceived;
 import bot.antony.events.MessageUpdate;
 import bot.antony.events.NotificationListener;
@@ -71,8 +74,11 @@ public class Antony extends ListenerAdapter {
 			// build bot
 			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
 					.addEventListeners(new MessageReceived())
-					.addEventListeners(new CommandListener())			// Listener for commands
 					.addEventListeners(new MessageUpdate())
+					.addEventListeners(new CommandListener())			// Listener for commands
+					.addEventListeners(new GuildVoiceJoin())
+					.addEventListeners(new GuildVoiceMove())
+					.addEventListeners(new GuildVoiceLeave())
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
