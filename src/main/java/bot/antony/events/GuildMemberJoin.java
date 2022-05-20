@@ -47,17 +47,19 @@ public class GuildMemberJoin extends ListenerAdapter {
 	
 	public String getRandomWelcomeText() {
 		//TODO: Usefull for every guild? -> add to GuildData
-		TextChannel activation;
-		if(Antony.isProdStage()) {
-			activation = guild.getTextChannelById(724583172586864690L);
-		} else {
-			activation = guild.getTextChannelById(778960515895918629L);
-		}
+		TextChannel activation = Antony.getGuildController().getActivationRulesChannel(guild);
 		ArrayList<String> messages = new ArrayList<String>();
 		
-		messages.add("Hey " + member.getAsMention() + ", das AAM-Team und die gesamte Community heißen dich herzlich auf dem Server **" + guild.getName() + "** willkommen!\n"
-				+ "Du bist übrigens schon das " + guild.getMembers().size() + ". Mitglied.\n"
-				+ "Du kannst dich schonmal umsehen - bitte wirf einen kurzen Blick in " + activation.getAsMention() + ", um hier bald selbst loslegen zu können!\n\nViel Spaß!");
+		StringBuilder sb = new StringBuilder();
+		sb.append("Hey " + member.getAsMention() + ", das AAM-Team und die gesamte Community heißen dich herzlich auf dem Server **" + guild.getName() + "** willkommen!\n"
+				+ "Du bist übrigens schon das " + guild.getMembers().size() + ". Mitglied.");
+		if(activation != null) {
+			sb.append("\nDu kannst dich schonmal umsehen - bitte wirf einen kurzen Blick in " + activation.getAsMention() + ", um hier bald selbst loslegen zu können!");
+		}
+		sb.append("\n\nViel Spaß!");
+		
+		
+		messages.add(sb.toString());
 		
 		return messages.get((int) (System.currentTimeMillis() % messages.size()));
 	}

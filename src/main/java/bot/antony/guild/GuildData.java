@@ -13,6 +13,7 @@ public class GuildData {
 	private String name;
 	private long logChannelID;
 	private long welcomeChannelID;
+	private long activationRulesChannelID;
 	private List<String> adminRoles = new ArrayList<String>();
 	private List<String> modRoles = new ArrayList<String>();
 
@@ -152,6 +153,14 @@ public class GuildData {
 
 	public void setWelcomeChannelID(long welcomeChannelID) {
 		this.welcomeChannelID = welcomeChannelID;
+	}
+
+	public long getActivationRulesChannelID() {
+		return activationRulesChannelID;
+	}
+
+	public void setActivationRulesChannelID(long activationRulesChannelID) {
+		this.activationRulesChannelID = activationRulesChannelID;
 	}
 	
 }

@@ -54,6 +54,21 @@ public class Guild implements ServerCommand {
 					}
 					break;
 				
+				case "activationchan":
+					if(message.getMentionedChannels().size() > 0) {
+						guildData.setActivationRulesChannelID(message.getMentionedChannels().get(0).getIdLong());
+						guildController.saveGuildData(guildData, channel.getGuild());
+						returnMessage.append("Channel für Aktivierungs-Regeln gesetzt.");
+						Antony.getLogger().info("Activation rules channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+					} else {
+						if(guildController.getActivationRulesChannel(message.getGuild()) != null) {
+							returnMessage.append("Channel für Aktivierungs-Regeln ist: " + guildController.getActivationRulesChannel(message.getGuild()).getAsMention());
+						} else {
+							returnMessage.append("Es ist kein Channel für Aktivierungs-Regeln gesetzt.");
+						}
+					}
+					break;
+					
 				case "adminrole":
 					if(message.getMentionedRoles().size()> 0) {
 						if(guildData.addAdminRole(message.getMentionedRoles().get(0).getName())) {
@@ -126,6 +141,6 @@ public class Guild implements ServerCommand {
 	}
 	
 	private void printHelp() {
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "guild (logchan | welcomechan | adminrole | modrole) [#TextChannel | @role]").complete();
+		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "guild (logchan | welcomechan | activationchan | adminrole | modrole) [#TextChannel | @role]").complete();
 	}
 }

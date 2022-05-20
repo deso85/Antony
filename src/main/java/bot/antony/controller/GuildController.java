@@ -41,6 +41,11 @@ public class GuildController {
 		return guild.getSystemChannel();
 	}
 	
+	public TextChannel getActivationRulesChannel(Guild guild) {
+		GuildData guildData = loadGuildData(guild);
+		return guild.getTextChannelById(guildData.getActivationRulesChannelID());
+	}
+	
 	public List<String> getAdminRoles(Guild guild){
 		GuildData guildData = loadGuildData(guild);
 		return guildData.getAdminRoles();

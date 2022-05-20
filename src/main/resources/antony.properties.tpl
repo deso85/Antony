@@ -1,9 +1,11 @@
 # Prefix which has to be used to call commands 
 command.prefix = !
-# Set Discord Bot Token for your Dev/Test Discord Bot
-bot.token.dev = 
-# Set Discord Bot Token for your Prod Discord Bot
-bot.token.prod = 
+# Set Discord Bot Token
+bot.token = 123456789abcdef
+# Bot Stage
+bot.stage = DEV/TEST
+# Set Owner ID
+bot.owner.id = 123456789abcdef
 # Set pending timer for notifications in Minutes (60 = 1h, 1440 = 1d ...)
 notification.pending.time = 60
 # Path to store flatfiles

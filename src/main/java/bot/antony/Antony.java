@@ -1,6 +1,8 @@
 package bot.antony;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -61,8 +63,7 @@ public class Antony extends ListenerAdapter {
 	private static GuildController guildController = new GuildController();
 	private static UserController userController = new UserController();
 	private static int usercount = 0;
-	//private static DbController dbcontroller = new DbController();
-	private static boolean prodStage = false;
+	private static String configFile = null;
 
 	/**
 	 * This is the method where the program starts.
@@ -70,9 +71,19 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static void main(String[] args) {
 
+		//Set config file to owerwrite settings
+		for(int i = 0; i < args.length; i++) {
+            if(args[i].startsWith("-config=")) {
+            	File cFile = new File(args[i].substring(8));
+            	if(cFile.exists() && !cFile.isDirectory()) { 
+            		setConfigFile(args[i].substring(8));
+            	}
+            }
+        }
+		
 		try {
 			// build bot
-			JDA jda = JDABuilder.createDefault(getToken(isProdStage()))	// The token of the account that is logging in.
+			JDA jda = JDABuilder.createDefault(getProperty("bot.token"))	// The token of the account that is logging in.
 					.addEventListeners(new MessageReceived())
 					.addEventListeners(new MessageUpdate())
 					.addEventListeners(new CommandListener())			// Listener for commands
@@ -107,26 +118,13 @@ public class Antony extends ListenerAdapter {
 			jda.getPresence().setActivity(Activity.listening(cmdPrefix + "antony | " + usercount + " User | " + jda.getGuilds().size() + " Server"));
 			
 
-			
-			// Initialize CDI context and its dependencies to database, ...
-			// Custom initiallization is necessary due to standalone application
-			//TODO: BROKEN!
-			/*Weld weld = new Weld();
-		    WeldContainer container = weld.initialize();
-		    AntonyServiceInterface service = container.instance().select(AntonyServiceInterface.class).get();
-		    service.init();
-		    weld.shutdown();	//TODO: Move to antonys shutdown
-		    */
-			//AntonyServiceInterface service = AntonyService.getService();
-
-			
 			// Create log output after startup
-			String stage = "PROD";
-			if(!prodStage) {
-				stage = "DEV/TEST";
+			StringBuilder postStartLogEntry = new StringBuilder();
+			if(getProperty("bot.stage") != null) {
+				postStartLogEntry.append("[" + getProperty("bot.stage") + "] ");
 			}
-			String postStartLogEntry = "[" + stage + "] Antony (v" + getVersion() + ") started";
-			logger.info(postStartLogEntry);
+			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
+			logger.info(postStartLogEntry.toString());
 			
 			//Thread which is used to send channel notifications 
 			Thread sendPendingNotifications = new Thread() {
@@ -149,10 +147,7 @@ public class Antony extends ListenerAdapter {
 			logger.error("Could not login to Discord!", e);
 		} catch (InterruptedException e) {
 			logger.error("Antony thread is interrupted while waiting!", e);
-		}/* catch (SQLException e) {
-			logger.error("Could not connect to database!", e);
-			//e1.printStackTrace();
-		}*/
+		}
 		
 	}
 
@@ -169,34 +164,42 @@ public class Antony extends ListenerAdapter {
 	 * 			as String
 	 */
 	public static String getProperty(String key) {
-		InputStream is = Antony.class.getResourceAsStream("/antony.properties");
+		InputStream is = null;
 		Properties prop = new Properties();
-		try {
-			prop.load(is);
-			return prop.getProperty(key);
-		} catch (IOException e) {
-			return null;
+		String retVal = null;
+		
+		if(configFile != null && !configFile.equals("")) {
+			try {
+				is = new FileInputStream(configFile);
+				prop.load(is);
+				if(prop.getProperty(key) != null) {
+					retVal = prop.getProperty(key);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-	}
-	
-	/**
-	 * Function to get bot token
-	 * @param	prod
-	 * 			Boolean if bot is for productive use
-	 * @return	Discord Bot Token
-	 * 			as String
-	 */
-	private static String getToken(boolean prod) {
-		if(prod) {
-			return getProperty("bot.token.prod");
+
+		if(retVal == null){
+			try {
+				is = Antony.class.getResourceAsStream("/antony.properties");
+				prop.load(is);
+				retVal = prop.getProperty(key);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		return getProperty("bot.token.dev");
+		
+		return retVal;
 	}
 	
 	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
+	public static void setConfigFile(String configFile) {
+		Antony.configFile = configFile;
+	}
 	
 	/**
 	 * Function to get Antonys base color
@@ -255,7 +258,8 @@ public class Antony extends ListenerAdapter {
 	 * 			as Boolean
 	 */
 	public static boolean isProdStage() {
-		return prodStage;
+		//TODO: Remove
+		return true;
 	}
 	
 	public static String getDataPath() {
