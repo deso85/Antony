@@ -98,6 +98,11 @@ public class Channel implements ServerCommand {
 						//TODO catch exception SEVERE: RestAction queue returned failure: [ErrorResponseException] 10008: Unknown Message
 						newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
 					}
+
+					//sort if necessary
+					if(userMessage[2].equalsIgnoreCase("sort")) {
+						bot.antony.commands.Category.sort(newChan.getParent());
+					}
 					
 					//feedback
 					getChannel().sendMessage(newChan.getAsMention() + " wurde angelegt.").complete();
@@ -205,7 +210,7 @@ public class Channel implements ServerCommand {
 
 	private void printHelp() {
 		getChannel().sendMessage("Benutzung:\n"
-		+ Antony.getCmdPrefix() + "channel add [@referenceChannel, @Member] channelName\n"
+		+ Antony.getCmdPrefix() + "channel add [sort, @referenceChannel, @Member] channelName\n"
 		+ Antony.getCmdPrefix() + "channel list (abandoned | verlassen) [monate]").queue();
 	}
 

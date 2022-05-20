@@ -103,7 +103,7 @@ public class Category implements ServerCommand {
 		getChannel().sendMessage("Benutzung: " + Antony.getCmdPrefix() + "category (list | sort  [category name] | sync [channel name])").queue();
 	}
 
-	private void sort(net.dv8tion.jda.api.entities.Category category) {
+	public static void sort(net.dv8tion.jda.api.entities.Category category) {
 		int curPos = category.getChannels().get(0).getPosition();
 		GuildChannel topChan = null;
 
