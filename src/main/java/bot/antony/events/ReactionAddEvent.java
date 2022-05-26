@@ -42,6 +42,10 @@ public class ReactionAddEvent extends ListenerAdapter {
 				return new HammerReaction(event);
 			case "redflag":
 				return new RedFlagReaction(event);
+			case "abgelehnt":
+				return new AamProposalDecision(event, false);
+			case "abgeschlossen":
+				return new AamProposalDecision(event, true);
 			default:
 				return null;
 		}

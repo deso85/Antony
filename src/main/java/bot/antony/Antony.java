@@ -12,6 +12,8 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bot.antony.commands.aam.events.OfferListener;
+import bot.antony.commands.aam.events.ProposalListener;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.BlackListController;
 import bot.antony.controller.GuildController;
@@ -30,7 +32,6 @@ import bot.antony.events.GuildVoiceMove;
 import bot.antony.events.MessageReceived;
 import bot.antony.events.MessageUpdate;
 import bot.antony.events.NotificationListener;
-import bot.antony.events.OfferListener;
 import bot.antony.events.ReactionAddEvent;
 import bot.antony.events.UserUpdateName;
 import bot.antony.events.UserUpdateOnlineStatus;
@@ -92,6 +93,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new GuildVoiceLeave())
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
+					.addEventListeners(new ProposalListener())
 					.addEventListeners(new GuildMemberLeave())			// listener for leaving guild member
 					.addEventListeners(new GuildMemberJoin())			// listener for joining guild member
 					.addEventListeners(new GuildMemberUpdateNickname())

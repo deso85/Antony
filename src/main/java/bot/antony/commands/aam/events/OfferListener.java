@@ -1,4 +1,4 @@
-package bot.antony.events;
+package bot.antony.commands.aam.events;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.entities.ChannelType;
