@@ -50,20 +50,20 @@ public class Antony extends ListenerAdapter {
 
 	public static Antony INSTANCE;
 	private static Color baseColor = new Color(31, 89, 152);
-	private static String cmdPrefix = getProperty("command.prefix");
-	private static long notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
+	private static String cmdPrefix;
+	private static long notificationPendingTime;
 	private static String version = getProperty("bot.version");
-	private static String dataPath = getProperty("flatfile.path");
+	private static String dataPath;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan = new CommandManager();
-	private static NotificationController notificationController = new NotificationController();
-	private static WhiteListController whitelistController = new WhiteListController();
-	private static WatchListController watchlistController = new WatchListController();
-	private static BlackListController blacklistController = new BlackListController();
-	private static SoftbanController softbanController = new SoftbanController();
-	private static GuildController guildController = new GuildController();
-	private static UserController userController = new UserController();
-	private static int usercount = 0;
+	private static NotificationController notificationController;
+	private static WhiteListController whitelistController;
+	private static WatchListController watchlistController;
+	private static BlackListController blacklistController;
+	private static SoftbanController softbanController;
+	private static GuildController guildController;
+	private static UserController userController;
+	private static int usercount;
 	private static String configFile = null;
 
 	/**
@@ -81,6 +81,19 @@ public class Antony extends ListenerAdapter {
             	}
             }
         }
+		
+		//set variables
+		cmdPrefix = getProperty("command.prefix");
+		notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
+		dataPath = getProperty("flatfile.path");
+		notificationController = new NotificationController();
+		whitelistController = new WhiteListController();
+		watchlistController = new WatchListController();
+		blacklistController = new BlackListController();
+		softbanController = new SoftbanController();
+		guildController = new GuildController();
+		userController = new UserController();
+		usercount = 0;
 		
 		try {
 			// build bot
@@ -261,7 +274,7 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static boolean isProdStage() {
 		//TODO: Remove
-		return true;
+		return false;
 	}
 	
 	public static String getDataPath() {

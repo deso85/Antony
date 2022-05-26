@@ -1,5 +1,8 @@
 package bot.antony.events;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
@@ -42,6 +45,25 @@ public class GuildMemberJoin extends ListenerAdapter {
 			welcomeChannel.sendMessage(getRandomWelcomeText()).complete();
 		}
 	    
+		//Check how young the account is and give an info if it's younger than 30 days
+		if(Antony.getGuildController().getLogChannel(guild) != null) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+			LocalDate passedDate = LocalDate.parse(member.getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(formatter), formatter);
+			if(passedDate.isAfter(LocalDate.now().minusDays(30))) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("ID: " + member.getId() + "\n");
+				sb.append("Tag: " + member.getUser().getAsTag() + "\n");
+				sb.append("Name: " + member.getUser().getName() + "\n");
+				if(member.getNickname() != null) {
+					sb.append("Nickname: " + member.getNickname() + "\n");
+				}
+				sb.append("Discord beigetreten: " + member.getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + " Uhr");
+				Antony.getGuildController().getLogChannel(guild).sendMessage("ℹ️ Neu gejointer Account ist jünger als 30 Tage").complete();
+				Antony.getGuildController().getLogChannel(guild).sendMessage(member.getUser().getEffectiveAvatarUrl() + "?size=2048").complete();
+				Antony.getGuildController().getLogChannel(guild).sendMessage(sb.toString()).complete();
+			}
+		}
+		
 	    Antony.getLogger().info(logMessage.toString());
 	}
 	
