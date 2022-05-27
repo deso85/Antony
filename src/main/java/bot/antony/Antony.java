@@ -274,7 +274,7 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static boolean isProdStage() {
 		//TODO: Remove
-		return false;
+		return true;
 	}
 	
 	public static String getDataPath() {

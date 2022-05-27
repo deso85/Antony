@@ -19,6 +19,7 @@ import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
 import bot.antony.commands.User;
 import bot.antony.commands.UserInfo;
+import bot.antony.commands.aam.AddHB;
 import bot.antony.commands.emergency.Emergency;
 import bot.antony.commands.lists.Blacklist;
 import bot.antony.commands.lists.Watchlist;
@@ -42,6 +43,7 @@ public class CommandManager {
 
 		// Everyone
 		this.usrCommands.put("antony", new AntonyHelp());
+		this.usrCommands.put("addhb", new AddHB());
 		this.usrCommands.put("emergency", new Emergency());
 		this.usrCommands.put("giveaway", new Giveaway());
 		this.usrCommands.put("map", new Map());

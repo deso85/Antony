@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("27.05.2022 - Version 5.7.0", "AAM spezifisch: Haltungsberichte können nun mithilfe des ***" + cmdPrefix + "addhb*** Befehls angefragt werden"));
 				changeLog.add(new ChangeLogEntry("27.05.2022 - Version 5.6.1", "Mods werden nun über neu gejointe User, deren Accounts neu sind, informiert. Kleinere Anpassung an der AAM spezifischen Funktion für Vorschläge. Sämtliche Parameter lassen sich jetzt über die Config-File ändern."));
 				changeLog.add(new ChangeLogEntry("26.05.2022 - Version 5.6.0", "AAM spezifisch: Vorschläge können nun über Antony moderiert werden."));
 				changeLog.add(new ChangeLogEntry("20.05.2022 - Version 5.5.0", "Antony kann nun mit einer separaten Config-File betrieben werden. Einige Properties wurden zusätzlich angepasst."));
@@ -148,6 +149,7 @@ public class AntonyHelp implements ServerCommand {
 		//Commands for everyone
 		BotCommand antony = new BotCommand("antony", "Zeigt diese Übersicht an.");
 		BotCommand antonyChangelog = new BotCommand("antony changelog", "Zeigt den Changelog von Antony an.");
+		BotCommand addhb = new BotCommand("addhb", "Hiermit lässt sich die Erstellung eines Haltungsberichtes anfragen.");
 		BotCommand emergency = new BotCommand("emergency", "Soll Hilfestellungen bei Notfällen zur Verfügung stellen.", "milben");
 		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
 		BotCommand map = new BotCommand("map","Zeigt eine Karte von https://antmaps.org, auf der zu sehen ist, wo auf der Welt die gesuchte Ameisenart vorkommt.", "Lasius niger");
@@ -160,6 +162,7 @@ public class AntonyHelp implements ServerCommand {
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		botCommands.add(antony);
 		botCommands.add(antonyChangelog);
+		botCommands.add(addhb);
 		botCommands.add(emergency);
 		botCommands.add(giveawayEnd);
 		botCommands.add(map);

@@ -38,71 +38,13 @@ public class Channel implements ServerCommand {
 					if(message.getMentionedChannels().size() > 0) {
 						refChannel = message.getMentionedChannels().get(0);
 					}
-					StringBuilder chanTopic = new StringBuilder();
 					
-					
-					//Create channel with category permissions 
-					TextChannel newChan = refChannel.getParent().createTextChannel(channelName).syncPermissionOverrides().complete();
-					
-					//If there is a channel owner it will be mentioned in the topic
-					if(message.getMentionedMembers().size() > 0) {
-						chanTopic.append("Kanal von: ");
-					}
-					int counter = 1;
-					for(Member menMem : message.getMentionedMembers()) {
-						//Add read/write permission
-						ArrayList<Permission> allow = new ArrayList<Permission>();
-						allow.add(Permission.MESSAGE_READ);
-						allow.add(Permission.MESSAGE_WRITE);
-						allow.add(Permission.MESSAGE_ATTACH_FILES);
-						allow.add(Permission.MESSAGE_EMBED_LINKS);
-						newChan.getManager().putMemberPermissionOverride(menMem.getIdLong(), allow, null).complete();
-						
-						//Add name to channel topic
-						chanTopic.append(menMem.getEffectiveName());
-						if(counter < message.getMentionedMembers().size()) {
-							chanTopic.append(", ");
-						}
-						
-						counter++;
-					}
-					
-					//Add creation date to channel topic
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-					LocalDateTime date = LocalDateTime.now();
-					chanTopic.append("\nErstellt: " + date.format(formatter) + " Uhr (von " + member.getEffectiveName() + ")");
-					
-					//Set channel topic
-					newChan.getManager().setTopic(chanTopic.toString()).complete();
-					
-					//Send notification to channel owner if necessary
-					if(message.getMentionedMembers().size() > 0) {
-						StringBuilder notifyMsg = new StringBuilder();
-						
-						counter = 1;
-						for(Member menMem : message.getMentionedMembers()) {
-							notifyMsg.append(menMem.getAsMention());
-							if(counter < message.getMentionedMembers().size()) {
-								notifyMsg.append(" ");
-							}
-							counter++;
-						}
-						notifyMsg.append(" hier ist");
-						if(message.getMentionedMembers().size() == 1) {
-							notifyMsg.append(" dein");
-						} else {
-							notifyMsg.append(" euer");
-						}
-						notifyMsg.append(" neuer Kanal. Viel Spaß beim Schreiben 🙂");
-						
-						//TODO catch exception SEVERE: RestAction queue returned failure: [ErrorResponseException] 10008: Unknown Message
-						newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
-					}
-
-					//sort if necessary
+					Boolean sort = false;
 					if(userMessage[2].equalsIgnoreCase("sort")) {
-						bot.antony.commands.Category.sort(newChan.getParent());
+						sort = true;
 					}
+					
+					TextChannel newChan = addChannel(channelName, refChannel.getParent(), message.getMentionedMembers(), message.getMember(), sort);
 					
 					//feedback
 					getChannel().sendMessage(newChan.getAsMention() + " wurde angelegt.").complete();
@@ -214,6 +156,74 @@ public class Channel implements ServerCommand {
 		+ Antony.getCmdPrefix() + "channel list (abandoned | verlassen) [monate]").queue();
 	}
 
+	
+	public static TextChannel addChannel(String chanName, Category cat, List<Member> members, Member mod, Boolean sort) {
+		StringBuilder chanTopic = new StringBuilder();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+		LocalDateTime date = LocalDateTime.now();
+		
+		//Create channel with category permissions
+		TextChannel newChan = cat.createTextChannel(chanName).syncPermissionOverrides().complete();
+		
+		//If there is a channel owner it will be mentioned in the topic
+		if(members.size() > 0) {
+			chanTopic.append("Kanal von: ");
+		}
+		int counter = 1;
+		for(Member member : members) {
+			//Add read/write permission
+			ArrayList<Permission> allow = new ArrayList<Permission>();
+			allow.add(Permission.MESSAGE_READ);
+			allow.add(Permission.MESSAGE_WRITE);
+			allow.add(Permission.MESSAGE_ATTACH_FILES);
+			allow.add(Permission.MESSAGE_EMBED_LINKS);
+			newChan.getManager().putMemberPermissionOverride(member.getIdLong(), allow, null).complete();
+			
+			//Add name to channel topic
+			chanTopic.append(member.getEffectiveName());
+			if(counter < members.size()) {
+				chanTopic.append(", ");
+			}
+			counter++;
+		}
+		
+		//Add creation date to channel topic
+		chanTopic.append("\nErstellt: " + date.format(formatter) + " Uhr (von " + mod.getEffectiveName() + ")");
+		
+		//Set channel topic
+		newChan.getManager().setTopic(chanTopic.toString()).complete();
+		
+		//Send notification to channel owner if necessary
+		if(members.size() > 0) {
+			StringBuilder notifyMsg = new StringBuilder();
+			
+			counter = 1;
+			for(Member member : members) {
+				notifyMsg.append(member.getAsMention());
+				if(counter < members.size()) {
+					notifyMsg.append(" ");
+				}
+				counter++;
+			}
+			notifyMsg.append(" hier ist");
+			if(members.size() == 1) {
+				notifyMsg.append(" dein");
+			} else {
+				notifyMsg.append(" euer");
+			}
+			notifyMsg.append(" neuer Kanal. Viel Spaß beim Schreiben 🙂");
+			
+			//TODO catch exception SEVERE: RestAction queue returned failure: [ErrorResponseException] 10008: Unknown Message
+			newChan.sendMessage(notifyMsg.toString()).complete().delete().queueAfter(10, TimeUnit.MINUTES);
+		}
+		
+		//sort if necessary
+		if(sort) {
+			bot.antony.commands.Category.sort(cat);
+		}
+		
+		return newChan;
+	}
 	
 	// --------------------------------------------------
 	// Getter & Setter
