@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("28.05.2022 - Version 5.7.1", "***" + cmdPrefix + "addhb*** wurde um eine Abfrage erweitert und ein kleinerer Fehler ausgebessert."));
 				changeLog.add(new ChangeLogEntry("27.05.2022 - Version 5.7.0", "AAM spezifisch: Haltungsberichte können nun mithilfe des ***" + cmdPrefix + "addhb*** Befehls angefragt werden"));
 				changeLog.add(new ChangeLogEntry("27.05.2022 - Version 5.6.1", "Mods werden nun über neu gejointe User, deren Accounts neu sind, informiert. Kleinere Anpassung an der AAM spezifischen Funktion für Vorschläge. Sämtliche Parameter lassen sich jetzt über die Config-File ändern."));
 				changeLog.add(new ChangeLogEntry("26.05.2022 - Version 5.6.0", "AAM spezifisch: Vorschläge können nun über Antony moderiert werden."));
