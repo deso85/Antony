@@ -1,6 +1,9 @@
 package bot.antony.events.reaction.add;
 
+import java.util.Arrays;
+
 import bot.antony.Antony;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class AamProposalDecision extends MessageReaction {
@@ -35,30 +38,29 @@ public class AamProposalDecision extends MessageReaction {
 		if(shallTrigger()) {
 			removeOtherEmotes();
 			if(unpin()) {
-				sendInfoMessage();
+				//sendInfoMessage();
 			}
 		}
 	}
 	
 	private void sendInfoMessage() {
-		long proposalDecisionChannel = 778960516101046302L;
-		if(Antony.isProdStage()) {
-			proposalDecisionChannel = 543512436343308294L;
-		}
+		TextChannel proposalDecisionChannel = Antony.getGuildController().getValidChannel(guild, Arrays.asList(543512436343308294L, 778960516101046302L)); //Prod, Test
 		
-		StringBuilder proposalDecision = new StringBuilder();
-		proposalDecision.append("Hey " + message.getAuthor().getAsMention() + ", ");
-		if(decision) {
-			if(done) {
-				proposalDecision.append("wir haben deinen Vorschlag (" + message.getJumpUrl() + ") umgesetzt. 👍🏻");
+		if(proposalDecisionChannel != null) {
+			StringBuilder proposalDecision = new StringBuilder();
+			proposalDecision.append("Hey " + message.getAuthor().getAsMention() + ", ");
+			if(decision) {
+				if(done) {
+					proposalDecision.append("wir haben deinen Vorschlag (" + message.getJumpUrl() + ") umgesetzt. 👍🏻");
+				} else {
+					proposalDecision.append("dein Vorschlag (" + message.getJumpUrl() + ") wurde angenommen und wird demnächst umgesetzt.");
+				}
 			} else {
-				proposalDecision.append("dein Vorschlag (" + message.getJumpUrl() + ") wurde angenommen und wird demnächst umgesetzt.");
+				proposalDecision.append("leider wurde dein Vorschlag (" + message.getJumpUrl() + ") abgelehnt. Teile trotzdem gerne weiterhin deine Ideen mit uns!");
 			}
-		} else {
-			proposalDecision.append("leider wurde dein Vorschlag (" + message.getJumpUrl() + ") abgelehnt. Teile trotzdem gerne weiterhin deine Ideen mit uns!");
+			
+			proposalDecisionChannel.sendMessage(proposalDecision.toString()).queue();
 		}
-		
-		guild.getTextChannelById(proposalDecisionChannel).sendMessage(proposalDecision.toString()).queue();
 	}
 
 	private Boolean unpin() {

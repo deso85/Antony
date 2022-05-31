@@ -1,5 +1,7 @@
 package bot.antony.commands.aam.events;
 
+import java.util.Arrays;
+
 import bot.antony.Antony;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,28 +14,22 @@ public class OfferListener extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		User user = event.getAuthor();
-		String userString = user.getAsMention() + " (ID: " + user.getId() + ")";
-				
 		//check which channel ...
 		if(event.isFromType(ChannelType.TEXT)) {
-			final TextChannel channel = event.getTextChannel();
 			Guild guild = event.getGuild();
+			User user = event.getAuthor();
+			String userString = user.getAsMention() + " (ID: " + user.getId() + ")";
 			
-			//TODO: Use Variable
-			long offerChannelId = 778960516461625347L;		//is test ID
-			long offerLogChannelId = 778960515631415324L;	//is test ID
-			
-			if(Antony.isProdStage()) {
-				offerChannelId = 543512785171251201L;
-				offerLogChannelId = 726444104627519549L;
-			}
+			TextChannel offerChan = Antony.getGuildController().getValidChannel(guild, Arrays.asList(543512785171251201L, 778960516461625347L)); //Prod, Test
+			TextChannel offerLogChan = Antony.getGuildController().getValidChannel(guild, Arrays.asList(726444104627519549L, 778960515631415324L)); //Prod, Test
 			
 			//Is a new offer
-			if(channel.getIdLong() == offerChannelId) {
+			if(event.getTextChannel() == offerChan) {
 				//TODO: may the user add a new offer?
 				
-				guild.getTextChannelById(offerLogChannelId).sendMessage(userString).queue();
+				if(offerLogChan != null) {
+					offerLogChan.sendMessage(userString).queue();
+				}
 			}
 		}
 	}

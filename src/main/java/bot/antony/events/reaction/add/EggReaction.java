@@ -1,6 +1,7 @@
 package bot.antony.events.reaction.add;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.entities.Role;
@@ -52,21 +53,11 @@ public class EggReaction extends MessageReaction {
 	}
 
 	public String getRandomWelcomeText() {
-		TextChannel roles;
-		TextChannel serverQuestions;
-		TextChannel serverRules;
-		TextChannel memberIntroduction;
-		if(Antony.isProdStage()) {
-			roles = guild.getTextChannelById(745657357962313749L);
-			serverQuestions = guild.getTextChannelById(692317004727844934L);
-			serverRules = guild.getTextChannelById(789417087382192148L);
-			memberIntroduction = guild.getTextChannelById(543512466739691520L);
-		} else {
-			roles = guild.getTextChannelById(778960515895918628L);
-			serverQuestions = guild.getTextChannelById(778960515895918630L);
-			serverRules = guild.getTextChannelById(778960515895918626L);
-			memberIntroduction = guild.getTextChannelById(778960515895918631L);
-		}
+		TextChannel roles = Antony.getGuildController().getValidChannel(guild, Arrays.asList(745657357962313749L, 778960515895918628L));
+		TextChannel serverQuestions = Antony.getGuildController().getValidChannel(guild, Arrays.asList(692317004727844934L, 778960515895918630L));
+		TextChannel serverRules = Antony.getGuildController().getValidChannel(guild, Arrays.asList(789417087382192148L, 778960515895918626L));
+		TextChannel memberIntroduction = Antony.getGuildController().getValidChannel(guild, Arrays.asList(543512466739691520L, 778960515895918631L));
+		
 		ArrayList<String> messages = new ArrayList<String>();
 		
 		messages.add("Willkommen " + message.getMember().getAsMention() + "!\n"

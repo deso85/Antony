@@ -52,13 +52,9 @@ public class GuildMemberLeave extends ListenerAdapter {
 	    event.getJDA().getPresence().setActivity(Activity.listening(Antony.getCmdPrefix() + "antony | " + Antony.getUsercount() + " User | " + event.getJDA().getGuilds().size() + " Server"));
 	    
 	    //Send exit message about user
-	    Long exitChannelID;
-		if(Antony.isProdStage()) {
-			exitChannelID = 702534959625273446L;
-		} else {
-			exitChannelID = 778960519784169485L;
-		}
-		guild.getTextChannelById(exitChannelID).sendMessage(getRandomExitText()).queue();
+	    if(Antony.getGuildController().getExitChannel(guild) != null) {
+	    	Antony.getGuildController().getExitChannel(guild).sendMessage(getRandomExitText()).queue();
+	    }
 	}
 	
 	public String getRandomExitText() {

@@ -266,16 +266,6 @@ public class Antony extends ListenerAdapter {
 	public static NotificationController getNotificationController() {
 		return notificationController;
 	}
-
-	/**
-	 * Function to check if Bot is used productive
-	 * @return	prodStage
-	 * 			as Boolean
-	 */
-	public static boolean isProdStage() {
-		//TODO: Remove
-		return true;
-	}
 	
 	public static String getDataPath() {
 		return dataPath;

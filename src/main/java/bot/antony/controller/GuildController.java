@@ -46,6 +46,11 @@ public class GuildController {
 		return guild.getTextChannelById(guildData.getActivationRulesChannelID());
 	}
 	
+	public TextChannel getExitChannel(Guild guild) {
+		GuildData guildData = loadGuildData(guild);
+		return guild.getTextChannelById(guildData.getExitChannelID());
+	}
+	
 	public List<String> getAdminRoles(Guild guild){
 		GuildData guildData = loadGuildData(guild);
 		return guildData.getAdminRoles();
@@ -157,5 +162,14 @@ public class GuildController {
 			return true;
 		}
 		return false;
+	}
+	
+	public TextChannel getValidChannel(Guild guild, List<Long> channelIDs) {
+		for(long id : channelIDs) {
+			if(guild.getTextChannelById(id) != null) {
+				return guild.getTextChannelById(id);
+			}
+		}
+		return null;
 	}
 }

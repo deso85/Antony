@@ -14,6 +14,7 @@ public class GuildData {
 	private long logChannelID;
 	private long welcomeChannelID;
 	private long activationRulesChannelID;
+	private long exitChannelID;
 	private List<String> adminRoles = new ArrayList<String>();
 	private List<String> modRoles = new ArrayList<String>();
 
@@ -163,4 +164,11 @@ public class GuildData {
 		this.activationRulesChannelID = activationRulesChannelID;
 	}
 	
+	public long getExitChannelID() {
+		return exitChannelID;
+	}
+
+	public void setExitChannelID(long exitChannelID) {
+		this.exitChannelID = exitChannelID;
+	}
 }

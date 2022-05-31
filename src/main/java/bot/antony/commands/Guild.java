@@ -68,6 +68,20 @@ public class Guild implements ServerCommand {
 						}
 					}
 					break;
+				case "exitchan":
+					if(message.getMentionedChannels().size() > 0) {
+						guildData.setExitChannelID(message.getMentionedChannels().get(0).getIdLong());
+						guildController.saveGuildData(guildData, channel.getGuild());
+						returnMessage.append("Channel für Exit-Benachrichtigungen gesetzt.");
+						Antony.getLogger().info("Exit channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+					} else {
+						if(guildController.getExitChannel(message.getGuild()) != null) {
+							returnMessage.append("Channel für Exit-Benachrichtigungen ist: " + guildController.getExitChannel(message.getGuild()).getAsMention());
+						} else {
+							returnMessage.append("Es ist kein Channel für Exit-Benachrichtigungen gesetzt.");
+						}
+					}
+					break;
 					
 				case "adminrole":
 					if(message.getMentionedRoles().size()> 0) {
@@ -141,6 +155,6 @@ public class Guild implements ServerCommand {
 	}
 	
 	private void printHelp() {
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "guild (logchan | welcomechan | activationchan | adminrole | modrole) [#TextChannel | @role]").complete();
+		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "guild (logchan | welcomechan | activationchan | exitchan | adminrole | modrole) [#TextChannel | @role]").complete();
 	}
 }

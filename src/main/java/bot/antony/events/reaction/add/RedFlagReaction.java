@@ -33,11 +33,7 @@ public class RedFlagReaction extends MessageReaction {
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
 		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 		userList = event.getReaction().retrieveUsers().complete();
-		if(Antony.isProdStage()) {
-			flagsToDeleteMessage = 5;
-		} else {
-			flagsToDeleteMessage = 1;
-		}
+		flagsToDeleteMessage = 5;
 		deletionPairFileName = "antony.deletionpair.json";
 		loadDeletionPair();
 		usrCount = getNormalizedUserCount();
