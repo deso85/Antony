@@ -36,10 +36,10 @@ public class Archive implements ServerCommand {
 		this.channel = channel;
 
 		String[] userMessage = message.getContentDisplay().split(" ");
-		if (userMessage.length > 1 && message.getMentionedChannels().size() > 0) {
+		if (userMessage.length > 1 && message.getMentions().getChannels(TextChannel.class).size() > 0) {
 			
 			StringBuilder returnMessage = new StringBuilder();
-			TextChannel archiveChan = message.getMentionedChannels().get(0);
+			TextChannel archiveChan = message.getMentions().getChannels(TextChannel.class).get(0);
 			List<Message> msgHistory;
 			DateTimeFormatter fileFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 			DateTimeFormatter textFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -93,7 +93,7 @@ public class Archive implements ServerCommand {
 				    
 				    net.dv8tion.jda.api.entities.User archiveUser = Lists.reverse(msgHistory).get(0).getAuthor();
 				    htmlCode = replaceAll(htmlCode, "REPLACESERVERNAME", archiveChan.getGuild().getName());
-				    htmlCode = replaceAll(htmlCode, "REPLACECATEGORY", archiveChan.getParent().getName());
+				    htmlCode = replaceAll(htmlCode, "REPLACECATEGORY", archiveChan.getParentCategory().getName());
 				    htmlCode = replaceAll(htmlCode, "REPLACECHANNELNAME", archiveChan.getName());
 				    htmlCode = replaceAll(htmlCode, "REPLACEUSERTAG", archiveUser.getAsTag());
 				    

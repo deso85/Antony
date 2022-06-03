@@ -1,20 +1,24 @@
 package bot.antony.commands;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.comparators.ChannelComparator;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.IPermissionHolder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.managers.channel.ChannelManager;
 
 public class Category implements ServerCommand {
 
@@ -104,54 +108,34 @@ public class Category implements ServerCommand {
 	}
 
 	public static void sort(net.dv8tion.jda.api.entities.Category category) {
-		int curPos = category.getChannels().get(0).getPosition();
-		GuildChannel topChan = null;
-
-		TreeMap<String, GuildChannel> channels = new TreeMap<>();
-		for(GuildChannel chan : category.getChannels()) {
-			if(chan.getName().contains("chat-hb")) {
-				topChan = chan;
-			} else {
-				channels.put(chan.getName(), chan);
-			}
-		}
-
-		if(topChan != null) {
-			topChan.getManager().setPosition(curPos).complete();
-			curPos++;
-		}
-		
-		for (HashMap.Entry<String, GuildChannel> entry : channels.entrySet()) {
-		    GuildChannel chan = entry.getValue();
-		    chan.getManager().setPosition(curPos).complete();
-		    curPos++;
-		}
+		category.modifyTextChannelPositions().sortOrder(new ChannelComparator()).queue();
+		category.modifyVoiceChannelPositions().sortOrder(new ChannelComparator()).queue();
 	}
-	
 	
 	private void sync(net.dv8tion.jda.api.entities.Category category) {
 		
 		ArrayList<Permission> allow = new ArrayList<Permission>();
-		allow.add(Permission.MESSAGE_READ);
-		allow.add(Permission.MESSAGE_WRITE);
+		//allow.add(Permission.MESSAGE_READ);
+		allow.add(Permission.VIEW_CHANNEL);
+		allow.add(Permission.MESSAGE_SEND);
 		allow.add(Permission.MESSAGE_ATTACH_FILES);
 		allow.add(Permission.MESSAGE_EMBED_LINKS);
 		
-		for(GuildChannel chan : category.getChannels()) {
+		/*for(GuildChannel chan : category.getChannels()) {
 			
 			MessageHistory mh = new MessageHistory((MessageChannel) chan);
 			mh.retrievePast(1).complete();
 
 			if(mh.getRetrievedHistory().size() > 0) {
 				getChannel().sendMessage(chan.getAsMention() + " -> " + mh.getRetrievedHistory().get(0).getAuthor().getName()).complete();
-				chan.getManager().sync().putMemberPermissionOverride(mh.getRetrievedHistory().get(0).getAuthor().getIdLong(), allow, null).complete();
+				chan.getPermissionContainer().getManager().putMemberPermissionOverride(mh.getRetrievedHistory().get(0).getAuthor().getIdLong(), allow, null).complete();
+				//chan.getManager().sync().putMemberPermissionOverride(mh.getRetrievedHistory().get(0).getAuthor().getIdLong(), allow, null).complete();
 			} else {
 				getChannel().sendMessage(chan.getAsMention() + " -> NIEMAND").complete();
-				chan.getManager().sync().complete();
+				chan.getManager().
+				//chan.getManager().sync().complete();
 			}
-			
-			
-		}
+		}*/
 	}
 	
 	// --------------------------------------------------

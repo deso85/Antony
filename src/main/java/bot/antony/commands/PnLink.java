@@ -17,9 +17,9 @@ public class PnLink implements ServerCommand {
 
 		String[] userMessage = message.getContentDisplay().split(" ");
 
-		if (userMessage.length > 1 && message.getMentionedChannels().size() > 0) {
+		if (userMessage.length > 1 && message.getMentions().getChannels().size() > 0) {
 
-			channel.sendMessage("Hier ist der Link zu deinem Kanal: <#" + message.getMentionedChannels().get(0).getId() + " >").complete();
+			channel.sendMessage("Hier ist der Link zu deinem Kanal: <#" + message.getMentions().getChannels().get(0).getId() + " >").complete();
 			
 		} else {
 			printHelp();

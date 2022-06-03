@@ -24,14 +24,14 @@ public class Notify implements ServerCommand {
 		UserData user = new UserData(message.getAuthor());
 		
 		// Exp. Parameter: (on|off|stats|statistics) #MentionedChannel
-		if(message.getMentionedChannels().size() > 0) {
+		if(message.getMentions().getChannels().size() > 0) {
 			ArrayList<ChannelData> channelsAdddedTo = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsRemovedFrom = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsUnchanged = new ArrayList<ChannelData>();
 			
 			
 			//for each mentioned channel...
-			for(TextChannel textChannel: message.getMentionedChannels()) {
+			for(TextChannel textChannel: message.getMentions().getChannels(TextChannel.class)) {
 				ChannelData channel = new ChannelData(textChannel);
 				Antony.getLogger().debug(channel.toString());
 				

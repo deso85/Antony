@@ -181,8 +181,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 	
 	private void handleCategory(MessageReceivedEvent event, String content, Message message) {
 		lastInteraction = LocalDateTime.now();
-		if (message.getMentionedChannels().size() > 0) {
-			hbCategory = message.getMentionedChannels().get(0).getParent();
+		if (message.getMentions().getChannels(TextChannel.class).size() > 0) {
+			hbCategory = message.getMentions().getChannels(TextChannel.class).get(0).getParentCategory();
 		} else {
 			if (message.getGuild().getCategoriesByName(content, true).size() == 1) {
 				hbCategory = message.getGuild().getCategoriesByName(content, true).get(0);

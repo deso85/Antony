@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("04.06.2022 - Version 6.0.0", "JDA Programmbibliothek auf Version 5 aktualisiert und Antony darauf angepasst. Kanal-Sortierung ignoriert nun -sp und -cf."));
 				changeLog.add(new ChangeLogEntry("31.05.2022 - Version 5.7.2", "Einige kleinere Korrekturen und Code-Anpassungen."));
 				changeLog.add(new ChangeLogEntry("28.05.2022 - Version 5.7.1", "***" + cmdPrefix + "addhb*** wurde um eine Abfrage erweitert und ein kleinerer Fehler ausgebessert."));
 				changeLog.add(new ChangeLogEntry("27.05.2022 - Version 5.7.0", "AAM spezifisch: Haltungsberichte können nun mithilfe des ***" + cmdPrefix + "addhb*** Befehls angefragt werden"));

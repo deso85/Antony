@@ -27,8 +27,8 @@ public class ShowAvatar implements ServerCommand {
 		
 		// overwrite member
 		if (userMessage.length > 1) {
-			if(message.getMentionedMembers().size() > 0) {
-				setMember(message.getMentionedMembers().get(0));
+			if(message.getMentions().getMembers().size() > 0) {
+				setMember(message.getMentions().getMembers().get(0));
 			} else {
 				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
 				

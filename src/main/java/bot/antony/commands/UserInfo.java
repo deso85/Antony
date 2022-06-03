@@ -55,8 +55,8 @@ public class UserInfo implements ServerCommand {
 		// overwrite member if needed
 		if (userMessage.length > 1) {
 			// user has been mentioned
-			if(message.getMentionedMembers().size() > 0) {
-				setMember(message.getMentionedMembers().get(0));
+			if(message.getMentions().getMembers().size() > 0) {
+				setMember(message.getMentions().getMembers().get(0));
 			//not a mentioned user so it can be a user or a parameter
 			} else {
 				// we build a new string to find the user even if we don't know if there is a parameter inside the provided text

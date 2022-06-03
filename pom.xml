@@ -4,13 +4,24 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>5.7.2</version>
+	<version>6.0.0</version>
 
 	<properties>
 		<resteasy.version>3.5.1.Final</resteasy.version>
 		<maven.compiler.release>8</maven.compiler.release>
-		<jackson.version>2.12.5</jackson.version>
-		<hibernate.version>5.4.32.Final</hibernate.version>
+		<jackson.version>2.13.2</jackson.version>
+		<hibernate.version>5.6.5.Final</hibernate.version>
+		<hibernate.validator.version>7.0.3.Final</hibernate.validator.version>
+		<jda.version>5.0.0-alpha.12</jda.version>
+		<jda.utilities.version>3.0.5</jda.utilities.version>
+		<jda.chewtils.version>2.0-SNAPSHOT</jda.chewtils.version>
+		<sqlite.version>3.36.0.3</sqlite.version>
+		<sqlite.dialect.version>0.1.2</sqlite.dialect.version>
+		<jaxrs.version>2.0.2.Final</jaxrs.version>
+		<jboss.weld.version>2.4.8.Final</jboss.weld.version>
+		<jboss.weld.se.version>4.0.3.Final</jboss.weld.se.version>
+		<jandex.version>2.4.2.Final</jandex.version>
+		<cdi.api.version>2.0.SP1</cdi.api.version>
 	</properties>
 
 	<build>
@@ -18,7 +29,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.10.0</version>
 				<configuration>
 					<release>8</release>
 					<encoding>UTF-8</encoding>
@@ -57,6 +68,11 @@
 			<name>m2-dv8tion</name>
 			<url>https://m2.dv8tion.net/releases</url>
 		</repository>
+		<repository>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
 	</repositories>
 
 
@@ -64,23 +80,13 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>4.3.0_346</version>
+			<version>${jda.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>club.minnced</groupId>
 					<artifactId>opus-java</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.30</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -105,7 +111,7 @@
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-			<version>1.0.3.Final</version>
+			<version>${jaxrs.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -122,26 +128,16 @@
 			<artifactId>jackson-core</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>2.10.9</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vdurmont</groupId>
-			<artifactId>emoji-java</artifactId>
-			<version>5.1.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.34.0</version>
+			<version>${sqlite.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.gwenn</groupId>
 			<artifactId>sqlite-dialect</artifactId>
-			<version>0.1.2</version>
+			<version>${sqlite.dialect.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -166,27 +162,47 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>7.0.1.Final</version>
+			<version>${hibernate.validator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
-			<version>1.2</version>
+			<version>${cdi.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.weld.se</groupId>
 			<artifactId>weld-se-core</artifactId>
-			<version>2.3.1.Final</version>
+			<version>${jboss.weld.se.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.weld</groupId>
 			<artifactId>weld-core</artifactId>
-			<version>2.3.1.Final</version>
+			<version>${jboss.weld.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jandex</artifactId>
-			<version>1.2.2.Final</version>
+			<version>${jandex.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.36</version>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.36</version>
+		</dependency>-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.36</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.17.2</version>
 		</dependency>
 	</dependencies>
 </project>

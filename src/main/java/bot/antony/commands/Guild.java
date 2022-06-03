@@ -25,11 +25,12 @@ public class Guild implements ServerCommand {
 			
 			switch (userMessage[1].toLowerCase()) {
 				case "logchan":
-					if(message.getMentionedChannels().size() > 0) {
-						guildData.setLogChannelID(message.getMentionedChannels().get(0).getIdLong());
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						TextChannel chan = message.getMentions().getChannels(TextChannel.class).get(0);
+						guildData.setLogChannelID(chan.getIdLong());
 						guildController.saveGuildData(guildData, channel.getGuild());
 						returnMessage.append("Log Channel gesetzt.");
-						Antony.getLogger().info("Log channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+						Antony.getLogger().info("Log channel of guild " + guildData.toString() + " set to " + chan.getAsMention());
 					} else {
 						if(guildController.getLogChannel(message.getGuild()) != null) {
 							returnMessage.append("Log Channel ist: " + guildController.getLogChannel(message.getGuild()).getAsMention());
@@ -40,11 +41,12 @@ public class Guild implements ServerCommand {
 					break;
 					
 				case "welcomechan":
-					if(message.getMentionedChannels().size() > 0) {
-						guildData.setWelcomeChannelID(message.getMentionedChannels().get(0).getIdLong());
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						TextChannel chan = message.getMentions().getChannels(TextChannel.class).get(0);
+						guildData.setWelcomeChannelID(chan.getIdLong());
 						guildController.saveGuildData(guildData, channel.getGuild());
 						returnMessage.append("Welcome Channel gesetzt.");
-						Antony.getLogger().info("Welcome channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+						Antony.getLogger().info("Welcome channel of guild " + guildData.toString() + " set to " + chan.getAsMention());
 					} else {
 						if(guildController.getWelcomeChannel(message.getGuild()) != null) {
 							returnMessage.append("Welcome Channel ist: " + guildController.getWelcomeChannel(message.getGuild()).getAsMention());
@@ -55,11 +57,12 @@ public class Guild implements ServerCommand {
 					break;
 				
 				case "activationchan":
-					if(message.getMentionedChannels().size() > 0) {
-						guildData.setActivationRulesChannelID(message.getMentionedChannels().get(0).getIdLong());
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						TextChannel chan = message.getMentions().getChannels(TextChannel.class).get(0);
+						guildData.setActivationRulesChannelID(chan.getIdLong());
 						guildController.saveGuildData(guildData, channel.getGuild());
 						returnMessage.append("Channel für Aktivierungs-Regeln gesetzt.");
-						Antony.getLogger().info("Activation rules channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+						Antony.getLogger().info("Activation rules channel of guild " + guildData.toString() + " set to " + chan.getAsMention());
 					} else {
 						if(guildController.getActivationRulesChannel(message.getGuild()) != null) {
 							returnMessage.append("Channel für Aktivierungs-Regeln ist: " + guildController.getActivationRulesChannel(message.getGuild()).getAsMention());
@@ -69,11 +72,12 @@ public class Guild implements ServerCommand {
 					}
 					break;
 				case "exitchan":
-					if(message.getMentionedChannels().size() > 0) {
-						guildData.setExitChannelID(message.getMentionedChannels().get(0).getIdLong());
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						TextChannel chan = message.getMentions().getChannels(TextChannel.class).get(0);
+						guildData.setExitChannelID(chan.getIdLong());
 						guildController.saveGuildData(guildData, channel.getGuild());
 						returnMessage.append("Channel für Exit-Benachrichtigungen gesetzt.");
-						Antony.getLogger().info("Exit channel of guild " + guildData.toString() + " set to " + message.getMentionedChannels().get(0).getAsMention());
+						Antony.getLogger().info("Exit channel of guild " + guildData.toString() + " set to " + chan.getAsMention());
 					} else {
 						if(guildController.getExitChannel(message.getGuild()) != null) {
 							returnMessage.append("Channel für Exit-Benachrichtigungen ist: " + guildController.getExitChannel(message.getGuild()).getAsMention());
@@ -84,14 +88,14 @@ public class Guild implements ServerCommand {
 					break;
 					
 				case "adminrole":
-					if(message.getMentionedRoles().size()> 0) {
-						if(guildData.addAdminRole(message.getMentionedRoles().get(0).getName())) {
+					if(message.getMentions().getRoles().size()> 0) {
+						if(guildData.addAdminRole(message.getMentions().getRoles().get(0).getName())) {
 							returnMessage.append("Administrative Rolle hinzugefügt.");
-							Antony.getLogger().info("Admin role \"" + message.getMentionedRoles().get(0).getName() + "\" added to guild " + guildData.toString());
+							Antony.getLogger().info("Admin role \"" + message.getMentions().getRoles().get(0).getName() + "\" added to guild " + guildData.toString());
 						} else {
-							guildData.removeAdminRole(message.getMentionedRoles().get(0).getName());
+							guildData.removeAdminRole(message.getMentions().getRoles().get(0).getName());
 							returnMessage.append("Administrative Rolle entfernt.");
-							Antony.getLogger().info("Admin role \"" + message.getMentionedRoles().get(0).getName() + "\" removed from guild " + guildData.toString());
+							Antony.getLogger().info("Admin role \"" + message.getMentions().getRoles().get(0).getName() + "\" removed from guild " + guildData.toString());
 						}
 						guildController.saveGuildData(guildData, channel.getGuild());
 						
@@ -113,14 +117,14 @@ public class Guild implements ServerCommand {
 					break;
 					
 				case "modrole":
-					if(message.getMentionedRoles().size()> 0) {
-						if(guildData.addModRole(message.getMentionedRoles().get(0).getName())) {
+					if(message.getMentions().getRoles().size()> 0) {
+						if(guildData.addModRole(message.getMentions().getRoles().get(0).getName())) {
 							returnMessage.append("Moderative Rolle hinzugefügt.");
-							Antony.getLogger().info("Mod role \"" + message.getMentionedRoles().get(0).getName() + "\" added to guild " + guildData.toString());
+							Antony.getLogger().info("Mod role \"" + message.getMentions().getRoles().get(0).getName() + "\" added to guild " + guildData.toString());
 						} else {
-							guildData.removeModRole(message.getMentionedRoles().get(0).getName());
+							guildData.removeModRole(message.getMentions().getRoles().get(0).getName());
 							returnMessage.append("Moderative Rolle entfernt.");
-							Antony.getLogger().info("Mod role \"" + message.getMentionedRoles().get(0).getName() + "\" removed from guild " + guildData.toString());
+							Antony.getLogger().info("Mod role \"" + message.getMentions().getRoles().get(0).getName() + "\" removed from guild " + guildData.toString());
 						}
 						guildController.saveGuildData(guildData, channel.getGuild());
 						

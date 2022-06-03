@@ -35,8 +35,8 @@ public class Channel implements ServerCommand {
 				if(userMessage.length > 2) {
 					String channelName = userMessage[userMessage.length-1];
 					TextChannel refChannel = getChannel();
-					if(message.getMentionedChannels().size() > 0) {
-						refChannel = message.getMentionedChannels().get(0);
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						refChannel = message.getMentions().getChannels(TextChannel.class).get(0);
 					}
 					
 					Boolean sort = false;
@@ -44,7 +44,7 @@ public class Channel implements ServerCommand {
 						sort = true;
 					}
 					
-					TextChannel newChan = addChannel(channelName, refChannel.getParent(), message.getMentionedMembers(), message.getMember(), sort);
+					TextChannel newChan = addChannel(channelName, refChannel.getParentCategory(), message.getMentions().getMembers(), message.getMember(), sort);
 					
 					//feedback
 					getChannel().sendMessage(newChan.getAsMention() + " wurde angelegt.").complete();
@@ -152,7 +152,7 @@ public class Channel implements ServerCommand {
 
 	private void printHelp() {
 		getChannel().sendMessage("Benutzung:\n"
-		+ Antony.getCmdPrefix() + "channel add [sort, @referenceChannel, @Member] channelName\n"
+		+ Antony.getCmdPrefix() + "channel add [sort, #referenceChannel, @Member] channelName\n"
 		+ Antony.getCmdPrefix() + "channel list (abandoned | verlassen) [monate]").queue();
 	}
 
@@ -173,8 +173,9 @@ public class Channel implements ServerCommand {
 		for(Member member : members) {
 			//Add read/write permission
 			ArrayList<Permission> allow = new ArrayList<Permission>();
-			allow.add(Permission.MESSAGE_READ);
-			allow.add(Permission.MESSAGE_WRITE);
+			//allow.add(Permission.MESSAGE_READ);
+			allow.add(Permission.VIEW_CHANNEL);
+			allow.add(Permission.MESSAGE_SEND);
 			allow.add(Permission.MESSAGE_ATTACH_FILES);
 			allow.add(Permission.MESSAGE_EMBED_LINKS);
 			newChan.getManager().putMemberPermissionOverride(member.getIdLong(), allow, null).complete();

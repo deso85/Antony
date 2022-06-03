@@ -23,34 +23,14 @@ public class Giveaway implements ServerCommand {
 		TextChannel gaChannel = channel;
 
 		// If giveaway will be started in another channel
-		if(message.getMentionedChannels().size() > 0) {
-			gaChannel = message.getMentionedChannels().get(0);
+		if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+			gaChannel = message.getMentions().getChannels(TextChannel.class).get(0);
 		}
 		
 		if(userMessage.length >= 4) {
 
 			switch (userMessage[1].toLowerCase()) {
 			case "end": // Ends a giveaway which wasn't initiated by Antony
-				
-				// Collect emojis
-				/*String content = message.getContentRaw();
-				List<String> emojis = EmojiParser.extractEmojis(content);
-				List<String> customEmoji = message.getEmotes().stream()
-				        .map((emote) -> emote.getName() + ":" + emote.getId())
-				        .collect(Collectors.toList());
-
-				// Create merged list
-				List<String> mergedEmojis = new ArrayList<>();
-				mergedEmojis.addAll(emojis);
-				mergedEmojis.addAll(customEmoji);
-
-				// Sort based on index in message to preserve order
-				mergedEmojis.sort(Comparator.comparingInt(content::indexOf));
-
-				for (String emoji : mergedEmojis) {
-					System.out.println(emoji.toString() + " " + emoji.length());
-					channel.sendMessage(emoji).queue();
-				}*/
 				
 				String[] giveawayLink = userMessage[2].split("/");
 				if(giveawayLink.length >= 3) {
@@ -82,7 +62,6 @@ public class Giveaway implements ServerCommand {
 							String reactionEmoji = reaction.getReactionEmote().getName();
 							
 							if(reactionEmoji.equals(gaMessageEmote)) {
-								//System.out.println(gaMessageEmote + " yep, gleich");
 								gaUser = reaction.retrieveUsers().complete();
 							}
 						}
