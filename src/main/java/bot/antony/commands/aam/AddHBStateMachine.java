@@ -32,7 +32,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class AddHBStateMachine extends ListenerAdapter {
 	private final long channelId, authorId, initMessageId; // id because keeping the entity would risk cache to become outdated
 	private long startInteractionMsgId, availCheckMsgID, approvalMsgID;
-	private LocalDateTime lastInteraction = LocalDateTime.now();
+	private int errorCount = 0;
 	private Boolean awaitApproval = false;
 	private String antSpecies = "";
 	private Boolean antAvailable = false;
@@ -56,16 +56,16 @@ public class AddHBStateMachine extends ListenerAdapter {
 			return;
 		if (!awaitApproval) {
 			// Stop because of another command
-			if (event.getMessage().getContentRaw().startsWith("!")) {
+			if (event.getMessage().getContentRaw().startsWith("!") || event.getMessage().getContentRaw().toLowerCase().contains("stop")) {
 				event.getJDA().removeEventListener(this);
 				return;
 			}
-			// Stop because user took too long
-			if (lastInteraction.isBefore(LocalDateTime.now().minusMinutes(1))) {
+			
+			if(errorCount >= 5) {
 				event.getJDA().removeEventListener(this);
 				return;
 			}
-
+			
 			String content = event.getMessage().getContentRaw();
 			Message message = event.getMessage();
 
@@ -126,7 +126,6 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleAntSpecies(String content, Message message) {
-		lastInteraction = LocalDateTime.now();
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
 		client.register(instance);
@@ -138,16 +137,36 @@ public class AddHBStateMachine extends ListenerAdapter {
 		List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
 
 		if (species.isEmpty()) {
-			message.reply(
-					"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
-							+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
-					.queue();
+			errorCount++;
+			if(errorCount <= 4) {
+				message.reply(
+						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
+								+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
+						.queue();
+			} else {
+				message.reply(
+						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
+								+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
+						.queue();
+				Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
+			}
 		} else {
 			// Too many species found
 			if (species.size() > 1) {
-				message.reply("Es wurden " + species.size()
-						+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
+				errorCount++;
+				if(errorCount <= 4) {
+					message.reply("Es wurden " + species.size()
+							+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
+				} else {
+					message.reply(
+							"Es wurden " + species.size()
+								+ " Ameisenarten gefunden\n"
+								+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
+							.queue();
+					Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
+				}
 			} else {
+				errorCount = 0;
 				antSpecies = species.get(0).getName();
 				message.reply("**" + antSpecies + "** - Hast du die Kolonie schon?").queue(msg -> {
 					msg.addReaction("✅").queue();
@@ -160,7 +179,6 @@ public class AddHBStateMachine extends ListenerAdapter {
 	
 	private void handleAntAvailable(MessageReactionAddEvent event) {
 		if (event.getMessageIdLong() == availCheckMsgID) {
-			lastInteraction = LocalDateTime.now();
 			if (event.getReactionEmote().getName().equals("✅")) {
 				antAvailable = true;
 				event.getTextChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
@@ -180,16 +198,23 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleCategory(MessageReceivedEvent event, String content, Message message) {
-		lastInteraction = LocalDateTime.now();
 		if (message.getMentions().getChannels(TextChannel.class).size() > 0) {
 			hbCategory = message.getMentions().getChannels(TextChannel.class).get(0).getParentCategory();
 		} else {
-			if (message.getGuild().getCategoriesByName(content, true).size() == 1) {
+			if (message.getGuild().getCategoriesByName(content, true).size() >= 1) {
 				hbCategory = message.getGuild().getCategoriesByName(content, true).get(0);
 			}
 		}
 		if (hbCategory == null) {
-			message.reply("Die Kategorie existiert nicht. Bitte versuch es erneut.").queue();
+			errorCount++;
+			if(errorCount <= 4) {
+				message.reply("Die Kategorie existiert nicht. Bitte versuch es erneut.").queue();
+			} else {
+				message.reply("Die Kategorie existiert nicht.\n"
+						+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**").queue();
+				Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
+			}
+			
 		} else {
 			awaitApproval = true;
 			message.reply(
@@ -213,6 +238,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 				msg.addReaction("❌").queue();
 				approvalMsgID = msg.getIdLong();
 			});
+			Antony.getLogger().info("HB dialogue is over and user awaits approval.");
 		}
 	}
 	

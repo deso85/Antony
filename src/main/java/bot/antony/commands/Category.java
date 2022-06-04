@@ -108,8 +108,12 @@ public class Category implements ServerCommand {
 	}
 
 	public static void sort(net.dv8tion.jda.api.entities.Category category) {
-		category.modifyTextChannelPositions().sortOrder(new ChannelComparator()).queue();
-		category.modifyVoiceChannelPositions().sortOrder(new ChannelComparator()).queue();
+		if(category.getTextChannels().size() > 0) {
+			category.modifyTextChannelPositions().sortOrder(new ChannelComparator()).queue();
+		}
+		if(category.getVoiceChannels().size() > 0) {
+			category.modifyVoiceChannelPositions().sortOrder(new ChannelComparator()).queue();
+		}
 	}
 	
 	private void sync(net.dv8tion.jda.api.entities.Category category) {
