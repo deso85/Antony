@@ -25,7 +25,6 @@ public class BlackListController extends ListController {
 	
 	public boolean checkBlacklistedContent(Message message) {
 		Guild guild = message.getGuild();
-		TextChannel channel = message.getTextChannel();
 		TextChannel rspChannel = Antony.getGuildController().getLogChannel(guild);
 		String msg = message.getContentDisplay();
 		String wlmsg = Antony.getWhitelistController().getCleanedMessage(msg);
@@ -42,7 +41,7 @@ public class BlackListController extends ListController {
 						.setColor(Color.red)
 						.setAuthor(message.getAuthor().getAsTag() + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())
 						.setDescription(message.getContentDisplay())
-						.addField("#" + channel.getName(), "**[Hier klicken, um zum Kanal zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + "/" + ")**", false)
+						.addField("#" + message.getChannel().getName(), "**[Hier klicken, um zum Kanal zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + message.getChannel().getId() + "/" + ")**", false)
 						.setFooter(message.getTimeCreated().format(formatter));
 				
 				if(rspChannel != null) {

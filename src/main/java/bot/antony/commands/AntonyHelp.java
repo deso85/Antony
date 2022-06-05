@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("05.06.2022 - Version 6.0.2", "Antony überwacht nun auch Threads."));
 				changeLog.add(new ChangeLogEntry("04.06.2022 - Version 6.0.1", "***" + cmdPrefix + "addhb*** hat nun kein Zeitlimit mehr, sondern reagiert auf zu viele falsche Eingaben mit einem Abbruch und meldet dies nun auch."));
 				changeLog.add(new ChangeLogEntry("04.06.2022 - Version 6.0.0", "JDA Programmbibliothek auf Version 5 aktualisiert und Antony darauf angepasst. Kanal-Sortierung ignoriert nun -sp und -cf."));
 				changeLog.add(new ChangeLogEntry("31.05.2022 - Version 5.7.2", "Einige kleinere Korrekturen und Code-Anpassungen."));

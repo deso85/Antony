@@ -33,6 +33,8 @@ import bot.antony.events.MessageReceived;
 import bot.antony.events.MessageUpdate;
 import bot.antony.events.NotificationListener;
 import bot.antony.events.ReactionAddEvent;
+import bot.antony.events.ThreadCreate;
+import bot.antony.events.ThreadDelete;
 import bot.antony.events.UserUpdateName;
 import bot.antony.events.UserUpdateOnlineStatus;
 import net.dv8tion.jda.api.JDA;
@@ -114,6 +116,8 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new UserUpdateOnlineStatus())
 					.addEventListeners(new UserUpdateName())
 					.addEventListeners(new ReactionAddEvent())
+					.addEventListeners(new ThreadCreate())
+					.addEventListeners(new ThreadDelete())
 					.setChunkingFilter(ChunkingFilter.ALL)				// enable member chunking for all guilds
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members

@@ -25,7 +25,6 @@ public class WatchListController extends ListController {
 	
 	public boolean checkWatchlistedContent(Message message) {
 		Guild guild = message.getGuild();
-		TextChannel channel = message.getTextChannel();
 		TextChannel rspChannel = Antony.getGuildController().getLogChannel(guild);
 		User user = message.getAuthor();
 		String msg = message.getContentDisplay();
@@ -41,7 +40,7 @@ public class WatchListController extends ListController {
 						.setColor(Color.orange)
 						.setAuthor(user.getAsTag() + " | ID: " + user.getId(), null, user.getAvatarUrl())
 						.setDescription(msg.replaceAll("(?i)" + Pattern.quote(string), "__" + string + "__"))
-						.addField("#" + channel.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + channel.getId() + "/" + message.getId() + ")**", false)
+						.addField("#" + message.getChannel().getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + message.getChannel().getId() + "/" + message.getId() + ")**", false)
 						.setFooter(message.getTimeCreated().format(formatter));
 				
 				if(rspChannel != null) {

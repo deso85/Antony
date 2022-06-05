@@ -15,7 +15,7 @@ public class MessageUpdate extends ListenerAdapter {
 	public void onMessageUpdate(MessageUpdateEvent event) {
 		
 		// check which channel ...
-		if (event.isFromType(ChannelType.TEXT) &&
+		if ((event.isFromType(ChannelType.TEXT) || event.isFromThread()) &&
 				!event.getAuthor().equals(event.getJDA().getSelfUser())) {
 			
 			if(event.getMember() != null && !event.getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {

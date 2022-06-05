@@ -15,7 +15,7 @@ public class MessageReceived extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent event) {
 		
 		// check which channel ...
-		if (event.isFromType(ChannelType.TEXT) &&
+		if ((event.isFromType(ChannelType.TEXT) || event.isFromThread()) &&
 				!event.getAuthor().equals(event.getJDA().getSelfUser())) {
 			
 			if(event.getMember() != null && !event.getMember().getOnlineStatus().equals(OnlineStatus.ONLINE)) {
