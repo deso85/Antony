@@ -3,14 +3,14 @@ package bot.antony.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class ShowAvatar implements ServerCommand {
+public class ShowAvatar implements IServerCommand {
 
 	private Member member;
 	private String fullMemberName;

@@ -1,7 +1,9 @@
 package bot.antony.guild;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -17,6 +19,10 @@ public class GuildData {
 	private long exitChannelID;
 	private List<String> adminRoles = new ArrayList<String>();
 	private List<String> modRoles = new ArrayList<String>();
+	private Map<String, ArrayList<Long>> cmdRoles = new HashMap<String, ArrayList<Long>>();
+	private Map<String, ArrayList<Long>> cmdMembers = new HashMap<String, ArrayList<Long>>();
+	private Map<String, ArrayList<Long>> reactionRoles = new HashMap<String, ArrayList<Long>>();
+	private Map<String, ArrayList<Long>> reactionMembers = new HashMap<String, ArrayList<Long>>();
 
 	// --------------------------------------------------
 	// Constructor
@@ -105,6 +111,154 @@ public class GuildData {
 		return false;
 	}
 	
+	//Functions for command privileges based on roles
+	public boolean addCmdRole(String cmdName, Long roleId) {
+		ArrayList<Long> roles = new ArrayList<Long>();
+		if(cmdRoles.containsKey(cmdName)) {
+			roles = cmdRoles.get(cmdName);
+			if(roles.contains(roleId)) {
+				return false;
+			} else {
+				roles.add(roleId);
+				cmdRoles.replace(cmdName, roles);
+				return true;
+			}
+		} else {
+			roles.add(roleId);
+			cmdRoles.put(cmdName, roles);
+			return true;
+		}
+	}
+	
+	public ArrayList<Long> getCmdRoles(String cmdName){
+		return cmdRoles.get(cmdName);
+	}
+	
+	public boolean removeCmdRole(String cmdName, Long roleId) {
+		if(cmdRoles.containsKey(cmdName)) {
+			ArrayList<Long> roles = cmdRoles.get(cmdName);
+			if(roles.remove(roleId)) {
+				cmdRoles.replace(cmdName, roles);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	//Functions for command privileges based on members
+	public boolean addCmdMember(String cmdName, Long memberId) {
+		ArrayList<Long> members = new ArrayList<Long>();
+		if(cmdMembers.containsKey(cmdName)) {
+			members = cmdMembers.get(cmdName);
+			if(members.contains(memberId)) {
+				return false;
+			} else {
+				members.add(memberId);
+				cmdMembers.replace(cmdName, members);
+				return true;
+			}
+		} else {
+			members.add(memberId);
+			cmdMembers.put(cmdName, members);
+			return true;
+		}
+	}
+	
+	public ArrayList<Long> getCmdMembers(String cmdName){
+		return cmdMembers.get(cmdName);
+	}
+	
+	public boolean removeCmdMember(String cmdName, Long memberId) {
+		if(cmdMembers.containsKey(cmdName)) {
+			ArrayList<Long> members = cmdMembers.get(cmdName);
+			if(members.remove(memberId)) {
+				cmdMembers.replace(cmdName, members);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	//Functions for reaction privileges based on roles
+	public boolean addReactionRole(String reactionName, Long roleId) {
+		ArrayList<Long> roles = new ArrayList<Long>();
+		if(reactionRoles.containsKey(reactionName)) {
+			roles = reactionRoles.get(reactionName);
+			if(roles.contains(roleId)) {
+				return false;
+			} else {
+				roles.add(roleId);
+				reactionRoles.replace(reactionName, roles);
+				return true;
+			}
+		} else {
+			roles.add(roleId);
+			reactionRoles.put(reactionName, roles);
+			return true;
+		}
+	}
+	
+	public ArrayList<Long> getReactionRoles(String reactionName){
+		return reactionRoles.get(reactionName);
+	}
+	
+	public boolean removeReactionRole(String reactionName, Long roleId) {
+		if(reactionRoles.containsKey(reactionName)) {
+			ArrayList<Long> roles = reactionRoles.get(reactionName);
+			if(roles.remove(roleId)) {
+				reactionRoles.replace(reactionName, roles);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	//Functions for reaction privileges based on members
+	public boolean addReactionMember(String reactionName, Long memberId) {
+		ArrayList<Long> members = new ArrayList<Long>();
+		if(reactionMembers.containsKey(reactionName)) {
+			members = reactionMembers.get(reactionName);
+			if(members.contains(memberId)) {
+				return false;
+			} else {
+				members.add(memberId);
+				reactionMembers.replace(reactionName, members);
+				return true;
+			}
+		} else {
+			members.add(memberId);
+			reactionMembers.put(reactionName, members);
+			return true;
+		}
+	}
+	
+	public ArrayList<Long> getReactionMembers(String reactionName){
+		return reactionMembers.get(reactionName);
+	}
+	
+	public boolean removeReactionMember(String reactionName, Long memberId) {
+		if(reactionMembers.containsKey(reactionName)) {
+			ArrayList<Long> members = reactionMembers.get(reactionName);
+			if(members.remove(memberId)) {
+				reactionMembers.replace(reactionName, members);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
@@ -171,4 +325,37 @@ public class GuildData {
 	public void setExitChannelID(long exitChannelID) {
 		this.exitChannelID = exitChannelID;
 	}
+
+	public Map<String, ArrayList<Long>> getCmdRoles() {
+		return cmdRoles;
+	}
+
+	public void setCmdRoles(Map<String, ArrayList<Long>> cmdRoles) {
+		this.cmdRoles = cmdRoles;
+	}
+
+	public Map<String, ArrayList<Long>> getCmdMembers() {
+		return cmdMembers;
+	}
+
+	public void setCmdMembers(Map<String, ArrayList<Long>> cmdMembers) {
+		this.cmdMembers = cmdMembers;
+	}
+
+	public Map<String, ArrayList<Long>> getReactionRoles() {
+		return reactionRoles;
+	}
+
+	public void setReactionRoles(Map<String, ArrayList<Long>> reactionRoles) {
+		this.reactionRoles = reactionRoles;
+	}
+
+	public Map<String, ArrayList<Long>> getReactionMembers() {
+		return reactionMembers;
+	}
+
+	public void setReactionMembers(Map<String, ArrayList<Long>> reactionMembers) {
+		this.reactionMembers = reactionMembers;
+	}
+	
 }

@@ -27,7 +27,7 @@ import bot.antony.commands.antcheck.client.AntCheckClient;
 import bot.antony.commands.antcheck.client.dto.Shop;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.commands.antcheck.client.dto.Variant;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -35,7 +35,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Sells implements ServerCommand {
+public class Sells implements IServerCommand {
 
 	static Logger logger = LoggerFactory.getLogger(Sells.class);
 

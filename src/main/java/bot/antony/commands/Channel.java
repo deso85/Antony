@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Channel implements ServerCommand {
+public class Channel implements IServerCommand {
 
 	private TextChannel channel;
 

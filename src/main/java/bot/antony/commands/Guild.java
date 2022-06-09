@@ -1,14 +1,14 @@
 package bot.antony.commands;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.controller.GuildController;
 import bot.antony.guild.GuildData;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Guild implements ServerCommand {
+public class Guild implements IServerCommand {
 	
 	TextChannel channel;
 	

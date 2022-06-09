@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.comparators.ChannelComparator;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.managers.channel.ChannelManager;
 
-public class Category implements ServerCommand {
+public class Category implements IServerCommand {
 
 	private TextChannel channel;
 

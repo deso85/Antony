@@ -19,14 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
 import bot.antony.commands.antcheck.client.dto.Specie;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Map implements ServerCommand {
+public class Map implements IServerCommand {
 
 	private TextChannel channel;
 	

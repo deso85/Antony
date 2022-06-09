@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.events.softban.UserDataSB;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Softban implements ServerCommand {
+public class Softban implements IServerCommand {
 	
 	Guild guild;
 	TextChannel channel;

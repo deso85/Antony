@@ -8,22 +8,19 @@ public class ImageReaction extends MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public ImageReaction(MessageReactionAddEvent event) {
-		super(event);
-		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
+	public ImageReaction() {
+		super();
+		this.description = "Diese Reaction kann dazu verwendet werden, den Avatar (Profilbild) des Users auszugeben.";
+		this.shortDescription = "Reaction für die Ausgabe des Avatars.";
 	}
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public boolean shallTrigger() {
-		return Antony.getGuildController().memberIsMod(reactor);
-	}
-	
-	@Override
-	public void play() {
-		if(shallTrigger()) {
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
 			removeReaction();
 			mentionReactor();
 			printUserinfo();
@@ -42,6 +39,12 @@ public class ImageReaction extends MessageReaction {
 			responseChannel.sendMessage(sb.toString()).queue();
 			responseChannel.sendMessage(message.getAuthor().getEffectiveAvatarUrl() + "?size=2048").queue();
 		}
+	}
+	
+	@Override
+	public void setVariables(MessageReactionAddEvent event) {
+		super.setVariables(event);
+		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 	
 }

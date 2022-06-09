@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class AntonyHelp implements ServerCommand {
+public class AntonyHelp implements IServerCommand {
 
 	private TextChannel channel;
 
@@ -30,6 +30,7 @@ public class AntonyHelp implements ServerCommand {
 				// Generate changelog entries
 				String cmdPrefix = Antony.getCmdPrefix();
 				List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+				changeLog.add(new ChangeLogEntry("09.06.2022 - Version 7.0.0", "Antony hat ein neues Berechtigungssystem erhalten, mit dem man User und Rollen gezielt auf Funktionen berechtigen kann. Alle Reaction-Befehle wurden auf dieses System bereits portiert."));
 				changeLog.add(new ChangeLogEntry("05.06.2022 - Version 6.0.2", "Antony überwacht nun auch Threads."));
 				changeLog.add(new ChangeLogEntry("04.06.2022 - Version 6.0.1", "***" + cmdPrefix + "addhb*** hat nun kein Zeitlimit mehr, sondern reagiert auf zu viele falsche Eingaben mit einem Abbruch und meldet dies nun auch."));
 				changeLog.add(new ChangeLogEntry("04.06.2022 - Version 6.0.0", "JDA Programmbibliothek auf Version 5 aktualisiert und Antony darauf angepasst. Kanal-Sortierung ignoriert nun -sp und -cf."));

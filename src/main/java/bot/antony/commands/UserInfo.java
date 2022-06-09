@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.controller.UserController;
 import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
@@ -26,7 +26,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class UserInfo implements ServerCommand {
+public class UserInfo implements IServerCommand {
 
 	private UserController usrCntrl;
 	private List<Member> memberList;

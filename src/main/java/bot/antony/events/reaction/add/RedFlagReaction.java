@@ -27,9 +27,52 @@ public class RedFlagReaction extends MessageReaction {
 	
 	// --------------------------------------------------
 	// Constructor
+	// --------------------------------------------------	
+	public RedFlagReaction() {
+		super();
+		privileged = false;
+		this.description = "Diese Reaction kann dazu verwendet werden, das Moderations-Team auf Inhalte aufmerksam zu machen. Darüber hinaus wird der markierte Inhalt gelöscht, wenn min. 5 Personen ihn markiert haben.";
+		this.shortDescription = "Reaction, um die Moderation auf Inhalte aufmerksam zu machen und bei min. 5 Personen zu löschen.";
+	}
+
 	// --------------------------------------------------
-	public RedFlagReaction(MessageReactionAddEvent event) {
-		super(event);
+	// Functions
+	// --------------------------------------------------
+	@Override
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
+			UserData usrData = new UserData(reactor);
+			logMessage.append("User [" + usrData.toString() + "] REDFLAGGED "
+					+ "message [" + message.getId() + "] "
+					+ "in channel #" + message.getChannel().getName() + " (CID: " + message.getChannel().getId() + ").");
+			
+			printHeader();
+			printMessageEmbed();
+			if(usrCount >= flagsToDeleteMessage) {
+				//If last delete is 15min ago the counter gets reset
+				if(delPair.getDelCount() > 0 && delPair.getLastDeleted().before(new Date(System.currentTimeMillis() - 900 * 1000))) {
+					delPair.setDelCount(0);
+					saveDeletionPair();
+				}
+				if(delPair.getDelCount() < 3) {
+					logMessage.append("\nBecause there were " + getNormalizedUserCount() + " authorized flaggs the message has been deleted.");
+					printAttachments();
+					deleteMessage();
+				} else {
+					logMessage.append("\nBecause there were " + getNormalizedUserCount() + " authorized flaggs the message should have been deleted but there are too many deleted messages within the last 15min.");
+					if(responseChannel != null) {
+						responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, sie wurde aber **nicht** gelöscht, weil zu viele Nachrichten in den letzten 15min gelöscht wurden. **Bitte dringend prüfen, ob jemand das System ausnutzt!**").complete();
+					}
+				}
+			}
+			log();
+		}
+	}
+	
+	@Override
+	public void setVariables(MessageReactionAddEvent event) {
+		super.setVariables(event);
 		blockedRoles = new ArrayList<>(Arrays.asList("Ei", "2nd 🎤"));
 		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 		userList = event.getReaction().retrieveUsers().complete();
@@ -37,38 +80,6 @@ public class RedFlagReaction extends MessageReaction {
 		deletionPairFileName = "antony.deletionpair.json";
 		loadDeletionPair();
 		usrCount = getNormalizedUserCount();
-	}
-
-	// --------------------------------------------------
-	// Functions
-	// --------------------------------------------------
-	@Override
-	public void play() {
-		UserData usrData = new UserData(reactor);
-		logMessage.append("User [" + usrData.toString() + "] REDFLAGGED "
-				+ "message [" + message.getId() + "] "
-				+ "in channel #" + message.getChannel().getName() + " (CID: " + message.getChannel().getId() + ").");
-		
-		printHeader();
-		printMessageEmbed();
-		if(usrCount >= flagsToDeleteMessage) {
-			//If last delete is 15min ago the counter gets reset
-			if(delPair.getDelCount() > 0 && delPair.getLastDeleted().before(new Date(System.currentTimeMillis() - 900 * 1000))) {
-				delPair.setDelCount(0);
-				saveDeletionPair();
-			}
-			if(delPair.getDelCount() < 3) {
-				logMessage.append("\nBecause there were " + getNormalizedUserCount() + " authorized flaggs the message has been deleted.");
-				printAttachments();
-				deleteMessage();
-			} else {
-				logMessage.append("\nBecause there were " + getNormalizedUserCount() + " authorized flaggs the message should have been deleted but there are too many deleted messages within the last 15min.");
-				if(responseChannel != null) {
-					responseChannel.sendMessage("❗ " + getNormalizedUserCount() + " berechtigte User haben die Nachricht markiert, sie wurde aber **nicht** gelöscht, weil zu viele Nachrichten in den letzten 15min gelöscht wurden. **Bitte dringend prüfen, ob jemand das System ausnutzt!**").complete();
-				}
-			}
-		}
-		log();
 	}
 	
 	public void printHeader() {

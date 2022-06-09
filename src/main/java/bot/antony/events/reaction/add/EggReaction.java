@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import bot.antony.Antony;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -15,8 +16,10 @@ public class EggReaction extends MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public EggReaction(MessageReactionAddEvent event) {
-		super(event);
+	public EggReaction() {
+		super();
+		this.description = "Diese Reaction kann dazu verwendet werden, neuen Benutzern die Ei-Rolle zu geben und damit freizuschalten.";
+		this.shortDescription = "Reaction für die Freischaltung neuer User.";
 	}
 	
 	
@@ -24,8 +27,9 @@ public class EggReaction extends MessageReaction {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void play() {
-		if(shallTrigger()) {
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
 			removeReaction();
 			activateUser();
 			sendWelcomeMessage();
@@ -33,13 +37,12 @@ public class EggReaction extends MessageReaction {
 	}
 	
 	@Override
-	public boolean shallTrigger() {
-		if(Antony.getGuildController().memberIsAdmin(reactor)
+	public boolean shallTrigger(Member member) {
+		if(super.shallTrigger(member)
 				&& Antony.getGuildController().getWelcomeChannel(guild) == message.getChannel()
 				&& message.getMember().getRoles().size() == 0) {
 			return true;
 		}
-		
 		return false;
 	}
 	

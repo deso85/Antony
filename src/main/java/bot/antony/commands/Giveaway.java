@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-public class Giveaway implements ServerCommand {
+public class Giveaway implements IServerCommand {
 
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {

@@ -157,6 +157,36 @@ public class GuildController {
 		return false;	
 	}
 	
+	public boolean memberMayUseCommand(Member member, String command) {
+		GuildData guildData = loadGuildData(member.getGuild());
+		if(guildData.getCmdRoles(command) != null) {
+			for(long roleId : guildData.getCmdRoles(command)) {
+				if(member.getRoles().contains(member.getGuild().getRoleById(roleId))) {
+					return true;
+				}
+			}
+		}
+		if(guildData.getCmdMembers(command) != null) {
+			return guildData.getCmdMembers(command).contains(member.getIdLong());
+		}
+		return false;
+	}
+	
+	public boolean memberTriggersReactionCmd(Member member, String reaction) {
+		GuildData guildData = loadGuildData(member.getGuild());
+		if(guildData.getReactionRoles(reaction) != null) {
+			for(long roleId : guildData.getReactionRoles(reaction)) {
+				if(member.getRoles().contains(member.getGuild().getRoleById(roleId))) {
+					return true;
+				}
+			}
+		}
+		if(guildData.getReactionMembers(reaction) != null) {
+			return guildData.getReactionMembers(reaction).contains(member.getIdLong());
+		}
+		return false;
+	}
+	
 	public boolean isLogChannel(TextChannel channel) {
 		if(channel == getLogChannel(channel.getGuild())) {
 			return true;

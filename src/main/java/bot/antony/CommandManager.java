@@ -1,16 +1,19 @@
 package bot.antony;
 
+import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.Archive;
 import bot.antony.commands.Category;
 import bot.antony.commands.Channel;
+import bot.antony.commands.Command;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Guild;
 import bot.antony.commands.Map;
 import bot.antony.commands.Notify;
 import bot.antony.commands.PnLink;
+import bot.antony.commands.Reaction;
 import bot.antony.commands.Sells;
 import bot.antony.commands.Serverstats;
 import bot.antony.commands.Shopping;
@@ -24,6 +27,7 @@ import bot.antony.commands.emergency.Emergency;
 import bot.antony.commands.lists.Blacklist;
 import bot.antony.commands.lists.Watchlist;
 import bot.antony.commands.lists.Whitelist;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -31,68 +35,99 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 public class CommandManager {
 
-	public ConcurrentHashMap<String, ServerCommand> usrCommands;
-	public ConcurrentHashMap<String, ServerCommand> modCommands;
-	public ConcurrentHashMap<String, ServerCommand> adminCommands;
+	public LinkedHashMap <String, ServerCommand> commands = new LinkedHashMap <String, ServerCommand>();
+	public ConcurrentHashMap<String, IServerCommand> usrCommands;
+	public ConcurrentHashMap<String, IServerCommand> modCommands;
+	public ConcurrentHashMap<String, IServerCommand> adminCommands;
 
 	public CommandManager() {
+		commands.put("command", new Command());
+		commands.put("reaction", new Reaction());
 		
-		this.usrCommands = new ConcurrentHashMap<>();
-		this.modCommands = new ConcurrentHashMap<>();
-		this.adminCommands = new ConcurrentHashMap<>();
+		usrCommands = new ConcurrentHashMap<>();
+		modCommands = new ConcurrentHashMap<>();
+		adminCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		this.usrCommands.put("antony", new AntonyHelp());
-		this.usrCommands.put("addhb", new AddHB());
-		this.usrCommands.put("emergency", new Emergency());
-		this.usrCommands.put("giveaway", new Giveaway());
-		this.usrCommands.put("map", new Map());
-		this.usrCommands.put("notify", new Notify());
-		this.usrCommands.put("pnlink", new PnLink());
-		this.usrCommands.put("sells", new Sells());
-		this.usrCommands.put("serverstats", new Serverstats());
-		this.usrCommands.put("shopping", new Shopping());
-		this.usrCommands.put("showavatar", new ShowAvatar());
-		this.usrCommands.put("userinfo", new UserInfo());
+		usrCommands.put("antony", new AntonyHelp());
+		usrCommands.put("addhb", new AddHB());
+		usrCommands.put("emergency", new Emergency());
+		usrCommands.put("giveaway", new Giveaway());
+		usrCommands.put("map", new Map());
+		usrCommands.put("notify", new Notify());
+		usrCommands.put("pnlink", new PnLink());
+		usrCommands.put("sells", new Sells());
+		usrCommands.put("serverstats", new Serverstats());
+		usrCommands.put("shopping", new Shopping());
+		usrCommands.put("showavatar", new ShowAvatar());
+		usrCommands.put("userinfo", new UserInfo());
 
 		// Mod
-		this.modCommands.put("user", new User());
-		this.modCommands.put("softban", new Softban());
-		this.modCommands.put("watchlist", new Watchlist());
-		this.modCommands.put("whitelist", new Whitelist());
+		modCommands.put("user", new User());
+		modCommands.put("softban", new Softban());
+		modCommands.put("watchlist", new Watchlist());
+		modCommands.put("whitelist", new Whitelist());
 
 		// Admin
-		this.adminCommands.put("archive", new Archive());
-		this.adminCommands.put("blacklist", new Blacklist());
-		this.adminCommands.put("category", new Category());
-		this.adminCommands.put("channel", new Channel());
-		this.adminCommands.put("guild", new Guild());
-		this.adminCommands.put("shutdown", new Shutdown());
+		adminCommands.put("archive", new Archive());
+		adminCommands.put("blacklist", new Blacklist());
+		adminCommands.put("category", new Category());
+		adminCommands.put("channel", new Channel());
+		adminCommands.put("guild", new Guild());
+		adminCommands.put("shutdown", new Shutdown());
 	}
 
 	public boolean perform(String command, Member member, TextChannel channel, Message message) {
 
-		ServerCommand cmd;
+		IServerCommand icmd;
 		//Commands for everyone
-		if ((cmd = this.usrCommands.get(command.toLowerCase())) != null) {
-			cmd.performCommand(member, channel, message);
+		if ((icmd = this.usrCommands.get(command.toLowerCase())) != null) {
+			icmd.performCommand(member, channel, message);
 			return true;
 		}
 		//Commands for mods
-		if ((cmd = this.modCommands.get(command.toLowerCase())) != null) {
+		if ((icmd = this.modCommands.get(command.toLowerCase())) != null) {
 			if(Antony.getGuildController().memberIsMod(member)) {
-				cmd.performCommand(member, channel, message);
+				icmd.performCommand(member, channel, message);
 				return true;
 			}
 		}
 		//Commands for admins
-		if ((cmd = this.adminCommands.get(command.toLowerCase())) != null) {
+		if ((icmd = this.adminCommands.get(command.toLowerCase())) != null) {
 			if(Antony.getGuildController().memberIsAdmin(member)) {
-				cmd.performCommand(member, channel, message);
+				icmd.performCommand(member, channel, message);
 				return true;
 			}
 		}
-
+		
+		//New Commands
+		ServerCommand cmd;
+		if ((cmd = this.commands.get(command.toLowerCase())) != null) {
+			cmd.performCommand(member, channel, message);
+			return true;
+		}
 		return false;
+	}
+	
+	//public LinkedList<String> listCommands() {
+		/*ArrayList<String> list = new ArrayList<String>();
+		commands.forEach((name, command) -> list.add(name));
+		return list;*/
+		//return cmdNames;
+	//}
+	
+	public LinkedHashMap <String, ServerCommand> getCommands(){
+		return commands;
+	}
+	
+	public boolean hasCommand(String name) {
+		return commands.containsKey(name);
+	}
+	
+	public ServerCommand getCommand(String name) {
+		if(hasCommand(name)) {
+			return commands.get(name);
+		}
+		return null;
 	}
 }

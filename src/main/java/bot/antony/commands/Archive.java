@@ -20,14 +20,14 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Lists;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Archive implements ServerCommand {
+public class Archive implements IServerCommand {
 	
 	TextChannel channel;
 	

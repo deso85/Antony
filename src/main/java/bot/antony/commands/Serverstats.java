@@ -3,7 +3,7 @@ package bot.antony.commands;
 import java.util.ArrayList;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Serverstats implements ServerCommand {
+public class Serverstats implements IServerCommand {
 
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {

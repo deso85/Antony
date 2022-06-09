@@ -57,7 +57,8 @@ public class Antony extends ListenerAdapter {
 	private static String version = getProperty("bot.version");
 	private static String dataPath;
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
-	private static CommandManager cmdMan = new CommandManager();
+	private static CommandManager cmdMan;
+	private static ReactionManager reactionMan;
 	private static NotificationController notificationController;
 	private static WhiteListController whitelistController;
 	private static WatchListController watchlistController;
@@ -88,6 +89,8 @@ public class Antony extends ListenerAdapter {
 		cmdPrefix = getProperty("command.prefix");
 		notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
 		dataPath = getProperty("flatfile.path");
+		cmdMan = new CommandManager();
+		reactionMan = new ReactionManager();
 		notificationController = new NotificationController();
 		whitelistController = new WhiteListController();
 		watchlistController = new WatchListController();
@@ -261,6 +264,14 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static CommandManager getCmdMan() {
 		return cmdMan;
+	}
+	
+	/**
+	 * Function to get the ReactionManager
+	 * @return	ReactionManager
+	 */
+	public static ReactionManager getReactionMan() {
+		return reactionMan;
 	}
 	
 	/**

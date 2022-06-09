@@ -3,14 +3,14 @@ package bot.antony.commands.emergency;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Emergency implements ServerCommand {
+public class Emergency implements IServerCommand {
 
 	private TextChannel channel;
 	private boolean longtext;

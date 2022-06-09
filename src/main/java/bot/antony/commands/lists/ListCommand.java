@@ -1,13 +1,13 @@
 package bot.antony.commands.lists;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.controller.ListController;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public abstract class ListCommand implements ServerCommand {
+public abstract class ListCommand implements IServerCommand {
 
 	protected TextChannel channel;
 	protected String listName;

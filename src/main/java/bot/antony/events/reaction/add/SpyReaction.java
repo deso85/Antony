@@ -8,22 +8,19 @@ public class SpyReaction extends MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public SpyReaction(MessageReactionAddEvent event) {
-		super(event);
-		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
+	public SpyReaction() {
+		super();
+		this.description = "Diese Reaction kann dazu verwendet werden, Benutzer-Informationen auszugeben.";
+		this.shortDescription = "Reaction für die Ausgabe von User-Informationen.";
 	}
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public boolean shallTrigger() {
-		return Antony.getGuildController().memberIsMod(reactor);
-	}
-	
-	@Override
-	public void play() {
-		if(shallTrigger()) {
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
 			removeReaction();
 			mentionReactor();
 			printUserinfo();
@@ -41,5 +38,11 @@ public class SpyReaction extends MessageReaction {
 		if(responseChannel != null) {
 			responseChannel.sendMessage(sb.toString()).queue();
 		}
+	}
+	
+	@Override
+	public void setVariables(MessageReactionAddEvent event) {
+		super.setVariables(event);
+		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import bot.antony.Antony;
 import bot.antony.commands.notification.NotificationController;
-import bot.antony.commands.types.ServerCommand;
+import bot.antony.commands.types.IServerCommand;
 import bot.antony.guild.ChannelData;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Notify implements ServerCommand {
+public class Notify implements IServerCommand {
 
 	@Override
 	public void performCommand(Member m, TextChannel cmdChannel, Message message) {

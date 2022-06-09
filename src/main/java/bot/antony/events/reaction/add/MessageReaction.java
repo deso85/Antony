@@ -1,6 +1,7 @@
 package bot.antony.events.reaction.add;
 
 import bot.antony.Antony;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,6 +12,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class MessageReaction {
 
+	protected Boolean privileged = true;
+	protected String name;
+	protected String description;
+	protected String shortDescription;
+	
 	protected ReactionEmote emote;
 	protected Guild guild;
 	protected Message message;
@@ -21,21 +27,34 @@ public class MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
+	public MessageReaction() {
+		super();
+	}
+	
 	public MessageReaction(MessageReactionAddEvent event) {
 		super();
-		emote = event.getReactionEmote();
-		guild = event.getGuild();
-		this.message = event.retrieveMessage().complete();
-		responseChannel = message.getTextChannel();
-		reactor = event.getMember();
+		setVariables(event);
 	}
 	
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
-	public boolean shallTrigger() {
-		return Antony.getGuildController().memberIsAdmin(reactor);
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+	}
+	
+	public boolean shallTrigger(Member member) {
+		if(member == null || member.getUser().isBot()) {
+			return false;
+		}
+		if(!isPrivileged()) {
+			return true;
+		}
+		if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR)) {
+			return true;
+		}
+		return Antony.getGuildController().memberTriggersReactionCmd(member, name);
 	}
 	
 	public void removeReaction() {
@@ -43,7 +62,9 @@ public class MessageReaction {
 	}
 	
 	public void mentionReactor() {
-		responseChannel.sendMessage(emote.getName() + " " + reactor.getUser().getAsMention()).queue();
+		if(responseChannel != null) {
+			responseChannel.sendMessage(emote.getName() + " " + reactor.getUser().getAsMention()).queue();
+		}
 	}
 	
 	public void printAttachments() {
@@ -61,12 +82,103 @@ public class MessageReaction {
 		}
 	}
 	
-	public void play() {
-		
+	public void setVariables(MessageReactionAddEvent event) {
+		this.name = event.getReactionEmote().getName();
+		this.emote = event.getReactionEmote();
+		this.guild = event.getGuild();
+		this.message = event.retrieveMessage().complete();
+		this.responseChannel = message.getTextChannel();
+		this.reactor = event.getMember();
 	}
-	
+
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
+	public Boolean isPrivileged() {
+		return privileged;
+	}
+
+
+	public void setPrivileged(Boolean privileged) {
+		this.privileged = privileged;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	public ReactionEmote getEmote() {
+		return emote;
+	}
+
+	public void setEmote(ReactionEmote emote) {
+		this.emote = emote;
+	}
+
+	public Guild getGuild() {
+		return guild;
+	}
+
+	public void setGuild(Guild guild) {
+		this.guild = guild;
+	}
+
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
+	}
+
+	public TextChannel getResponseChannel() {
+		return responseChannel;
+	}
+
+	public void setResponseChannel(TextChannel responseChannel) {
+		this.responseChannel = responseChannel;
+	}
+
+	public Member getReactor() {
+		return reactor;
+	}
+
+	public void setReactor(Member reactor) {
+		this.reactor = reactor;
+	}
+
+	public StringBuilder getLogMessage() {
+		return logMessage;
+	}
+
+	public void setLogMessage(StringBuilder logMessage) {
+		this.logMessage = logMessage;
+	}
 	
 }

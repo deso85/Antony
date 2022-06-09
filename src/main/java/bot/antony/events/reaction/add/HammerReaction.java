@@ -7,6 +7,8 @@ import java.util.Date;
 import bot.antony.Antony;
 import bot.antony.events.softban.UserDataSB;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -15,28 +17,21 @@ public class HammerReaction extends MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public HammerReaction(MessageReactionAddEvent event) {
-		super(event);
-		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
+	public HammerReaction() {
+		super();
+		this.description = "Diese Reaction kann dazu verwendet werden, einen Benutzer mit einen Softban zu belegen, der sämtliche Nachrichten sofot nach dem Absenden wieder löscht.";
+		this.shortDescription = "Reaction zum belegen eines Users mit einem Softban.";
 	}
-	
 	
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public boolean shallTrigger() {
-		if(Antony.getGuildController().memberIsMod(reactor) && !Antony.getGuildController().memberIsMod(message.getMember())) {
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public void play() {
-		if(shallTrigger()) {
-			UserDataSB user = new UserDataSB(message.getAuthor().getId(), message.getAuthor().getName());
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
 			removeReaction();
+			UserDataSB user = new UserDataSB(message.getAuthor().getId(), message.getAuthor().getName());
 			String logMsg = "";
 			if(Antony.getSoftbanController().ban(user)) {
 				logMsg = "🔨 User soft banned by " + reactor.getAsMention();
@@ -55,6 +50,22 @@ public class HammerReaction extends MessageReaction {
 				Antony.getLogger().info(logMsg);
 			}
 		}
+	}
+	
+	@Override
+	public boolean shallTrigger(Member member) {
+		if(super.shallTrigger(member)
+				&& !message.getMember().isOwner()
+				&& !message.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void setVariables(MessageReactionAddEvent event) {
+		super.setVariables(event);
+		responseChannel = Antony.getGuildController().getLogChannel(event.getGuild());
 	}
 	
 	public EmbedBuilder getEmbedBuilder() {

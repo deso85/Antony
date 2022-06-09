@@ -14,19 +14,10 @@ public class AamProposalDecision extends MessageReaction {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public AamProposalDecision(MessageReactionAddEvent event, Boolean decision, Boolean done) {
-		super(event);
-		this.decision = decision;
-		this.done = done;
-	}
-	
-	public AamProposalDecision(MessageReactionAddEvent event, Boolean decision) {
-		super(event);
-		this.decision = decision;
-	}
-	
-	public AamProposalDecision(MessageReactionAddEvent event) {
-		super(event);
+	public AamProposalDecision() {
+		super();
+		this.description = "Diese Reaction kann dazu verwendet werden, um Vorschläge aus dem Vorschlagswesen zu bearbeiten.";
+		this.shortDescription = "Reaction für das Vorschlagswesen.";
 	}
 	
 	
@@ -34,16 +25,16 @@ public class AamProposalDecision extends MessageReaction {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void play() {
-		if(shallTrigger()) {
-			removeOtherEmotes();
-			if(unpin()) {
-				//sendInfoMessage();
-			}
+	public void perform(MessageReactionAddEvent event) {
+		setVariables(event);
+		if(shallTrigger(event.getMember())) {
+			removeOtherEmotes(event.getReactionEmote().getName());
+			togglePin(event.getReactionEmote().getName());
 		}
 	}
 	
 	private void sendInfoMessage() {
+		//TODO: Has to be rewritten because boolean variables are no longer set
 		TextChannel proposalDecisionChannel = Antony.getGuildController().getValidChannel(guild, Arrays.asList(543512436343308294L, 778960516101046302L)); //Prod, Test
 		
 		if(proposalDecisionChannel != null) {
@@ -63,51 +54,51 @@ public class AamProposalDecision extends MessageReaction {
 		}
 	}
 
-	private Boolean unpin() {
-		if(message.isPinned()) {
-			message.unpin().queue();
-			return true;
-		}
-		return false;
-	}
-
-	private void removeOtherEmotes() {
-		if(guild.getEmotesByName("ausstehend", true).size() > 0) {
-			message.clearReactions(guild.getEmotesByName("ausstehend", true).get(0)).queue();
-		}
-		
-		if(done) {
-			if(guild.getEmotesByName("akzeptiert", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("akzeptiert", true).get(0)).queue();
-			}
-			if(guild.getEmotesByName("abgelehnt", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("abgelehnt", true).get(0)).queue();
-			}
-		}
-		if(decision && !done) {
-			if(guild.getEmotesByName("abgeschlossen", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("abgeschlossen", true).get(0)).queue();
-			}
-			if(guild.getEmotesByName("abgelehnt", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("abgelehnt", true).get(0)).queue();
-			}
-		}
-		if(!decision && !done) {
-			if(guild.getEmotesByName("abgeschlossen", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("abgeschlossen", true).get(0)).queue();
-			}
-			if(guild.getEmotesByName("akzeptiert", true).size() > 0) {
-				message.clearReactions(guild.getEmotesByName("akzeptiert", true).get(0)).queue();
-			}
+	private void togglePin(String reactionName) {
+		switch(reactionName) {
+			case "ausstehend":
+				if(!message.isPinned()) {
+					message.pin().queue();
+				}
+				break;
+			default:
+				if(message.isPinned()) {
+					message.unpin().queue();
+				}
+				break;
 		}
 	}
 
-	@Override
-	public boolean shallTrigger() {
-		if(Antony.getGuildController().memberIsAdmin(reactor)) {
-			return true;
+	private void removeOtherEmotes(String reactionName) {
+		switch (reactionName) {
+		case "ausstehend":
+			removeEmote("abgelehnt");
+			removeEmote("akzeptiert");
+			removeEmote("abgeschlossen");
+			break;
+		case "abgelehnt":
+			removeEmote("ausstehend");
+			removeEmote("akzeptiert");
+			removeEmote("abgeschlossen");
+			break;
+		case "akzeptiert":
+			removeEmote("ausstehend");
+			removeEmote("abgelehnt");
+			removeEmote("abgeschlossen");
+			break;
+		case "abgeschlossen":
+			removeEmote("abgelehnt");
+			removeEmote("ausstehend");
+			removeEmote("akzeptiert");
+			break;
+		default:
+			break;
 		}
-		return false;
 	}
 	
+	private void removeEmote(String reactionName) {
+		if(guild.getEmotesByName(reactionName, true).size() > 0) {
+			message.clearReactions(guild.getEmotesByName(reactionName, true).get(0)).queue();
+		}
+	}
 }
