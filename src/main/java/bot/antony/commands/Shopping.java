@@ -1,20 +1,27 @@
 package bot.antony.commands;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.IServerCommand;
+import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Shopping implements IServerCommand {
-
-	private TextChannel channel;
-
+public class Shopping extends ServerCommand {
+	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public Shopping() {
+		super();
+		this.privileged = false;
+		this.name = "shopping";
+		this.description = "Mit diesem Befehl lässt sich eine Liste mit Kaufempfehlungen für die Ameisenhaltung anzeigen.";
+		this.shortDescription = "Zeigt eine Liste mit Kaufempfehlungen für die Ameisenhaltung.";
+	}
+	
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
-
-		setChannel(channel);
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())
@@ -101,19 +108,6 @@ public class Shopping implements IServerCommand {
 				false);
 		
 		channel.sendMessageEmbeds(eb.build()).queue();
-		
 	}
 
-	
-	// --------------------------------------------------
-	// Getter & Setter
-	// --------------------------------------------------
-
-	public TextChannel getChannel() {
-		return channel;
-	}
-
-	public void setChannel(TextChannel channel) {
-		this.channel = channel;
-	}
 }

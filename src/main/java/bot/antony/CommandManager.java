@@ -1,15 +1,18 @@
 package bot.antony;
 
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyHelp;
 import bot.antony.commands.Archive;
 import bot.antony.commands.Category;
+import bot.antony.commands.Changelog;
 import bot.antony.commands.Channel;
 import bot.antony.commands.Command;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.Guild;
+import bot.antony.commands.Help;
 import bot.antony.commands.Map;
 import bot.antony.commands.Notify;
 import bot.antony.commands.PnLink;
@@ -41,15 +44,19 @@ public class CommandManager {
 	public ConcurrentHashMap<String, IServerCommand> adminCommands;
 
 	public CommandManager() {
+		commands.put("antony", new AntonyHelp());
+		commands.put("help", new Help());
+		commands.put("changelog", new Changelog());
+		commands.put("shopping", new Shopping());
 		commands.put("command", new Command());
 		commands.put("reaction", new Reaction());
+		commands.put("shutdown", new Shutdown());
 		
 		usrCommands = new ConcurrentHashMap<>();
 		modCommands = new ConcurrentHashMap<>();
 		adminCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		usrCommands.put("antony", new AntonyHelp());
 		usrCommands.put("addhb", new AddHB());
 		usrCommands.put("emergency", new Emergency());
 		usrCommands.put("giveaway", new Giveaway());
@@ -58,7 +65,6 @@ public class CommandManager {
 		usrCommands.put("pnlink", new PnLink());
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
-		usrCommands.put("shopping", new Shopping());
 		usrCommands.put("showavatar", new ShowAvatar());
 		usrCommands.put("userinfo", new UserInfo());
 
@@ -74,7 +80,6 @@ public class CommandManager {
 		adminCommands.put("category", new Category());
 		adminCommands.put("channel", new Channel());
 		adminCommands.put("guild", new Guild());
-		adminCommands.put("shutdown", new Shutdown());
 	}
 
 	public boolean perform(String command, Member member, TextChannel channel, Message message) {
@@ -116,7 +121,17 @@ public class CommandManager {
 		//return cmdNames;
 	//}
 	
-	public LinkedHashMap <String, ServerCommand> getCommands(){
+	public LinkedHashMap<String, ServerCommand> getAvailableCommands(Member member){
+		LinkedHashMap<String, ServerCommand> filteredCmds = new LinkedHashMap <String, ServerCommand>();
+		for(Entry<String, ServerCommand> entry : getCommands().entrySet()) {
+			if(entry.getValue().mayUse(member)) {
+				filteredCmds.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return filteredCmds;
+	}
+	
+	public LinkedHashMap<String, ServerCommand> getCommands(){
 		return commands;
 	}
 	
