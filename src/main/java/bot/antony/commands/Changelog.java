@@ -41,6 +41,7 @@ public class Changelog extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("12.06.2022 - Version 7.0.2", "Die ***" + cmdPrefix + "archive*** Funktion wurde auf das neue Berechtitungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("10.06.2022 - Version 7.0.1", "Portierung einiger Funktionen auf das neue Berechitugngssystem. Es gibt zusätzlich zwei neue Befehle: ***" + cmdPrefix + "help*** und ***" + cmdPrefix + "changelog***, die Antony intuitiver machen sollen."));
 		changeLog.add(new ChangeLogEntry("09.06.2022 - Version 7.0.0", "Antony hat ein neues Berechtigungssystem erhalten, mit dem man User und Rollen gezielt auf Funktionen berechtigen kann. Alle Reaction-Befehle wurden auf dieses System bereits portiert."));
 		changeLog.add(new ChangeLogEntry("05.06.2022 - Version 6.0.2", "Antony überwacht nun auch Threads."));

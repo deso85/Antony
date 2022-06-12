@@ -23,7 +23,7 @@ public class Command extends ServerCommand {
 		this.name = "command";
 		this.description = "Mit diesem Befehl lassen sich die Berechtigungen für Bot-Befehle ansehen und verwalten.";
 		this.shortDescription = "Berechtigungsverwaltung für Bot-Befehle.";
-		this.example = Antony.getCmdPrefix() + name + " show " + name;
+		this.example = "show " + name;
 		this.cmdParams.put("list", "Listet alle verfügbaren Befehle auf");
 		this.cmdParams.put("show cmdName", "Zeigt die Berechtigungen eines Befehls");
 		this.cmdParams.put("addrole cmdName @role", "Erteilt einer Rolle die Berechtigung zur Nutzung eines Befehls");

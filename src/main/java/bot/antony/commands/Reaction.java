@@ -24,7 +24,7 @@ public class Reaction extends ServerCommand {
 		this.name = "reaction";
 		this.description = "Mit diesem Befehl lassen sich die Berechtigungen für Bot-Befehle basierend auf Reactions ansehen und verwalten.";
 		this.shortDescription = "Berechtigungsverwaltung für Bot-Befehle basierend auf Reactions.";
-		this.example = Antony.getCmdPrefix() + name + " list";
+		this.example = "list";
 		this.cmdParams.put("list", "Listet alle verfügbaren Reaction-Befehle auf");
 		this.cmdParams.put("show reaction", "Zeigt die Berechtigungen eines Reaction-Befehls");
 		this.cmdParams.put("addrole reaction @role", "Erteilt einer Rolle die Berechtigung zur Nutzung eines Reaction-Befehls");

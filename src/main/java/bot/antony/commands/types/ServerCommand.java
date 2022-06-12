@@ -97,7 +97,7 @@ public class ServerCommand implements IServerCommand {
 		}
 		
 		if(example != null && !example.isEmpty()) {
-			eb.addField("__Beispiel__", example, false);
+			eb.addField("__Beispiel__", Antony.getCmdPrefix() + name + " " + example, false);
 		}
 		
 		channel.sendMessageEmbeds(eb.build()).queue();

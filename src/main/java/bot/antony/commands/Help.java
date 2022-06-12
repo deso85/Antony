@@ -20,7 +20,7 @@ public class Help extends ServerCommand {
 		this.name = "help";
 		this.description = "Mit diesem Befehl lassen sich alle verfügbaren Befehle oder einen Hilfetext zu einem spezifischen Befehlen an.";
 		this.shortDescription = "Zeigt alle verfügbaren Befehle oder den Hilfetext zu einem Befehl an.";
-		this.example = Antony.getCmdPrefix() + name + " antony";
+		this.example = "antony";
 		this.cmdParams.put("cmdName", "Zeigt die Hilfe für einen Befehl an.");
 	}
 	

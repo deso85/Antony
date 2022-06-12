@@ -20,8 +20,7 @@ public class AntonyHelp extends ServerCommand {
 		this.name = "antony";
 		this.description = "Mit diesem Befehl lassen sich alle verfügbaren Funktionen anzeigen.";
 		this.shortDescription = "Zeigt alle verfügbaren Befehle.";
-		this.example = Antony.getCmdPrefix() + name + " help";
-		this.cmdParams.put("changelog", "Listet die 10 letzten Einträge von Antonys Changelog auf.");
+		this.example = "help";
 		this.cmdParams.put("help", "Zeigt einen Hilfetext an.");
 	}
 	
@@ -54,7 +53,9 @@ public class AntonyHelp extends ServerCommand {
 			ebField = new StringBuilder();
 			ebField.append(entry.getValue().getDescription());
 			if(entry.getValue().getExample() != null && !entry.getValue().getExample().isEmpty()) {
-				ebField.append("\n*__Beispiel:__ " + entry.getValue().getExample() + "*");
+				ebField.append("\n*__Beispiel:__ "
+						+ Antony.getCmdPrefix() + entry.getValue().getName()
+						+ entry.getValue().getExample() + "*");
 			}
 			eb.addField(Antony.getCmdPrefix() + entry.getValue().getName(), ebField.toString(), false);
 		}
@@ -88,7 +89,6 @@ public class AntonyHelp extends ServerCommand {
 		BotCommand whitelist = new BotCommand("whitelist", "Funktion zur Verwaltung von Begriffen, die keine moderativen Meldungen auslösen sollen.", "add Barsch");
 		
 		//Commands for admins
-		BotCommand archive = new BotCommand("archive", "Funktion zur Archivierung von Kanalinhalten.", "#Kanal [Anzahl Nachrichten]");
 		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
 		BotCommand category = new BotCommand("category", "Funktion zur Administration von Server-Kategorien.", "sort CategoryName");
 		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
