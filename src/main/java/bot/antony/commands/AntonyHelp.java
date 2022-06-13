@@ -72,7 +72,6 @@ public class AntonyHelp extends ServerCommand {
 
 		//Commands for everyone
 		BotCommand addhb = new BotCommand("addhb", "Hiermit lässt sich die Erstellung eines Haltungsberichtes anfragen.");
-		BotCommand emergency = new BotCommand("emergency", "Soll Hilfestellungen bei Notfällen zur Verfügung stellen.", "milben");
 		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
 		BotCommand map = new BotCommand("map","Zeigt eine Karte von https://antmaps.org, auf der zu sehen ist, wo auf der Welt die gesuchte Ameisenart vorkommt.", "Lasius niger");
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");

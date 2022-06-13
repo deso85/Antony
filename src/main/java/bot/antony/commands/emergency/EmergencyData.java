@@ -15,7 +15,6 @@ public class EmergencyData {
 	// --------------------------------------------------
 	public EmergencyData() {
 		super();
-		
 	}
 	
 	

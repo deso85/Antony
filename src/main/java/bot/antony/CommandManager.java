@@ -48,9 +48,10 @@ public class CommandManager {
 		commands.put("help", new Help());
 		commands.put("changelog", new Changelog());
 		commands.put("archive", new Archive());
-		commands.put("shopping", new Shopping());
 		commands.put("command", new Command());
+		commands.put("emergency", new Emergency());
 		commands.put("reaction", new Reaction());
+		commands.put("shopping", new Shopping());
 		commands.put("shutdown", new Shutdown());
 		
 		usrCommands = new ConcurrentHashMap<>();
@@ -59,7 +60,6 @@ public class CommandManager {
 
 		// Everyone
 		usrCommands.put("addhb", new AddHB());
-		usrCommands.put("emergency", new Emergency());
 		usrCommands.put("giveaway", new Giveaway());
 		usrCommands.put("map", new Map());
 		usrCommands.put("notify", new Notify());

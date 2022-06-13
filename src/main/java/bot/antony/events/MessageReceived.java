@@ -26,6 +26,7 @@ public class MessageReceived extends ListenerAdapter {
 			}
 			
 			//Message parts on blacklist?
+			//TODO Abfrage auf Team-Ebene? Verlagern in den Blacklist-Controller?
 			if(Antony.getGuildController().memberIsMod(event.getMember()) ||
 					!Antony.getBlacklistController().checkBlacklistedContent(event.getMessage())) {
 				
