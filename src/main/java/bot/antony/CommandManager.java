@@ -48,6 +48,7 @@ public class CommandManager {
 		commands.put("help", new Help());
 		commands.put("changelog", new Changelog());
 		commands.put("archive", new Archive());
+		commands.put("category", new Category());
 		commands.put("command", new Command());
 		commands.put("emergency", new Emergency());
 		commands.put("reaction", new Reaction());
@@ -77,7 +78,6 @@ public class CommandManager {
 
 		// Admin
 		adminCommands.put("blacklist", new Blacklist());
-		adminCommands.put("category", new Category());
 		adminCommands.put("channel", new Channel());
 		adminCommands.put("guild", new Guild());
 	}
