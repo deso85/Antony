@@ -42,7 +42,7 @@ public class Changelog extends ServerCommand {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
 		changeLog.add(new ChangeLogEntry("17.06.2022 - Version 7.0.5", "Ein Fehler hat dafür gesorgt, dass der ***" + cmdPrefix + "emergency*** Befehl nicht zuverlässig funktioniert hat. Dieser wurde behoben."));
-		changeLog.add(new ChangeLogEntry("14.06.2022 - Version 7.0.4", "Die ***" + cmdPrefix + "category*** Funktion wurde auf das neue Berechtitungssystem portiert. Die Berechtigung von Kanälen lassen sich nun auch wieder mit der Kategorie, in der sie sind, synchronisieren."));
+		changeLog.add(new ChangeLogEntry("14.06.2022 - Version 7.0.4", "Diverse Befehle auf das neue Berechtigungssystem portiert. Die ***" + cmdPrefix + "category*** Funktion wurde dahingehend repariert, dass die Berechtigungen von Kanälen sich nun auch wieder mit der Kategorie, in der sie sind, synchronisieren lassen. Manche Befehle können jetzt über einen Alias aufgerufen werden."));
 		changeLog.add(new ChangeLogEntry("13.06.2022 - Version 7.0.3", "Die ***" + cmdPrefix + "emergency*** Funktion wurde auf das neue Berechtitungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("12.06.2022 - Version 7.0.2", "Die ***" + cmdPrefix + "archive*** Funktion wurde auf das neue Berechtitungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("10.06.2022 - Version 7.0.1", "Portierung einiger Funktionen auf das neue Berechitugngssystem. Es gibt zusätzlich zwei neue Befehle: ***" + cmdPrefix + "help*** und ***" + cmdPrefix + "changelog***, die Antony intuitiver machen sollen."));

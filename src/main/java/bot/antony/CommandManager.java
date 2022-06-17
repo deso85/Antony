@@ -39,6 +39,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class CommandManager {
 
 	public LinkedHashMap <String, ServerCommand> commands = new LinkedHashMap <String, ServerCommand>();
+	public LinkedHashMap <String, ServerCommand> aliases = new LinkedHashMap <String, ServerCommand>();
 	public ConcurrentHashMap<String, IServerCommand> usrCommands;
 	public ConcurrentHashMap<String, IServerCommand> modCommands;
 	public ConcurrentHashMap<String, IServerCommand> adminCommands;
@@ -51,9 +52,16 @@ public class CommandManager {
 		commands.put("category", new Category());
 		commands.put("command", new Command());
 		commands.put("emergency", new Emergency());
+		commands.put("pnlink", new PnLink());
 		commands.put("reaction", new Reaction());
 		commands.put("shopping", new Shopping());
 		commands.put("shutdown", new Shutdown());
+		commands.put("user", new User());
+		
+		aliases.put("hilfe", commands.get("help"));
+		aliases.put("notfall", commands.get("emergency"));
+		aliases.put("shoppinglist", commands.get("shopping"));
+		aliases.put("einkaufsliste", commands.get("shopping"));
 		
 		usrCommands = new ConcurrentHashMap<>();
 		modCommands = new ConcurrentHashMap<>();
@@ -64,14 +72,12 @@ public class CommandManager {
 		usrCommands.put("giveaway", new Giveaway());
 		usrCommands.put("map", new Map());
 		usrCommands.put("notify", new Notify());
-		usrCommands.put("pnlink", new PnLink());
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
 		usrCommands.put("showavatar", new ShowAvatar());
 		usrCommands.put("userinfo", new UserInfo());
 
 		// Mod
-		modCommands.put("user", new User());
 		modCommands.put("softban", new Softban());
 		modCommands.put("watchlist", new Watchlist());
 		modCommands.put("whitelist", new Whitelist());
@@ -105,9 +111,14 @@ public class CommandManager {
 			}
 		}
 		
-		//New Commands
+		//Commands
 		ServerCommand cmd;
 		if ((cmd = this.commands.get(command.toLowerCase())) != null) {
+			cmd.performCommand(member, channel, message);
+			return true;
+		}
+		//Aliases
+		if((cmd = this.aliases.get(command.toLowerCase())) != null) {
 			cmd.performCommand(member, channel, message);
 			return true;
 		}
