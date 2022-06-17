@@ -41,6 +41,7 @@ public class Changelog extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("17.06.2022 - Version 7.0.5", "Ein Fehler hat dafür gesorgt, dass der ***" + cmdPrefix + "emergency*** Befehl nicht zuverlässig funktioniert hat. Dieser wurde behoben."));
 		changeLog.add(new ChangeLogEntry("14.06.2022 - Version 7.0.4", "Die ***" + cmdPrefix + "category*** Funktion wurde auf das neue Berechtitungssystem portiert. Die Berechtigung von Kanälen lassen sich nun auch wieder mit der Kategorie, in der sie sind, synchronisieren."));
 		changeLog.add(new ChangeLogEntry("13.06.2022 - Version 7.0.3", "Die ***" + cmdPrefix + "emergency*** Funktion wurde auf das neue Berechtitungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("12.06.2022 - Version 7.0.2", "Die ***" + cmdPrefix + "archive*** Funktion wurde auf das neue Berechtitungssystem portiert."));

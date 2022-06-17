@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class Emergency extends ServerCommand {
 
 	boolean longtext = false;
-	StringBuilder fileName = new StringBuilder();
+	StringBuilder fileName;
 	
 	// --------------------------------------------------
 	// Constructor
@@ -55,6 +55,7 @@ public class Emergency extends ServerCommand {
 	}
 	
 	private void setFileName(String emergencyCase) {
+		fileName = new StringBuilder();
 		fileName.append("antony.emergency.");
 		switch (emergencyCase) {
 			case "milben":
