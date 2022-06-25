@@ -6,14 +6,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class User extends ServerCommand {
+public class UserCmd extends ServerCommand {
 	
 	TextChannel channel;
 	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public User() {
+	public UserCmd() {
 		super();
 		this.privileged = true;
 		this.name = "user";

@@ -11,12 +11,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Changelog extends ServerCommand {
+public class ChangelogCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Changelog() {
+	public ChangelogCmd() {
 		super();
 		this.privileged = false;
 		this.name = "changelog";
@@ -41,6 +41,7 @@ public class Changelog extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("25.06.2022 - Version 7.0.6", "Die ***" + cmdPrefix + "guild*** Funktion wurde auf das neue Berechtigungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("17.06.2022 - Version 7.0.5", "Ein Fehler hat dafür gesorgt, dass der ***" + cmdPrefix + "emergency*** Befehl nicht zuverlässig funktioniert hat. Dieser wurde behoben."));
 		changeLog.add(new ChangeLogEntry("14.06.2022 - Version 7.0.4", "Diverse Befehle auf das neue Berechtigungssystem portiert. Die ***" + cmdPrefix + "category*** Funktion wurde dahingehend repariert, dass die Berechtigungen von Kanälen sich nun auch wieder mit der Kategorie, in der sie sind, synchronisieren lassen. Manche Befehle können jetzt über einen Alias aufgerufen werden."));
 		changeLog.add(new ChangeLogEntry("13.06.2022 - Version 7.0.3", "Die ***" + cmdPrefix + "emergency*** Funktion wurde auf das neue Berechtitungssystem portiert."));

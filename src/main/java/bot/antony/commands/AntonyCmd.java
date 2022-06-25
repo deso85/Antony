@@ -9,12 +9,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class AntonyHelp extends ServerCommand {
+public class AntonyCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public AntonyHelp() {
+	public AntonyCmd() {
 		super();
 		this.privileged = false;
 		this.name = "antony";
@@ -54,7 +54,7 @@ public class AntonyHelp extends ServerCommand {
 			ebField.append(entry.getValue().getDescription());
 			if(entry.getValue().getExample() != null && !entry.getValue().getExample().isEmpty()) {
 				ebField.append("\n*__Beispiel:__ "
-						+ Antony.getCmdPrefix() + entry.getValue().getName()
+						+ Antony.getCmdPrefix() + entry.getValue().getName() + " "
 						+ entry.getValue().getExample() + "*");
 			}
 			eb.addField(Antony.getCmdPrefix() + entry.getValue().getName(), ebField.toString(), false);
@@ -90,7 +90,6 @@ public class AntonyHelp extends ServerCommand {
 		//Commands for admins
 		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
 		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
-		BotCommand guild = new BotCommand("guild", "Funktion zur Verwaltung des Discord Servers.");
 
 	}*/
 	

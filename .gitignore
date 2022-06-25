@@ -35,3 +35,4 @@ org.eclipse.*
 antony.properties
 antony.db
 antony.*.json
+antony.log*

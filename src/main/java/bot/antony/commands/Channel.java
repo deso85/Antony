@@ -220,7 +220,7 @@ public class Channel implements IServerCommand {
 		
 		//sort if necessary
 		if(sort) {
-			bot.antony.commands.Category.sort(cat);
+			bot.antony.commands.CategoryCmd.sort(cat);
 		}
 		
 		return newChan;

@@ -4,29 +4,29 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bot.antony.commands.AntonyHelp;
-import bot.antony.commands.Archive;
-import bot.antony.commands.Category;
-import bot.antony.commands.Changelog;
+import bot.antony.commands.AntonyCmd;
+import bot.antony.commands.ArchiveCmd;
+import bot.antony.commands.CategoryCmd;
+import bot.antony.commands.ChangelogCmd;
 import bot.antony.commands.Channel;
-import bot.antony.commands.Command;
+import bot.antony.commands.CommandCmd;
 import bot.antony.commands.Giveaway;
-import bot.antony.commands.Guild;
-import bot.antony.commands.Help;
+import bot.antony.commands.GuildCmd;
+import bot.antony.commands.HelpCmd;
 import bot.antony.commands.Map;
 import bot.antony.commands.Notify;
-import bot.antony.commands.PnLink;
-import bot.antony.commands.Reaction;
+import bot.antony.commands.PnLinkCmd;
+import bot.antony.commands.ReactionCmd;
 import bot.antony.commands.Sells;
 import bot.antony.commands.Serverstats;
-import bot.antony.commands.Shopping;
+import bot.antony.commands.ShoppingCmd;
 import bot.antony.commands.ShowAvatar;
 import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
-import bot.antony.commands.User;
+import bot.antony.commands.UserCmd;
 import bot.antony.commands.UserInfo;
 import bot.antony.commands.aam.AddHB;
-import bot.antony.commands.emergency.Emergency;
+import bot.antony.commands.emergency.EmergencyCmd;
 import bot.antony.commands.lists.Blacklist;
 import bot.antony.commands.lists.Watchlist;
 import bot.antony.commands.lists.Whitelist;
@@ -45,18 +45,19 @@ public class CommandManager {
 	public ConcurrentHashMap<String, IServerCommand> adminCommands;
 
 	public CommandManager() {
-		commands.put("antony", new AntonyHelp());
-		commands.put("help", new Help());
-		commands.put("changelog", new Changelog());
-		commands.put("archive", new Archive());
-		commands.put("category", new Category());
-		commands.put("command", new Command());
-		commands.put("emergency", new Emergency());
-		commands.put("pnlink", new PnLink());
-		commands.put("reaction", new Reaction());
-		commands.put("shopping", new Shopping());
+		commands.put("antony", new AntonyCmd());
+		commands.put("help", new HelpCmd());
+		commands.put("changelog", new ChangelogCmd());
+		commands.put("archive", new ArchiveCmd());
+		commands.put("category", new CategoryCmd());
+		commands.put("command", new CommandCmd());
+		commands.put("emergency", new EmergencyCmd());
+		commands.put("guild", new GuildCmd());
+		commands.put("pnlink", new PnLinkCmd());
+		commands.put("reaction", new ReactionCmd());
+		commands.put("shopping", new ShoppingCmd());
 		commands.put("shutdown", new Shutdown());
-		commands.put("user", new User());
+		commands.put("user", new UserCmd());
 		
 		aliases.put("hilfe", commands.get("help"));
 		aliases.put("notfall", commands.get("emergency"));
@@ -85,7 +86,6 @@ public class CommandManager {
 		// Admin
 		adminCommands.put("blacklist", new Blacklist());
 		adminCommands.put("channel", new Channel());
-		adminCommands.put("guild", new Guild());
 	}
 
 	public boolean perform(String command, Member member, TextChannel channel, Message message) {

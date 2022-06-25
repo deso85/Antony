@@ -7,12 +7,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Shopping extends ServerCommand {
+public class ShoppingCmd extends ServerCommand {
 	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Shopping() {
+	public ShoppingCmd() {
 		super();
 		this.privileged = false;
 		this.name = "shopping";

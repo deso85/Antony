@@ -5,12 +5,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class PnLink extends ServerCommand {
+public class PnLinkCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public PnLink() {
+	public PnLinkCmd() {
 		super();
 		this.privileged = false;
 		this.name = "pnlink";
@@ -23,7 +23,7 @@ public class PnLink extends ServerCommand {
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		if (message.getMentions().getChannels().size() > 0) {
-			channel.sendMessage("Hier ist der Link zu deinem Kanal: <#" + message.getMentions().getChannels().get(0).getId() + " >").complete();
+			channel.sendMessage("Hier ist der Link zu deinem Kanal *(Entferne das Leerzeichen vor \">\")*:\n<#" + message.getMentions().getChannels().get(0).getId() + " >").complete();
 		} else {
 			printHelp(channel);
 		}

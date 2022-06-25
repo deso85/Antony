@@ -28,12 +28,12 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Archive extends ServerCommand {
+public class ArchiveCmd extends ServerCommand {
 		
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Archive() {
+	public ArchiveCmd() {
 		super();
 		this.privileged = true;
 		this.name = "archive";

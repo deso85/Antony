@@ -13,12 +13,12 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Reaction extends ServerCommand {
+public class ReactionCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Reaction() {
+	public ReactionCmd() {
 		super();
 		this.privileged = true;
 		this.name = "reaction";

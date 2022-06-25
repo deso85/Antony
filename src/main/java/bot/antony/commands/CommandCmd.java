@@ -12,12 +12,12 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Command extends ServerCommand {
+public class CommandCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Command() {
+	public CommandCmd() {
 		super();
 		this.privileged = true;
 		this.name = "command";

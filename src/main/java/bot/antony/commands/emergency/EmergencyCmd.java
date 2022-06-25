@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Emergency extends ServerCommand {
+public class EmergencyCmd extends ServerCommand {
 
 	boolean longtext = false;
 	StringBuilder fileName;
@@ -20,7 +20,7 @@ public class Emergency extends ServerCommand {
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Emergency() {
+	public EmergencyCmd() {
 		super();
 		this.privileged = false;
 		this.name = "emergency";

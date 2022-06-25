@@ -12,14 +12,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Category extends ServerCommand {
+public class CategoryCmd extends ServerCommand {
 
 	private TextChannel channel;
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Category() {
+	public CategoryCmd() {
 		super();
 		this.privileged = true;
 		this.name = "category";
