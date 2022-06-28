@@ -41,6 +41,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("28.06.2022 - Version 7.0.7", "Die ***" + cmdPrefix + "addhb*** Funktion wurde auf das neue Berechtigungssystem portiert und kann jetzt Haltungsberichte zu Gattungen (z.B.: Lasius sp.) und vermuteten Arten (z.B.: Lasius cf. niger) anlegen."));
 		changeLog.add(new ChangeLogEntry("25.06.2022 - Version 7.0.6", "Die ***" + cmdPrefix + "guild*** Funktion wurde auf das neue Berechtigungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("17.06.2022 - Version 7.0.5", "Ein Fehler hat dafür gesorgt, dass der ***" + cmdPrefix + "emergency*** Befehl nicht zuverlässig funktioniert hat. Dieser wurde behoben."));
 		changeLog.add(new ChangeLogEntry("14.06.2022 - Version 7.0.4", "Diverse Befehle auf das neue Berechtigungssystem portiert. Die ***" + cmdPrefix + "category*** Funktion wurde dahingehend repariert, dass die Berechtigungen von Kanälen sich nun auch wieder mit der Kategorie, in der sie sind, synchronisieren lassen. Manche Befehle können jetzt über einen Alias aufgerufen werden."));

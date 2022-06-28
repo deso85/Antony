@@ -1,6 +1,5 @@
 package bot.antony.commands.aam;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,41 +132,47 @@ public class AddHBStateMachine extends ListenerAdapter {
 		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
 		AntCheckClient antCheckClient = target.proxy(AntCheckClient.class);
 
-		String antSpeciesName = content.replace("-", " ").trim().replaceAll(" +", " ");
+		String antSpeciesName = content.replace("-", " ");
+		String antSpeciesChannelName = antSpeciesName.trim().replace("spec.", "sp.").replace("conf.", "cf.").replaceAll(" +", " ");
+		antSpeciesName = antSpeciesName.replace("sp.", "").replace("spec.", "");
+		antSpeciesName = antSpeciesName.replace("cf.", "").replace("conf.", "");
+		antSpeciesName = antSpeciesName.trim().replaceAll(" +", " ");
+		
 		List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
 
 		if (species.isEmpty()) {
 			errorCount++;
 			if(errorCount <= 4) {
 				message.reply(
-						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
-								+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
-						.queue();
+					"Es konnte keine Ameisenart mit \"" + antSpeciesChannelName + "\" im Namen gefunden werden.\n"
+							+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
+					.queue();
 			} else {
 				message.reply(
-						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
-								+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
-						.queue();
+					"Es konnte keine Ameisenart mit \"" + antSpeciesChannelName + "\" im Namen gefunden werden.\n"
+							+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
+					.queue();
 				Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
 			}
 		} else {
 			// Too many species found
-			if (species.size() > 1) {
+			if (species.size() > 1 && !antSpeciesChannelName.contains("sp.")) {
 				errorCount++;
 				if(errorCount <= 4) {
 					message.reply("Es wurden " + species.size()
-							+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
+						+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
 				} else {
 					message.reply(
-							"Es wurden " + species.size()
-								+ " Ameisenarten gefunden\n"
-								+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
-							.queue();
+						"Es wurden " + species.size()
+							+ " Ameisenarten gefunden\n"
+							+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**")
+						.queue();
 					Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
 				}
 			} else {
 				errorCount = 0;
-				antSpecies = species.get(0).getName();
+				//antSpecies = species.get(0).getName();
+				antSpecies = antSpeciesChannelName;
 				message.reply("**" + antSpecies + "** - Hast du die Kolonie schon?").queue(msg -> {
 					msg.addReaction("✅").queue();
 					msg.addReaction("❌").queue();
@@ -218,8 +223,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 		} else {
 			awaitApproval = true;
 			message.reply(
-					"Danke für die Infos. Ein Mod wird zeitnah darüber entscheiden, ob ein Haltungsbericht angelegt wird und du wirst dann darüber informiert.")
-					.queue();
+				"Danke für die Infos. Ein Mod wird zeitnah darüber entscheiden, ob ein Haltungsbericht angelegt wird und du wirst dann darüber informiert.")
+				.queue();
 			TextChannel replyChan;
 			if (Antony.getGuildController().getLogChannel(message.getGuild()) != null) {
 				replyChan = Antony.getGuildController().getLogChannel(message.getGuild());

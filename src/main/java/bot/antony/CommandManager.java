@@ -25,7 +25,7 @@ import bot.antony.commands.Shutdown;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserCmd;
 import bot.antony.commands.UserInfo;
-import bot.antony.commands.aam.AddHB;
+import bot.antony.commands.aam.AddHBCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
 import bot.antony.commands.lists.Blacklist;
 import bot.antony.commands.lists.Watchlist;
@@ -48,6 +48,7 @@ public class CommandManager {
 		commands.put("antony", new AntonyCmd());
 		commands.put("help", new HelpCmd());
 		commands.put("changelog", new ChangelogCmd());
+		commands.put("addhb", new AddHBCmd());
 		commands.put("archive", new ArchiveCmd());
 		commands.put("category", new CategoryCmd());
 		commands.put("command", new CommandCmd());
@@ -69,7 +70,6 @@ public class CommandManager {
 		adminCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		usrCommands.put("addhb", new AddHB());
 		usrCommands.put("giveaway", new Giveaway());
 		usrCommands.put("map", new Map());
 		usrCommands.put("notify", new Notify());
