@@ -89,7 +89,6 @@ public class AntonyCmd extends ServerCommand {
 		
 		//Commands for admins
 		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
-		BotCommand channel = new BotCommand("channel", "Funktion, die z.B. dafür genutzt werden kann, alle Kanäle auszugeben, in denen schon länger keine Inhalte mehr gepostet wurden.", "list abandoned");
 
 	}*/
 	

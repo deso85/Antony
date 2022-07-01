@@ -8,7 +8,7 @@ import bot.antony.commands.AntonyCmd;
 import bot.antony.commands.ArchiveCmd;
 import bot.antony.commands.CategoryCmd;
 import bot.antony.commands.ChangelogCmd;
-import bot.antony.commands.Channel;
+import bot.antony.commands.ChannelCmd;
 import bot.antony.commands.CommandCmd;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.GuildCmd;
@@ -51,6 +51,7 @@ public class CommandManager {
 		commands.put("addhb", new AddHBCmd());
 		commands.put("archive", new ArchiveCmd());
 		commands.put("category", new CategoryCmd());
+		commands.put("channel", new ChannelCmd());
 		commands.put("command", new CommandCmd());
 		commands.put("emergency", new EmergencyCmd());
 		commands.put("guild", new GuildCmd());
@@ -85,7 +86,6 @@ public class CommandManager {
 
 		// Admin
 		adminCommands.put("blacklist", new Blacklist());
-		adminCommands.put("channel", new Channel());
 	}
 
 	public boolean perform(String command, Member member, TextChannel channel, Message message) {

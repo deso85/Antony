@@ -110,7 +110,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 			if (event.getReactionEmote().getName().equals("✅")) {
 				rightsResponsibilities = true;
 				event.getTextChannel().retrieveMessageById(initMessageId).queue(msg -> {
-					msg.reply("Zu welcher Ameisen-Art willst du einen Haltungsbericht führen?")
+					msg.reply("Zu welcher Ameisen-Art willst du einen Haltungsbericht führen?\n"
+							+ "*Wenn nur die Gattung bekannt ist oder die Art nicht genau bestimmt wurde, nutze bitte \"sp.\" (z.B. Lasius sp.) oder \"cf.\" (z.B. Lasius cf. niger).*")
 							.queue();
 				});
 			} else if (event.getReactionEmote().getName().equals("❌")) {
@@ -255,7 +256,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 					// add channel
 					List<Member> members = new ArrayList<Member>();
 					members.add(event.getGuild().getMemberById(authorId));
-					TextChannel newChan = bot.antony.commands.Channel.addChannel(
+					TextChannel newChan = bot.antony.commands.ChannelCmd.addChannel(
 							antSpecies + "—" + event.getGuild().getMemberById(authorId).getEffectiveName(),
 							hbCategory, members, event.getMember(), true);
 
