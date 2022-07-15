@@ -84,11 +84,6 @@ public class AntonyCmd extends ServerCommand {
 		//Commands for mods
 		BotCommand user = new BotCommand("user", "Funktion zur Verwaltung von Discord Usern.");
 		BotCommand softban = new BotCommand("softban", "Funktion zur Verwaltung von Usern, deren Inhalte direkt nach posten gelöscht werden sollen.", "add ID NAME");
-		BotCommand watchlist = new BotCommand("watchlist", "Funktion zur Verwaltung von Begriffen, über die das Mod-Team bei Verwendung eine Benachrichtigung erhalten möchte.", "add Ameisengesicht");
-		BotCommand whitelist = new BotCommand("whitelist", "Funktion zur Verwaltung von Begriffen, die keine moderativen Meldungen auslösen sollen.", "add Barsch");
-		
-		//Commands for admins
-		BotCommand blacklist = new BotCommand("blacklist", "Funktion zur Verwaltung von Begriffen, die zur sofortigen Löschung des Beitrags führen und das Mod-Team darüber benachrichtigen.", "add d1scord.hack");
 
 	}*/
 	

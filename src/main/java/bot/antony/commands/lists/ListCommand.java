@@ -1,17 +1,37 @@
 package bot.antony.commands.lists;
 
-import bot.antony.Antony;
-import bot.antony.commands.types.IServerCommand;
+import bot.antony.commands.types.ServerCommand;
 import bot.antony.controller.ListController;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public abstract class ListCommand implements IServerCommand {
+public abstract class ListCommand extends ServerCommand {
 
 	protected TextChannel channel;
 	protected String listName;
 	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public ListCommand() {
+		super();
+		listName = "Template-List";
+		this.privileged = true;
+		this.name = "list";
+		this.description = "Dies ist eine Template-Liste.";
+		this.shortDescription = description;
+		this.example = "add Begriff";
+		this.cmdParams.put("add textString", "Fügt der " + listName + " einen Text/Begriff hinzu.");
+		this.cmdParams.put("remove textString", "Entfernt einen Text/Begriff von der " + listName + ".");
+		this.cmdParams.put("list", "Gibt alle Einträge von der " + listName + " aus.");
+		this.cmdParams.put("reload", "Lädt die " + listName + " neu in den Speicher.");
+		this.cmdParams.put("clear", "Löscht die " + listName + ".");
+	}
+	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		ListController controller = this.getInstance();
@@ -20,30 +40,31 @@ public abstract class ListCommand implements IServerCommand {
 		String[] userMessage = message.getContentDisplay().split(" ");
 
 		if (userMessage.length > 1) {
-
 			switch (userMessage[1].toLowerCase()) {
-
+			
 			case "add":
 				if(userMessage.length > 2) {
-					if(controller.add(userMessage[2].toLowerCase())) {
-						channel.sendMessage("\"" + userMessage[2] + "\" zur " + listName + " hinzugefügt.").queue();
+					String addStr = message.getContentDisplay().substring(getSubStrStart(userMessage[1])).toLowerCase();
+					if(controller.add(addStr)) {
+						channel.sendMessage("\"" + addStr + "\" zur " + listName + " hinzugefügt.").queue();
 					} else {
-						channel.sendMessage("\"" + userMessage[2] + "\" war bereits auf der " + listName + ".").queue();
+						channel.sendMessage("\"" + addStr + "\" war bereits auf der " + listName + ".").queue();
 					}
 				} else {
-					printHelp();
+					printHelp(channel);
 				}
 				break;
 				
 			case "remove":
 				if(userMessage.length > 2) {
-					if(controller.remove(userMessage[2].toLowerCase())) {
-						channel.sendMessage("\"" + userMessage[2] + "\" von der " + listName + " gelöscht.").queue();
+					String remStr = message.getContentDisplay().substring(getSubStrStart(userMessage[1])).toLowerCase();
+					if(controller.remove(remStr)) {
+						channel.sendMessage("\"" + remStr + "\" von der " + listName + " gelöscht.").queue();
 					} else {
-						channel.sendMessage("\"" + userMessage[2] + "\" war nicht auf der " + listName + ".").queue();
+						channel.sendMessage("\"" + remStr + "\" war nicht auf der " + listName + ".").queue();
 					}
 				} else {
-					printHelp();
+					printHelp(channel);
 				}
 				break;
 				
@@ -67,18 +88,21 @@ public abstract class ListCommand implements IServerCommand {
 				break;
 				
 			default:
-				printHelp();
+				printHelp(channel);
 				break;
 			}
 		} else {
-			printHelp();
+			printHelp(channel);
 		}
 	}
 	
 	public abstract ListController getInstance();
 
-	private void printHelp() {
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + listName.toLowerCase() + " (add | remove | list | reload | clear) [TextString]").queue();
+	
+	private int getSubStrStart(String parameter) {
+		//cmd prefix + cmd name + space + parameter + space
+		int subStrStart = 1 + this.name.length() + 1 + parameter.length() + 1;
+		return subStrStart;
 	}
 	
 }

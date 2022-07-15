@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 public class ChannelCmd extends ServerCommand {
 
 	private TextChannel channel;
+	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------

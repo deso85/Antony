@@ -66,6 +66,9 @@ public class AddHBStateMachine extends ListenerAdapter {
 			}
 			
 			String content = event.getMessage().getContentRaw();
+			if(content.startsWith("#")) {
+				content = content.replace("#", "");
+			}
 			Message message = event.getMessage();
 
 			// 2. have to name the ant

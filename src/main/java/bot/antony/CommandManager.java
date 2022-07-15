@@ -21,15 +21,15 @@ import bot.antony.commands.Sells;
 import bot.antony.commands.Serverstats;
 import bot.antony.commands.ShoppingCmd;
 import bot.antony.commands.ShowAvatar;
-import bot.antony.commands.Shutdown;
+import bot.antony.commands.ShutdownCmd;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserCmd;
 import bot.antony.commands.UserInfo;
 import bot.antony.commands.aam.AddHBCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
-import bot.antony.commands.lists.Blacklist;
-import bot.antony.commands.lists.Watchlist;
-import bot.antony.commands.lists.Whitelist;
+import bot.antony.commands.lists.BlacklistCmd;
+import bot.antony.commands.lists.WatchlistCmd;
+import bot.antony.commands.lists.WhitelistCmd;
 import bot.antony.commands.types.IServerCommand;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
@@ -50,6 +50,7 @@ public class CommandManager {
 		commands.put("changelog", new ChangelogCmd());
 		commands.put("addhb", new AddHBCmd());
 		commands.put("archive", new ArchiveCmd());
+		commands.put("blacklist", new BlacklistCmd());
 		commands.put("category", new CategoryCmd());
 		commands.put("channel", new ChannelCmd());
 		commands.put("command", new CommandCmd());
@@ -58,8 +59,10 @@ public class CommandManager {
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
 		commands.put("shopping", new ShoppingCmd());
-		commands.put("shutdown", new Shutdown());
+		commands.put("shutdown", new ShutdownCmd());
 		commands.put("user", new UserCmd());
+		commands.put("watchlist", new WatchlistCmd());
+		commands.put("whitelist", new WhitelistCmd());
 		
 		aliases.put("hilfe", commands.get("help"));
 		aliases.put("notfall", commands.get("emergency"));
@@ -81,11 +84,6 @@ public class CommandManager {
 
 		// Mod
 		modCommands.put("softban", new Softban());
-		modCommands.put("watchlist", new Watchlist());
-		modCommands.put("whitelist", new Whitelist());
-
-		// Admin
-		adminCommands.put("blacklist", new Blacklist());
 	}
 
 	public boolean perform(String command, Member member, TextChannel channel, Message message) {

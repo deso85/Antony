@@ -6,12 +6,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Shutdown extends ServerCommand {
+public class ShutdownCmd extends ServerCommand {
 
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
-	public Shutdown() {
+	public ShutdownCmd() {
 		super();
 		this.privileged = true;
 		this.name = "shutdown";
