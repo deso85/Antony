@@ -41,6 +41,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("16.07.2022 - Version 7.0.10", "Die ***" + cmdPrefix + "category*** sync Funktion wurde dahingehend geändert, dass nun auch die Voice-Kanäle synchronisiert werden und mit dem zusätzlichen Parameter `-o` bzw. `--owner` festgelegt werden kann, ob der letzte Verfasser in einem Kanal zum Kanal-Besitzer mit Sonderberechtigungen gemacht werden kann."));
 		changeLog.add(new ChangeLogEntry("15.07.2022 - Version 7.0.9", "Die ***" + cmdPrefix + "shutdown***, ***" + cmdPrefix + "whitelist***, ***" + cmdPrefix + "watchlist*** und ***" + cmdPrefix + "blacklist*** Funktionen wurde auf das neue Berechtigungssystem portiert. Die ***" + cmdPrefix + "addhb*** Funktion ignoriert bei der Angabe der Kategorie nun die \"#\", falls diese genutzt wird und ist damit fehlerunanfälliger."));
 		changeLog.add(new ChangeLogEntry("01.07.2022 - Version 7.0.8", "Die ***" + cmdPrefix + "channel*** Funktion wurde auf das neue Berechtigungssystem portiert."));
 		changeLog.add(new ChangeLogEntry("28.06.2022 - Version 7.0.7", "Die ***" + cmdPrefix + "addhb*** Funktion wurde auf das neue Berechtigungssystem portiert und kann jetzt Haltungsberichte zu Gattungen (z.B.: Lasius sp.) und vermuteten Arten (z.B.: Lasius cf. niger) anlegen."));
