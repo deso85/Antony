@@ -24,6 +24,9 @@ public class ChangelogCmd extends ServerCommand {
 		this.shortDescription = "Zeigt die letzten Changelog-Einträge.";
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony - Changelog***")
@@ -41,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("29.07.2022 - Version 7.0.11", "Die Funktionen ***" + cmdPrefix + "map*** und ***" + cmdPrefix + "showavatar*** wurden auf das neue Berechtigungssystem portiert. Kleinere Fehler-Korrekturen."));
 		changeLog.add(new ChangeLogEntry("16.07.2022 - Version 7.0.10", "Die ***" + cmdPrefix + "category*** sync Funktion wurde dahingehend geändert, dass nun auch die Voice-Kanäle synchronisiert werden und mit dem zusätzlichen Parameter `-o` bzw. `--owner` festgelegt werden kann, ob der letzte Verfasser in einem Kanal zum Kanal-Besitzer mit Sonderberechtigungen gemacht werden kann."));
 		changeLog.add(new ChangeLogEntry("15.07.2022 - Version 7.0.9", "Die ***" + cmdPrefix + "shutdown***, ***" + cmdPrefix + "whitelist***, ***" + cmdPrefix + "watchlist*** und ***" + cmdPrefix + "blacklist*** Funktionen wurde auf das neue Berechtigungssystem portiert. Die ***" + cmdPrefix + "addhb*** Funktion ignoriert bei der Angabe der Kategorie nun die \"#\", falls diese genutzt wird und ist damit fehlerunanfälliger."));
 		changeLog.add(new ChangeLogEntry("01.07.2022 - Version 7.0.8", "Die ***" + cmdPrefix + "channel*** Funktion wurde auf das neue Berechtigungssystem portiert."));

@@ -252,8 +252,25 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleApproval(MessageReactionAddEvent event) {
-		if (Antony.getGuildController().memberIsMod(event.getMember())
-				|| Antony.getGuildController().memberIsAdmin(event.getMember())) {
+		boolean mayApprove = false;
+		ArrayList<String> approvalRoles = new ArrayList<String>();
+		approvalRoles.add("Team-Administration-Strategie");
+		approvalRoles.add("Team-Beiträge");
+		
+		if(Antony.getGuildController().memberIsMod(event.getMember())) {
+			mayApprove = true;
+		} else {
+			for(String roleName : approvalRoles) {
+				if(event.getGuild().getRolesByName(roleName, true).size() > 0) {
+					if(event.getMember().getRoles().contains(event.getGuild().getRolesByName(roleName, true).get(0))) {
+						mayApprove = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (mayApprove) {
 			if (event.getMessageIdLong() == approvalMsgID) {
 				if (event.getReactionEmote().getName().equals("✅")) {
 					// add channel

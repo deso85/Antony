@@ -19,20 +19,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
 import bot.antony.commands.antcheck.client.dto.Specie;
-import bot.antony.commands.types.IServerCommand;
+import bot.antony.commands.types.ServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Map implements IServerCommand {
-
-	private TextChannel channel;
+public class MapCmd extends ServerCommand {
 	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public MapCmd() {
+		super();
+		this.privileged = false;
+		this.name = "map";
+		this.description = "Zeigt eine Karte mit Markierungen, wo die Ameisen-Art auf der Welt vorkommt.";
+		this.shortDescription = "Zeigt wo die Ameisen-Art auf der Welt vorkommt.";
+		this.example = "Lasius niger";
+	}
+	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
-		this.channel = channel;
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
 		client.register(instance);
@@ -84,15 +96,9 @@ public class Map implements IServerCommand {
 			}
 			
 		} else {
-			printHelp();
+			printHelp(channel);
 		}
 		
-	}
-	
-	private void printHelp() {
-		//TODO: Help ausformulieren
-		channel.sendMessage("Benutzung: " + Antony.getCmdPrefix() + "map (Ant Species)\n"
-				+ "Beispiel: " + Antony.getCmdPrefix() + "map Lasius niger").queue();
 	}
 	
 	private List<Specie> getSpecies(AntCheckClient client, String antName) {

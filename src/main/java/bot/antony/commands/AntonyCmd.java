@@ -24,6 +24,9 @@ public class AntonyCmd extends ServerCommand {
 		this.cmdParams.put("help", "Zeigt einen Hilfetext an.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
@@ -71,14 +74,11 @@ public class AntonyCmd extends ServerCommand {
 	/*private EmbedBuilder getCommandList() {
 
 		//Commands for everyone
-		BotCommand addhb = new BotCommand("addhb", "Hiermit lässt sich die Erstellung eines Haltungsberichtes anfragen.");
 		BotCommand giveawayEnd = new BotCommand("giveaway end", "Löst ein laufendes Giveaway auf und ermittelt die Gewinner.", "https://discord.com/channels/375031723601297409/605451097699647665/798303589763252224 :tada:");
-		BotCommand map = new BotCommand("map","Zeigt eine Karte von https://antmaps.org, auf der zu sehen ist, wo auf der Welt die gesuchte Ameisenart vorkommt.", "Lasius niger");
 		BotCommand notify = new BotCommand("notify", "Kann genutzt werden, um über neue Einträge in Kanälen informiert zu werden. Nutze den Befehl, um detaillierte Informationen zur Handhabung zu bekommen.", "#kanal1");
 		BotCommand pnlink = new BotCommand("pnlink", "Gibt einen formatierten Text für einen Kanal aus, der z.B. in PNs genutzt werden kann, um Kanäle zu verlinken, was über # nicht möglich ist. (Das letzte Leerzeichen der Ausgabe muss entfernt werden)", "#kanal1");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.info zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
 		BotCommand serverstats = new BotCommand("serverstats", "Zeigt Serverstatistiken.");
-		BotCommand showAvatar = new BotCommand("showavatar", "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.", "Antony");
 		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		
 		//Commands for mods

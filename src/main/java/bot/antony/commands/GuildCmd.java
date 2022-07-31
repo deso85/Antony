@@ -29,6 +29,9 @@ public class GuildCmd extends ServerCommand {
 		this.cmdParams.put("exitchan (#exitChannel)", "Gibt den aktuellen Exit-Kanal aus oder setzt diesen.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");

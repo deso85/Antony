@@ -20,6 +20,9 @@ public class ShoppingCmd extends ServerCommand {
 		this.shortDescription = "Zeigt eine Liste mit Kaufempfehlungen für die Ameisenhaltung.";
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		

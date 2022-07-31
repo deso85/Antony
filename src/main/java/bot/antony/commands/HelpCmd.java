@@ -24,6 +24,9 @@ public class HelpCmd extends ServerCommand {
 		this.cmdParams.put("cmdName", "Zeigt die Hilfe für einen Befehl an.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");

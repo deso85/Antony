@@ -20,6 +20,9 @@ public class PnLinkCmd extends ServerCommand {
 		this.cmdParams.put("#channel", "Gibt einen Kanal-Link zu #channel aus.");
 	}
 
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		if (message.getMentions().getChannels().size() > 0) {

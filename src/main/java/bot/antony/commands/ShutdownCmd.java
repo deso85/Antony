@@ -19,6 +19,9 @@ public class ShutdownCmd extends ServerCommand {
 		this.shortDescription = "Stoppt Antony.";
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		channel.sendMessage("Shutting down ...").queue();

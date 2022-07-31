@@ -43,6 +43,9 @@ public class ArchiveCmd extends ServerCommand {
 		this.cmdParams.put("#channel (MessageCount)", "Archiviert die Inhalte von #channel. MessageCount ist optional und limitiert die archivierten Nachrichten.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");

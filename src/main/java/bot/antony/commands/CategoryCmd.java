@@ -33,6 +33,9 @@ public class CategoryCmd extends ServerCommand {
 		this.cmdParams.put("sync CategoryName (-o | --owner)", "Kann genutzt werden, um die Berechtigungen der Kanäle innerhalb einer Kategorie mit den Berechtigungen der Kategorie zu synchronisieren. Der Parameter `-o` bzw `--owner` muss verwendet werden, wenn die Kanäle einen dedizierten Owner haben, der extra Berechtiguengen erhalten soll. Die letzte Person, die in einem Kanal geschrieben hat, erhält dann die nötigen Rechte.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		this.channel = channel;

@@ -3,53 +3,57 @@ package bot.antony.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import bot.antony.commands.types.IServerCommand;
+import bot.antony.commands.types.ServerCommand;
 import bot.antony.utils.Utils;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class ShowAvatar implements IServerCommand {
-
-	private Member member;
-	private String fullMemberName;
-	private Guild guild;
+public class ShowAvatarCmd extends ServerCommand {
 	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public ShowAvatarCmd() {
+		super();
+		this.privileged = false;
+		this.name = "showavatar";
+		this.description = "Zeigt eine vergrößerte Version des Avatars/Profilbildes eines Benutzers.";
+		this.shortDescription = "Zeigt das Profilbild eines Benutzers.";
+		this.example = "Antony";
+	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
-		guild = channel.getGuild();
+	public void performCommand(Member member, TextChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
-				
-		// initially set the member who called the function
-		setMember(m);
+		String fullMemberName = "";
 		
 		// overwrite member
 		if (userMessage.length > 1) {
 			if(message.getMentions().getMembers().size() > 0) {
-				setMember(message.getMentions().getMembers().get(0));
+				member = message.getMentions().getMembers().get(0);
 			} else {
-				setFullMemberName(message.getContentDisplay().substring(userMessage[0].length()+1));
+				fullMemberName = message.getContentDisplay().substring(userMessage[0].length()+1);
 				
 				if(Utils.isId(fullMemberName)) {
-					setMember(guild.getMemberById(Long.parseLong(fullMemberName)));
+					member = channel.getGuild().getMemberById(Long.parseLong(fullMemberName));
 					//In case the users name is a number
-					if (getMember() == null) {
-						setMember(findUserIn(channel, getFullMemberName()));
+					if (member == null) {
+						member = findUserIn(channel, fullMemberName);
 					}
 				} else {
-					setMember(findUserIn(channel, getFullMemberName()));
+					member = findUserIn(channel, fullMemberName);
 				}
 			}
 		}
 
-		if (getMember() != null) {
-
-			channel.sendMessage(getMember().getUser().getEffectiveAvatarUrl() + "?size=2048").queue();
-
+		if (member != null) {
+			channel.sendMessage(member.getUser().getEffectiveAvatarUrl() + "?size=2048").queue();
 		} else {
-			channel.sendMessage("Ich konnte niemanden mit dem Namen " + getFullMemberName() + " finden.").queue();
+			channel.sendMessage("Ich konnte niemanden mit dem Namen " + fullMemberName + " finden.").queue();
 		}
 
 	}
@@ -84,26 +88,6 @@ public class ShowAvatar implements IServerCommand {
 			return potential.get(smallestDiffIndex);
 		}
 		return null;
-	}
-
-	// --------------------------------------------------
-	// Getters and Setters
-	// --------------------------------------------------
-	
-	public Member getMember() {
-		return member;
-	}
-
-	public void setMember(Member member) {
-		this.member = member;
-	}
-	
-	public String getFullMemberName() {
-		return fullMemberName;
-	}
-
-	public void setFullMemberName(String fullMemberName) {
-		this.fullMemberName = fullMemberName;
 	}
 
 }

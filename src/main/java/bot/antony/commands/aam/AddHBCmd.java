@@ -19,6 +19,9 @@ public class AddHBCmd extends ServerCommand {
 		this.shortDescription = "Beantragung von Kanälen für Haltungsberichte.";
 	}
 
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		Antony.getLogger().info("HB dialogue started");

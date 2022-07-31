@@ -23,6 +23,9 @@ public class UserCmd extends ServerCommand {
 		this.cmdParams.put("updateall (force)", "Kann genutzt werden, um alle gespeicherten Benutzerdaten zu aktualisieren.");
 	}
 	
+	// --------------------------------------------------
+	// Functions
+	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		this.channel = channel;

@@ -13,14 +13,14 @@ import bot.antony.commands.CommandCmd;
 import bot.antony.commands.Giveaway;
 import bot.antony.commands.GuildCmd;
 import bot.antony.commands.HelpCmd;
-import bot.antony.commands.Map;
+import bot.antony.commands.MapCmd;
 import bot.antony.commands.Notify;
 import bot.antony.commands.PnLinkCmd;
 import bot.antony.commands.ReactionCmd;
 import bot.antony.commands.Sells;
 import bot.antony.commands.Serverstats;
 import bot.antony.commands.ShoppingCmd;
-import bot.antony.commands.ShowAvatar;
+import bot.antony.commands.ShowAvatarCmd;
 import bot.antony.commands.ShutdownCmd;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserCmd;
@@ -56,9 +56,11 @@ public class CommandManager {
 		commands.put("command", new CommandCmd());
 		commands.put("emergency", new EmergencyCmd());
 		commands.put("guild", new GuildCmd());
+		commands.put("map", new MapCmd());
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
 		commands.put("shopping", new ShoppingCmd());
+		commands.put("showavatar", new ShowAvatarCmd());
 		commands.put("shutdown", new ShutdownCmd());
 		commands.put("user", new UserCmd());
 		commands.put("watchlist", new WatchlistCmd());
@@ -68,18 +70,17 @@ public class CommandManager {
 		aliases.put("notfall", commands.get("emergency"));
 		aliases.put("shoppinglist", commands.get("shopping"));
 		aliases.put("einkaufsliste", commands.get("shopping"));
+		aliases.put("karte", commands.get("map"));
+		aliases.put("avatar", commands.get("showavatar"));
 		
 		usrCommands = new ConcurrentHashMap<>();
 		modCommands = new ConcurrentHashMap<>();
-		adminCommands = new ConcurrentHashMap<>();
 
 		// Everyone
 		usrCommands.put("giveaway", new Giveaway());
-		usrCommands.put("map", new Map());
 		usrCommands.put("notify", new Notify());
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
-		usrCommands.put("showavatar", new ShowAvatar());
 		usrCommands.put("userinfo", new UserInfo());
 
 		// Mod
@@ -101,13 +102,6 @@ public class CommandManager {
 				return true;
 			}
 		}
-		//Commands for admins
-		if ((icmd = this.adminCommands.get(command.toLowerCase())) != null) {
-			if(Antony.getGuildController().memberIsAdmin(member)) {
-				icmd.performCommand(member, channel, message);
-				return true;
-			}
-		}
 		
 		//Commands
 		ServerCommand cmd;
@@ -122,13 +116,6 @@ public class CommandManager {
 		}
 		return false;
 	}
-	
-	//public LinkedList<String> listCommands() {
-		/*ArrayList<String> list = new ArrayList<String>();
-		commands.forEach((name, command) -> list.add(name));
-		return list;*/
-		//return cmdNames;
-	//}
 	
 	public LinkedHashMap<String, ServerCommand> getAvailableCommands(Member member){
 		LinkedHashMap<String, ServerCommand> filteredCmds = new LinkedHashMap <String, ServerCommand>();
