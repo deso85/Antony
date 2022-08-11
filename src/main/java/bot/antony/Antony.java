@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import bot.antony.commands.aam.events.OfferListener;
 import bot.antony.commands.aam.events.ProposalListener;
 import bot.antony.commands.notification.NotificationController;
+import bot.antony.controller.AAMHBController;
 import bot.antony.controller.BlackListController;
 import bot.antony.controller.GuildController;
 import bot.antony.controller.SoftbanController;
@@ -66,6 +67,7 @@ public class Antony extends ListenerAdapter {
 	private static SoftbanController softbanController;
 	private static GuildController guildController;
 	private static UserController userController;
+	private static AAMHBController hbController;
 	private static int usercount;
 	private static String configFile = null;
 
@@ -98,6 +100,7 @@ public class Antony extends ListenerAdapter {
 		softbanController = new SoftbanController();
 		guildController = new GuildController();
 		userController = new UserController();
+		hbController = new AAMHBController();
 		usercount = 0;
 		
 		try {
@@ -148,13 +151,14 @@ public class Antony extends ListenerAdapter {
 			postStartLogEntry.append("Antony (v" + getVersion() + ") started");
 			logger.info(postStartLogEntry.toString());
 			
-			//Thread which is used to send channel notifications 
-			Thread sendPendingNotifications = new Thread() {
+			hbController.setVars(jda);
+			//Thread which is used to do timed actions
+			Thread timerThread = new Thread() {
 				public void run() {
 					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
 						try {
-							//System.out.println(counter + " Thread Running");
 							notificationController.sendPendingNotifications(jda);
+							hbController.checkHBs();
 							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {
 							logger.error("Wasn't able to put Thread asleep.", e);
@@ -162,7 +166,7 @@ public class Antony extends ListenerAdapter {
 					}
 				}
 			};
-			sendPendingNotifications.start();
+			timerThread.start();
 			
 			
 		} catch (LoginException e) {
@@ -342,6 +346,10 @@ public class Antony extends ListenerAdapter {
 
 	public static UserController getUserController() {
 		return userController;
+	}
+	
+	public static AAMHBController getHBController() {
+		return hbController;
 	}
 
 	public static int getUsercount() {

@@ -7,8 +7,10 @@ import bot.antony.events.reaction.add.EggReaction;
 import bot.antony.events.reaction.add.HammerReaction;
 import bot.antony.events.reaction.add.ImageReaction;
 import bot.antony.events.reaction.add.MessageReaction;
+import bot.antony.events.reaction.add.MuteReaction;
 import bot.antony.events.reaction.add.RedFlagReaction;
 import bot.antony.events.reaction.add.SpyReaction;
+import bot.antony.events.reaction.add.YellowSquareReaction;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class ReactionManager {
@@ -22,6 +24,8 @@ public class ReactionManager {
 		reactions.put("🕵️‍♀️", new SpyReaction());
 		reactions.put("🖼️", new ImageReaction());
 		reactions.put("🔨", new HammerReaction());
+		reactions.put("🟨", new YellowSquareReaction());
+		//reactions.put("🔇", new MuteReaction());
 		reactions.put("redflag", new RedFlagReaction());
 		reactions.put("ausstehend", new AamProposalDecision());
 		reactions.put("abgelehnt", new AamProposalDecision());
