@@ -87,6 +87,10 @@ public class MuteReaction extends MessageReaction {
 			for(VoiceChannel vchan : vchans) {
 				vchan.getManager().putMemberPermissionOverride(message.getAuthor().getIdLong(), null, deny).complete();
 			}
+			//kick member from voice channel
+			if(message.getMember().getVoiceState().inAudioChannel()) {
+				guild.kickVoiceMember(message.getMember()).queue();
+			}
 			
 			//save updated list
 			muteList.add(message.getAuthor().getIdLong());

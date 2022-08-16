@@ -67,9 +67,11 @@ public class AAMHBController {
 			setRelevantChannels();
 			
 			if(!relChans.isEmpty()) {
+				Antony.getLogger().debug("[AAM HB Controller] There are relevant channels");
 				//load overdues
 				overdueList = (Map<Long, String>) Utils.loadJSONData(overdueListSubDir, overdueListFileName, new TypeReference<Map<Long, String>>(){}, overdueList);
 				trimOverdueList(); //remove all channels which aren't available anymore
+				Antony.getLogger().debug("[AAM HB Controller] Trimmed overdue list");
 				
 				//update overdueList
 				for(TextChannel chan : relChans) {
@@ -79,6 +81,7 @@ public class AAMHBController {
 						overdueList.put(chan.getIdLong(), currentDate.toString());
 					}
 				}
+				Antony.getLogger().debug("[AAM HB Controller] Updated overdue list");
 				
 				//write everyone
 				Map<Member, List<TextChannel>> reportList = new HashMap<Member, List<TextChannel>>();
@@ -108,6 +111,8 @@ public class AAMHBController {
 				
 				//save overdues
 				Utils.saveJSONData(overdueListSubDir, overdueListFileName, overdueList);
+			} else {
+				Antony.getLogger().debug("[AAM HB Controller] There are no relevant channels");
 			}
 			
 			
@@ -126,7 +131,7 @@ public class AAMHBController {
 					|| !reportList.isEmpty()) {
 				//no authors
 				if(memChans.containsKey(1L)) {
-					sb.append("\n\nFolgende Kanäle sind älter als 2 Wochen und haben keine Inhalte:");
+					sb.append("\n\nFolgende Kanäle sind älter als 2 Wochen und haben keine Inhalte oder der Author ist nicht mehr auf dem Server:");
 					for(TextChannel chan : memChans.get(1L)) {
 						sb.append("\n- " + chan.getAsMention());
 						if(sb.length() >= 1900) {
@@ -166,6 +171,7 @@ public class AAMHBController {
 	}
 	
 	private void sendPN(Member member, List<TextChannel> chans) {
+		Antony.getLogger().debug("[AAM HB Controller] sending PN to " + member.getAsMention());
 		StringBuilder sb = new StringBuilder();
 		sb.append("Hallo " + member.getEffectiveName() + ",\n");
 		sb.append("ich habe heute alle Haltungsberichte auf dem Server **" + guild.getName() + "** überprüft und dabei leider festgestellt, dass du schon lange keine Updates mehr in folgenden Kanälen geschrieben hast:");
@@ -233,7 +239,9 @@ public class AAMHBController {
 			MessageHistory history = new MessageHistory(chan);
 			List<Message> messageList = history.retrievePast(1).complete();
 			//Check if channel is empty and older than 2 Weeks
-			if((messageList.isEmpty() || messageList.get(0).getAuthor().isBot()) && chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now())) {
+			if((messageList.isEmpty() || messageList.get(0).getAuthor().isBot())
+					&& chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now())
+					|| messageList.get(0).getMember() == null) {
 				relChans.add(chan);
 				if(memChans.containsKey(1L)) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(1L));
@@ -243,6 +251,7 @@ public class AAMHBController {
 					memChans.put(1L, Arrays.asList(chan));
 				}
 			} else if(!messageList.isEmpty() && messageList.get(0).getTimeCreated().plusMonths(6).isBefore(OffsetDateTime.now())) {
+				Antony.getLogger().debug("[AAM HB Controller] Channel with Author: " + messageList.get(0).getAuthor().getName() + " " + messageList.get(0).getAuthor().getId() ); 
 				relChans.add(chan);
 				//TODO: is it a problem if author isn't on the server anymore?
 				if(memChans.containsKey(messageList.get(0).getAuthor().getIdLong())) {
