@@ -25,7 +25,10 @@ public class ReactionManager {
 		reactions.put("🖼️", new ImageReaction());
 		reactions.put("🔨", new HammerReaction());
 		reactions.put("🟨", new YellowSquareReaction());
-		//reactions.put("🔇", new MuteReaction());
+		reactions.put("🔇", new MuteReaction());
+		reactions.put("🔈", new MuteReaction());
+		reactions.put("🔉", new MuteReaction());
+		reactions.put("🔊", new MuteReaction());
 		reactions.put("redflag", new RedFlagReaction());
 		reactions.put("ausstehend", new AamProposalDecision());
 		reactions.put("abgelehnt", new AamProposalDecision());

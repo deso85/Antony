@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("16.08.2022 - Version 7.2.0", "User können nun via Reaction von der Teilnahme an Voice-Kanälen ausgeschlossen oder wieder zugelassen werden."));
 		changeLog.add(new ChangeLogEntry("12.08.2022 - Version 7.1.0", "AAM spezifisches Release: Die Haltungsberichte werden nun durch Antony auf Updates überprüft und wenn diese ausbleiben, wird der User an ein Update erinnert. Die 🟨 Reaction kann nun dafür genutzt werden, die Rolle \"GELBE KARTE :(\" zu setzen oder zu entfernen."));
 		changeLog.add(new ChangeLogEntry("29.07.2022 - Version 7.0.11", "Die Funktionen ***" + cmdPrefix + "map*** und ***" + cmdPrefix + "showavatar*** wurden auf das neue Berechtigungssystem portiert. Kleinere Fehler-Korrekturen."));
 		changeLog.add(new ChangeLogEntry("16.07.2022 - Version 7.0.10", "Die ***" + cmdPrefix + "category*** sync Funktion wurde dahingehend geändert, dass nun auch die Voice-Kanäle synchronisiert werden und mit dem zusätzlichen Parameter `-o` bzw. `--owner` festgelegt werden kann, ob der letzte Verfasser in einem Kanal zum Kanal-Besitzer mit Sonderberechtigungen gemacht werden kann."));
