@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("18.08.2022 - Version 7.2.2", "AAM spezifisches Release: Der User wird über die Ablehnung einer HB-Erstellung nun automatisch per PN informiert, wenn er den Command ***" + cmdPrefix + "addhb*** hierfür verwendet hat. Derselbe Command gibt nun auch detailliertere Fehlermeldungen aus, wenn keine oder zu viele Ameisenarten zwecks Plausibilitätsprüfung gefunden wurden. Die HB-Überprüfungen finden nun nicht mehrfach hintereinander statt, wenn der Bot mal restartet wird."));
 		changeLog.add(new ChangeLogEntry("16.08.2022 - Version 7.2.1", "AAM spezifisches Release: Korrektur an der Kontroller der Haltungsberichte vorgenommen. Die Kontrolle ist abgebrochen, wenn der Author nicht mehr auf dem Server gewesen ist."));
 		changeLog.add(new ChangeLogEntry("16.08.2022 - Version 7.2.0", "User können nun via Reaction von der Teilnahme an Voice-Kanälen ausgeschlossen oder wieder zugelassen werden."));
 		changeLog.add(new ChangeLogEntry("12.08.2022 - Version 7.1.0", "AAM spezifisches Release: Die Haltungsberichte werden nun durch Antony auf Updates überprüft und wenn diese ausbleiben, wird der User an ein Update erinnert. Die 🟨 Reaction kann nun dafür genutzt werden, die Rolle \"GELBE KARTE :(\" zu setzen oder zu entfernen."));

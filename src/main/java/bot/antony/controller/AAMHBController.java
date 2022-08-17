@@ -38,6 +38,7 @@ public class AAMHBController {
 	private LocalDate lastChecked;
 	private String overdueListSubDir;
 	private String overdueListFileName;
+	private String lastCheckedFileName;
 	private Map<Long, String> overdueList = new HashMap<Long, String>();
 	private Map<Long, List<TextChannel>> memChans = new HashMap<Long, List<TextChannel>>();
 	private List<TextChannel> relChans = new ArrayList<TextChannel>();
@@ -64,6 +65,7 @@ public class AAMHBController {
 				&& guild != null) {
 			Antony.getLogger().info("[AAM HB Controller] Start AAM HB check");
 			lastChecked = currentDate;
+			Utils.saveJSONData(overdueListSubDir, lastCheckedFileName, lastChecked);
 			setRelevantChannels();
 			
 			if(!relChans.isEmpty()) {
@@ -286,9 +288,12 @@ public class AAMHBController {
 			}
 		}
 		
-		lastChecked = LocalDate.of(2000, 1, 1);
 		overdueListSubDir = "guilds" + File.separator + guild.getId() + " - " + guild.getName() + File.separator;
 		overdueListFileName = "hb.overdues.json";
+		lastCheckedFileName = "hb.lastchecked.json";
+		lastChecked = LocalDate.of(2000, 1, 1);
+		lastChecked = (LocalDate) Utils.loadJSONData(overdueListSubDir, lastCheckedFileName, new TypeReference<LocalDate>(){}, lastChecked);
+		
 	}
 	
 	private boolean findGuild(JDA jda) {

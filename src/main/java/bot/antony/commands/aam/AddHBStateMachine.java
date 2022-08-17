@@ -1,5 +1,8 @@
 package bot.antony.commands.aam;
 
+import java.awt.Color;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
 import bot.antony.commands.antcheck.client.dto.Specie;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,6 +30,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class AddHBStateMachine extends ListenerAdapter {
@@ -87,7 +92,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
 		if (event.getMember().getUser().isBot())
 			return; // don't respond to bots
-		if (event.getMember().getIdLong() != authorId && !Antony.getGuildController().memberIsMod(event.getMember())
+		if (event.getMember().getIdLong() != authorId
+				&& !Antony.getGuildController().memberIsMod(event.getMember())
 				&& !Antony.getGuildController().memberIsAdmin(event.getMember()))
 			return;
 
@@ -149,7 +155,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 			if(errorCount <= 4) {
 				message.reply(
 					"Es konnte keine Ameisenart mit \"" + antSpeciesChannelName + "\" im Namen gefunden werden.\n"
-							+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
+							+ "Bitte überprüfe die Schreibweise und versuche es erneut."
+							+ "\n*Bitte beachte, dass Abkürzungen mit einem Punkt geschrieben werden (z.B.: Lasius **cf.** niger).*")
 					.queue();
 			} else {
 				message.reply(
@@ -164,7 +171,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 				errorCount++;
 				if(errorCount <= 4) {
 					message.reply("Es wurden " + species.size()
-						+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein.").queue();
+						+ " Ameisenarten gefunden, bitte schränke deine Suche weiter ein."
+						+ "\n*Bitte beachte, dass Abkürzungen mit einem Punkt geschrieben werden (z.B.: Lasius **cf.** niger).*").queue();
 				} else {
 					message.reply(
 						"Es wurden " + species.size()
@@ -287,11 +295,38 @@ public class AddHBStateMachine extends ListenerAdapter {
 
 					event.getJDA().removeEventListener(this);
 				} else if (event.getReactionEmote().getName().equals("❌")) {
-					event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
+					//Message in channel is not wanted -> switch to pm
+					/*event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
 						msg.reply(
 								"Leider wurde die Erstellung eines Haltungsberichtes abgelehnt. Bitte wende dich für mögliche Rückfragen direkt an die Moderation.")
 								.queue();
-					});
+					});*/
+					//send pm
+					Member member = event.getGuild().getMemberById(authorId);
+					try {
+						member.getUser().openPrivateChannel().complete().sendMessage("Deine Anfrage zur Erstellung eines Haltungsberichts wurde bearbeitet und leider abgelehnt. Falls sich nicht schon ein Teammitglied bei dir gemeldet hat, wende dich für Rückfragen bitte direkt an das @Team-Beiträge."
+								+ "\nDas zuständige Team findest du unter: https://discord.com/channels/375031723601297409/789417087382192148/793624078497611786").complete();
+					} catch (ErrorResponseException e) {
+						LocalDateTime now = LocalDateTime.now();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+						
+						TextChannel channel = Antony.getGuildController().getLogChannel(member.getGuild());
+						
+						if(channel != null) {
+							channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
+							EmbedBuilder eb = new EmbedBuilder()
+									.setColor(Color.red)
+									.setAuthor(member.getUser().getAsTag() + " | ID: " + member.getId(), null, member.getUser().getAvatarUrl())
+									.setDescription("Ich konnte keine PN an den User " + member.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
+											+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
+											+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
+											+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
+									.setFooter(now.format(formatter) + " Uhr");
+							channel.sendMessageEmbeds(eb.build()).complete();
+						}
+						
+						Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + member.getUser().getAsTag() + " (ID " + member.getId() + ")");
+					}
 					event.getJDA().removeEventListener(this);
 				}
 			}

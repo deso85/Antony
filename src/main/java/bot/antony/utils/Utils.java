@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -103,6 +104,8 @@ public class Utils {
 	
 	public static boolean saveJSONData(String filename, Object file) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		//objectMapper.findAndRegisterModules();
+		objectMapper.registerModule(new JSR310Module());
 		try {
 			objectMapper.writeValue(new File(Antony.getDataPath() + filename), file);
 			return true;
@@ -124,6 +127,8 @@ public class Utils {
 	
 	public static Object loadJSONData(String filename, TypeReference<?> tr, Object objectOrigin) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		//objectMapper.findAndRegisterModules();
+		objectMapper.registerModule(new JSR310Module());
 		File file = new File(Antony.getDataPath() + filename);
 		if(file.exists() && !file.isDirectory()) { 
 			try {
