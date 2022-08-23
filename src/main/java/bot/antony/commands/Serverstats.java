@@ -21,8 +21,8 @@ public class Serverstats implements IServerCommand {
 		//Prepare server stats
 		int boostCount = guild.getBoostCount();
 		String boostTier = guild.getBoostTier().toString();
-		int emoteCount = guild.getEmotes().size();
-		int maxEmoteCount = guild.getMaxEmotes();
+		int emoteCount = guild.getEmojis().size();
+		int maxEmoteCount = guild.getMaxEmojis();
 		
 		int categoryCount = guild.getCategories().size();
 		int textChannelCount = guild.getTextChannels().size();

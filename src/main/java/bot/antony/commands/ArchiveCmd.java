@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 public class ArchiveCmd extends ServerCommand {
 		
@@ -70,7 +71,7 @@ public class ArchiveCmd extends ServerCommand {
 				storeArchiveAsHTML(htmlOutput.toString(), filePath);
 				channel.sendMessage("Es wurden " + msgHistory.size() + " Nachrichten aus dem Kanal **#" + archiveChan.getName() + "** archiviert.").complete();
 				File archiveAttachment = new File(filePath);
-				channel.sendFile(archiveAttachment).complete();
+				channel.sendFiles(FileUpload.fromData(archiveAttachment)).complete();
 			}
 		} else {
 			printHelp(channel);

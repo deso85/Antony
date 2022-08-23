@@ -71,7 +71,7 @@ public class HammerReaction extends MessageReaction {
 	public EmbedBuilder getEmbedBuilder() {
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		TextChannel txtChan = message.getTextChannel();
+		TextChannel txtChan = message.getChannel().asTextChannel();
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Color.red)
 				.setAuthor(message.getAuthor().getAsTag() + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())

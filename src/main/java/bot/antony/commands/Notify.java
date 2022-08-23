@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public class Notify implements IServerCommand {
 
@@ -99,7 +100,7 @@ public class Notify implements IServerCommand {
 				
 				Utils.sendPM(message.getMember(), eb);
 				
-				message.addReaction("👌").queue();
+				message.addReaction(Emoji.fromUnicode("👌")).queue();
 			}
 			//nc.persistData();
 		} else { // No channel was mentioned

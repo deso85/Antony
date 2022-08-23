@@ -26,12 +26,12 @@ public class ReactionCmd extends ServerCommand {
 		this.shortDescription = "Berechtigungsverwaltung für Bot-Befehle basierend auf Reactions.";
 		this.example = "list";
 		this.cmdParams.put("list", "Listet alle verfügbaren Reaction-Befehle auf");
-		this.cmdParams.put("show reaction", "Zeigt die Berechtigungen eines Reaction-Befehls");
-		this.cmdParams.put("addrole reaction @role", "Erteilt einer Rolle die Berechtigung zur Nutzung eines Reaction-Befehls");
-		this.cmdParams.put("addmember reaction @member", "Erteilt einem Member die Berechtigung zur Nutzung eines Reaction-Befehls");
-		this.cmdParams.put("removerole reaction @role", "Entfernt einer Rolle die Berechtigung zur Nutzung eines Reaction-Befehls");
-		this.cmdParams.put("removemember reaction @member", "Entfernt einem Member die Berechtigung zur Nutzung eines Reaction-Befehls");
-		this.cmdParams.put("clear reaction", "Entfernt alle Berechtigungen zur Nutzung eines Reaction-Befehls");
+		this.cmdParams.put("show Emoji", "Zeigt die Berechtigungen eines Reaction-Befehls");
+		this.cmdParams.put("addrole Emoji @role", "Erteilt einer Rolle die Berechtigung zur Nutzung eines Reaction-Befehls");
+		this.cmdParams.put("addmember Emoji @member", "Erteilt einem Member die Berechtigung zur Nutzung eines Reaction-Befehls");
+		this.cmdParams.put("removerole Emoji @role", "Entfernt einer Rolle die Berechtigung zur Nutzung eines Reaction-Befehls");
+		this.cmdParams.put("removemember Emoji @member", "Entfernt einem Member die Berechtigung zur Nutzung eines Reaction-Befehls");
+		this.cmdParams.put("clear Emoji", "Entfernt alle Berechtigungen zur Nutzung eines Reaction-Befehls");
 	}
 	
 	// --------------------------------------------------
@@ -106,10 +106,10 @@ public class ReactionCmd extends ServerCommand {
 		} else {
 			retVal.append("Folgende Reaction-Befehle sind verfügbar:\n");
 			for(Entry<String, MessageReaction> entry : Antony.getReactionMan().getReactions().entrySet()) {
-				if(channel.getGuild().getEmotesByName(entry.getKey(), false).isEmpty()) {
+				if(channel.getGuild().getEmojisByName(entry.getKey(), false).isEmpty()) {
 					retVal.append(entry.getKey());
 				} else {
-					retVal.append(channel.getGuild().getEmotesByName(entry.getKey(), false).get(0).getAsMention());
+					retVal.append(channel.getGuild().getEmojisByName(entry.getKey(), false).get(0).getAsMention());
 				}
 				if(entry.getValue().isPrivileged()) {
 					retVal.append(" (Zugriffbeschränkung)");
@@ -126,10 +126,10 @@ public class ReactionCmd extends ServerCommand {
 	public void show(TextChannel channel, String reactionName) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
-			if(channel.getGuild().getEmotesByName(reactionName, false).isEmpty()) {
+			if(channel.getGuild().getEmojisByName(reactionName, false).isEmpty()) {
 				retVal.append(reactionName);
 			} else {
-				retVal.append(channel.getGuild().getEmotesByName(reactionName, false).get(0).getAsMention());
+				retVal.append(channel.getGuild().getEmojisByName(reactionName, false).get(0).getAsMention());
 			}
 			retVal.append(" - Berechtigungen:");
 			if(!Antony.getReactionMan().getReaction(reactionName).isPrivileged()) {
@@ -254,10 +254,10 @@ public class ReactionCmd extends ServerCommand {
 			}
 			Antony.getGuildController().saveGuildData(guildData, channel.getGuild());
 			retVal.append("Alle Berechtigungen für den Reaction-Befehl ");
-			if(channel.getGuild().getEmotesByName(reactionName, false).isEmpty()) {
+			if(channel.getGuild().getEmojisByName(reactionName, false).isEmpty()) {
 				retVal.append(reactionName);
 			} else {
-				retVal.append(channel.getGuild().getEmotesByName(reactionName, false).get(0).getAsMention());
+				retVal.append(channel.getGuild().getEmojisByName(reactionName, false).get(0).getAsMention());
 			}
 			retVal.append(" wurden entfernt.");
 			channel.sendMessage(retVal.toString()).queue();

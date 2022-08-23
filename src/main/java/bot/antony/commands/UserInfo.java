@@ -202,7 +202,8 @@ public class UserInfo implements IServerCommand {
 		if(!getMember().getActivities().isEmpty()) {
 			sbStatus.append("Status: ");
 			if(getMember().getActivities().get(0).getEmoji() != null) {
-				sbStatus.append(getMember().getActivities().get(0).getEmoji().getAsMention());
+				//TODO: getFormatted() sends plain text and doesn't convert to an Emoji
+				sbStatus.append(getMember().getActivities().get(0).getEmoji().getFormatted());
 			}
 			sbStatus.append(" " + getMember().getActivities().get(0).getName());
 		} else {

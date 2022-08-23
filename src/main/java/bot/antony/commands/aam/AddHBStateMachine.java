@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -116,15 +117,15 @@ public class AddHBStateMachine extends ListenerAdapter {
 	
 	private void handleRightsResponsibilities(MessageReactionAddEvent event) {
 		if (event.getMessageIdLong() == startInteractionMsgId) {
-			if (event.getReactionEmote().getName().equals("✅")) {
+			if (event.getEmoji().getFormatted().equals("✅")) {
 				rightsResponsibilities = true;
-				event.getTextChannel().retrieveMessageById(initMessageId).queue(msg -> {
+				event.getChannel().retrieveMessageById(initMessageId).queue(msg -> {
 					msg.reply("Zu welcher Ameisen-Art willst du einen Haltungsbericht führen?\n"
 							+ "*Wenn nur die Gattung bekannt ist oder die Art nicht genau bestimmt wurde, nutze bitte \"sp.\" (z.B. Lasius sp.) oder \"cf.\" (z.B. Lasius cf. niger).*")
 							.queue();
 				});
-			} else if (event.getReactionEmote().getName().equals("❌")) {
-				event.getTextChannel().retrieveMessageById(initMessageId).queue(msg -> {
+			} else if (event.getEmoji().getFormatted().equals("❌")) {
+				event.getChannel().retrieveMessageById(initMessageId).queue(msg -> {
 					msg.reply(
 							"Frage gerne einen neuen Haltungsbericht an, sobald du es dir zutraust.")
 							.queue();
@@ -186,8 +187,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 				//antSpecies = species.get(0).getName();
 				antSpecies = antSpeciesChannelName;
 				message.reply("**" + antSpecies + "** - Hast du die Kolonie schon?").queue(msg -> {
-					msg.addReaction("✅").queue();
-					msg.addReaction("❌").queue();
+					msg.addReaction(Emoji.fromUnicode("✅")).queue();
+					msg.addReaction(Emoji.fromUnicode("❌")).queue();
 					availCheckMsgID = msg.getIdLong();
 				});
 			}
@@ -196,15 +197,15 @@ public class AddHBStateMachine extends ListenerAdapter {
 	
 	private void handleAntAvailable(MessageReactionAddEvent event) {
 		if (event.getMessageIdLong() == availCheckMsgID) {
-			if (event.getReactionEmote().getName().equals("✅")) {
+			if (event.getEmoji().getFormatted().equals("✅")) {
 				antAvailable = true;
-				event.getTextChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
+				event.getChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
 					msg.reply("In welcher Kategorie soll der HB erstellt werden?\n"
 							+ "*Du kannst den Kategorie-Namen schreiben oder einen bestehenden Kanal in der passenden Kategorie verlinken*")
 							.queue();
 				});
-			} else if (event.getReactionEmote().getName().equals("❌")) {
-				event.getTextChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
+			} else if (event.getEmoji().getFormatted().equals("❌")) {
+				event.getChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
 					msg.reply(
 							"Es tut mir leid, aber Haltungsberichte können nur zu vorhandenen Kolonien angefragt werden.")
 							.queue();
@@ -241,7 +242,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 			if (Antony.getGuildController().getLogChannel(message.getGuild()) != null) {
 				replyChan = Antony.getGuildController().getLogChannel(message.getGuild());
 			} else {
-				replyChan = message.getTextChannel();
+				replyChan = message.getChannel().asTextChannel();
 			}
 			StringBuilder sb = new StringBuilder();
 			sb.append("ℹ️ Anfrage für neuen Haltungsbericht\n");
@@ -251,8 +252,8 @@ public class AddHBStateMachine extends ListenerAdapter {
 			sb.append("Soll der Haltungsbericht angelegt werden?");
 
 			replyChan.sendMessage(sb.toString()).queue(msg -> {
-				msg.addReaction("✅").queue();
-				msg.addReaction("❌").queue();
+				msg.addReaction(Emoji.fromUnicode("✅")).queue();
+				msg.addReaction(Emoji.fromUnicode("❌")).queue();
 				approvalMsgID = msg.getIdLong();
 			});
 			Antony.getLogger().info("HB dialogue is over and user awaits approval.");
@@ -280,7 +281,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 		
 		if (mayApprove) {
 			if (event.getMessageIdLong() == approvalMsgID) {
-				if (event.getReactionEmote().getName().equals("✅")) {
+				if (event.getEmoji().getFormatted().equals("✅")) {
 					// add channel
 					List<Member> members = new ArrayList<Member>();
 					members.add(event.getGuild().getMemberById(authorId));
@@ -294,7 +295,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 					});
 
 					event.getJDA().removeEventListener(this);
-				} else if (event.getReactionEmote().getName().equals("❌")) {
+				} else if (event.getEmoji().getFormatted().equals("❌")) {
 					//Message in channel is not wanted -> switch to pm
 					/*event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
 						msg.reply(

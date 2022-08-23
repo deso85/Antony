@@ -38,7 +38,7 @@ public class ReactionManager {
 
 	public boolean perform(MessageReactionAddEvent event) {
 		MessageReaction msgReaction;
-		if ((msgReaction = this.reactions.get(event.getReactionEmote().getName())) != null) {
+		if ((msgReaction = this.reactions.get(event.getEmoji().getName())) != null) {
 			msgReaction.perform(event);
 			return true;
 		}

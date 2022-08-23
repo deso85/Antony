@@ -59,7 +59,8 @@ public class Giveaway implements IServerCommand {
 						
 						List<MessageReaction> msgReactions = gaMessage.getReactions();
 						for(MessageReaction reaction: msgReactions) {
-							String reactionEmoji = reaction.getReactionEmote().getName();
+							//TODO: Does this work after switching to Emojis instead of Emotes? Maybe getName() is right
+							String reactionEmoji = reaction.getEmoji().getFormatted();
 							
 							if(reactionEmoji.equals(gaMessageEmote)) {
 								gaUser = reaction.retrieveUsers().complete();

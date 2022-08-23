@@ -24,7 +24,7 @@ public class OfferListener extends ListenerAdapter {
 			TextChannel offerLogChan = Antony.getGuildController().getValidChannel(guild, Arrays.asList(726444104627519549L, 778960515631415324L)); //Prod, Test
 			
 			//Is a new offer
-			if(event.getTextChannel() == offerChan) {
+			if(event.getChannel() == offerChan) {
 				//TODO: may the user add a new offer?
 				
 				if(offerLogChan != null) {

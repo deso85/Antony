@@ -28,8 +28,8 @@ public class AamProposalDecision extends MessageReaction {
 	public void perform(MessageReactionAddEvent event) {
 		setVariables(event);
 		if(shallTrigger(event.getMember())) {
-			removeOtherEmotes(event.getReactionEmote().getName());
-			togglePin(event.getReactionEmote().getName());
+			removeOtherEmotes(event.getEmoji().getName());
+			togglePin(event.getEmoji().getName());
 		}
 	}
 	
@@ -97,8 +97,8 @@ public class AamProposalDecision extends MessageReaction {
 	}
 	
 	private void removeEmote(String reactionName) {
-		if(guild.getEmotesByName(reactionName, true).size() > 0) {
-			message.clearReactions(guild.getEmotesByName(reactionName, true).get(0)).queue();
+		if(guild.getEmojisByName(reactionName, true).size() > 0) {
+			message.clearReactions(guild.getEmojisByName(reactionName, true).get(0)).queue();
 		}
 	}
 }

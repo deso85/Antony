@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class MessageReaction {
@@ -17,7 +17,7 @@ public class MessageReaction {
 	protected String description;
 	protected String shortDescription;
 	
-	protected ReactionEmote emote;
+	protected Emoji emote;
 	protected Guild guild;
 	protected Message message;
 	protected TextChannel responseChannel;	//Channel to respond to reaction
@@ -58,12 +58,12 @@ public class MessageReaction {
 	}
 	
 	public void removeReaction() {
-		message.removeReaction(emote.getName(), reactor.getUser()).queue();
+		message.removeReaction(emote, reactor.getUser()).queue();
 	}
 	
 	public void mentionReactor() {
 		if(responseChannel != null) {
-			responseChannel.sendMessage(emote.getName() + " " + reactor.getUser().getAsMention()).queue();
+			responseChannel.sendMessage(emote.getFormatted() + " " + reactor.getUser().getAsMention()).queue();
 		}
 	}
 	
@@ -83,11 +83,11 @@ public class MessageReaction {
 	}
 	
 	public void setVariables(MessageReactionAddEvent event) {
-		this.name = event.getReactionEmote().getName();
-		this.emote = event.getReactionEmote();
+		this.name = event.getEmoji().getName();
+		this.emote = event.getEmoji();
 		this.guild = event.getGuild();
 		this.message = event.retrieveMessage().complete();
-		this.responseChannel = message.getTextChannel();
+		this.responseChannel = message.getChannel().asTextChannel();
 		this.reactor = event.getMember();
 	}
 
@@ -133,11 +133,11 @@ public class MessageReaction {
 		this.shortDescription = shortDescription;
 	}
 
-	public ReactionEmote getEmote() {
+	public Emoji getEmote() {
 		return emote;
 	}
 
-	public void setEmote(ReactionEmote emote) {
+	public void setEmote(Emoji emote) {
 		this.emote = emote;
 	}
 

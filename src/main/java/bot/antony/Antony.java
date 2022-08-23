@@ -128,9 +128,10 @@ public class Antony extends ListenerAdapter {
 					.setMemberCachePolicy(MemberCachePolicy.ALL)		// ignored if chunking enabled
 					.enableCache(CacheFlag.ACTIVITY)					// To get details on guild members
 					.enableCache(CacheFlag.CLIENT_STATUS)				// To get client status
-					.enableCache(CacheFlag.EMOTE)						// To get guilds emotes
+					.enableCache(CacheFlag.EMOJI)						// To get guilds emotes
 					.enableIntents(GatewayIntent.GUILD_MEMBERS)			// Has to be set to use MemberCachePolicy.ALL
 					.enableIntents(GatewayIntent.GUILD_PRESENCES)		// Has to be set to use CacheFlag.ACTIVITY
+					.enableIntents(GatewayIntent.MESSAGE_CONTENT)
 					.build();
 			
 			jda.awaitReady(); // Blocking guarantees that JDA will be completely loaded.

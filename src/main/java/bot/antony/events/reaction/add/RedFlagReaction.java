@@ -84,7 +84,7 @@ public class RedFlagReaction extends MessageReaction {
 	
 	public void printHeader() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(emote.getEmote().getAsMention() + " **" + userList.size() + "**\n");
+		sb.append(emote.getFormatted() + " **" + userList.size() + "**\n");
 		sb.append("Markiert von: ");
 		
 		int counter = 1;

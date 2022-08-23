@@ -15,7 +15,7 @@ public class CommandListener extends ListenerAdapter {
 		
 		//check which channel ...
 		if(event.isFromType(ChannelType.TEXT)) {
-			final TextChannel channel = event.getTextChannel();
+			final TextChannel channel = event.getChannel().asTextChannel();
 			
 			//!cmd arg0 arg1 arg2 ...
 			if(message.startsWith(Antony.getCmdPrefix())) {

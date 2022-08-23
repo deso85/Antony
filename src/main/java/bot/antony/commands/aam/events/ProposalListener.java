@@ -19,12 +19,12 @@ public class ProposalListener extends ListenerAdapter {
 			TextChannel proposalChan = Antony.getGuildController().getValidChannel(guild, Arrays.asList(650687328863518740L, 778960515895918632L)); //Prod, Test
 			
 			//check which channel ...
-			if(event.getTextChannel() == proposalChan) {
+			if(event.getChannel() == proposalChan) {
 				
 				if(event.getMessage().getType() != MessageType.CHANNEL_PINNED_ADD) {
 	
-					if(guild.getEmotesByName("ausstehend", true).size() > 0) {
-						event.getMessage().addReaction(guild.getEmotesByName("ausstehend", true).get(0)).complete();
+					if(guild.getEmojisByName("ausstehend", true).size() > 0) {
+						event.getMessage().addReaction(guild.getEmojisByName("ausstehend", true).get(0)).complete();
 					}
 					event.getMessage().pin().complete();
 					

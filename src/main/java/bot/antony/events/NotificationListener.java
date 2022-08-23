@@ -23,7 +23,7 @@ public class NotificationListener extends ListenerAdapter {
 		if(event.isFromType(ChannelType.TEXT)) {
 			NotificationController nc = Antony.getNotificationController();
 			final Guild guild = event.getGuild();
-			final TextChannel channel = event.getTextChannel();
+			final TextChannel channel = event.getChannel().asTextChannel();
 			GuildData guildData = new GuildData(guild);
 		    ChannelData channelData = new ChannelData(channel);
 			
