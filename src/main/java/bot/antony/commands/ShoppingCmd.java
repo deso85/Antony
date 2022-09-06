@@ -43,7 +43,8 @@ public class ShoppingCmd extends ServerCommand {
 				"[Bluetooth Thermometer](https://amzn.to/3FCqyjy)"		//B08SQCY5JN
 				+ "\n[Heizkabel](https://amzn.to/3q0n9SZ)"				//B003YO8WL8
 				+ "\n[Heizmatte](https://amzn.to/2ZWUm78)"				//B07JYJQKNH
-				+ "\n[Steckdosenthermostat](https://amzn.to/2ZWqdoK)",	//B07DC8B4SV
+				+ "\n[Steckdosenthermostat](https://amzn.to/2ZWqdoK)"	//B07DC8B4SV
+				+ "\n[Thermometer](https://amzn.to/3aUVUF9)",			//B07JW7K2M5
 				false);
 		
 		eb.addField("DIY - Formikarienbau und mehr",
@@ -75,8 +76,7 @@ public class ShoppingCmd extends ServerCommand {
 				+ "\n[Kokoshumus](https://amzn.to/3kqRKry)"							//B000MWQNP2
 				+ "\n[Lehmpulver](https://amzn.to/3qZLbyO)"							//B007Q0BWPE
 				+ "\n[Rote Folie](https://amzn.to/2ZQYzcA)"							//B07GVJTB4X
-				+ "\n[Schlauch (transparent)](https://amzn.to/3kzXIqo)"				//B06Y18NDLF
-				+ "\n[Thermometer](https://amzn.to/3aUVUF9)",						//B07JW7K2M5
+				+ "\n[Schlauch (transparent)](https://amzn.to/3kzXIqo)",			//B06Y18NDLF
 				false);
 		
 		eb.addField("Futtertiere, Bodenpolizei etc.",
@@ -104,7 +104,7 @@ public class ShoppingCmd extends ServerCommand {
 				+ "\n[PVA-Saugschwamm](https://amzn.to/3uygdjs)"						//B07J55LVS6
 				+ "\n[Reagenzgläser (160x16mm, Glas)](https://amzn.to/2ZVu7xW)"			//B015ZQAP26
 				+ "\n[Reagenzgläser (100x16mm, Kunststoff)](https://amzn.to/3ksJO9d)"	//B015WGFEIO
-				+ "\n[RG Reiniger](https://amzn.to/3r0qSkH)"							//B07SL25GF9
+				+ "\n[RG Reiniger](https://amzn.to/3pQaNz4)"							//B09ZQCLLFX
 				+ "\n[Rohrisolierung (RG Abdunklung)](https://amzn.to/3aXCgIz)"			//B00BEPQCIY
 				+ "\n[Spritzen (10ml)](https://amzn.to/3uyDotT)"						//B00PQDROC8
 				+ "\n[Watte](https://amzn.to/2O5YjUk)",									//B082VP8C3J
