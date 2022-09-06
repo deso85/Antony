@@ -40,8 +40,8 @@ public class AAMHBController {
 	private String overdueListFileName;
 	private String lastCheckedFileName;
 	private Map<Long, String> overdueList = new HashMap<Long, String>();
-	private Map<Long, List<TextChannel>> memChans = new HashMap<Long, List<TextChannel>>();
-	private List<TextChannel> relChans = new ArrayList<TextChannel>();
+	private Map<Long, List<TextChannel>> memChans;
+	private List<TextChannel> relChans;
 	
 	// --------------------------------------------------
 	// Constructor
@@ -65,6 +65,9 @@ public class AAMHBController {
 				&& guild != null) {
 			Antony.getLogger().info("[AAM HB Controller] Start AAM HB check");
 			lastChecked = currentDate;
+			memChans = new HashMap<Long, List<TextChannel>>();
+			relChans = new ArrayList<TextChannel>();
+			
 			Utils.saveJSONData(overdueListSubDir, lastCheckedFileName, lastChecked);
 			setRelevantChannels();
 			
@@ -243,7 +246,7 @@ public class AAMHBController {
 			//Check if channel is empty and older than 2 Weeks
 			if((messageList.isEmpty() || messageList.get(0).getAuthor().isBot())
 					&& chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now())
-					|| messageList.get(0).getMember() == null) {
+					|| (!messageList.isEmpty() && messageList.get(0).getMember() == null)) {
 				relChans.add(chan);
 				if(memChans.containsKey(1L)) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(1L));
