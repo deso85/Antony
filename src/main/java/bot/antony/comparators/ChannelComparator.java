@@ -2,7 +2,7 @@ package bot.antony.comparators;
 
 import java.util.Comparator;
 
-import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
 public class ChannelComparator implements Comparator<GuildChannel> {
 

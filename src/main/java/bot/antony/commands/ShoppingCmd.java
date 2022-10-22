@@ -5,7 +5,7 @@ import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class ShoppingCmd extends ServerCommand {
 	
@@ -36,7 +36,7 @@ public class ShoppingCmd extends ServerCommand {
 		
 		eb.addField("Ausbruchschutz",
 				"[Paraffinöl](https://amzn.to/3pXBlMz)"		//B01MG4WI1Z
-				+ "\n[Talkum](https://amzn.to/3qYmwuD)",	//B002IJO78M
+				+ "\n[Talkum](https://amzn.to/3Dngego)",	//B07XM6CJGX
 				false);
 		
 		eb.addField("Beheizung / Klimatisierung",
@@ -44,7 +44,7 @@ public class ShoppingCmd extends ServerCommand {
 				+ "\n[Heizkabel](https://amzn.to/3q0n9SZ)"				//B003YO8WL8
 				+ "\n[Heizmatte](https://amzn.to/2ZWUm78)"				//B07JYJQKNH
 				+ "\n[Steckdosenthermostat](https://amzn.to/2ZWqdoK)"	//B07DC8B4SV
-				+ "\n[Thermometer](https://amzn.to/3aUVUF9)",			//B07JW7K2M5
+				+ "\n[Thermometer](https://amzn.to/3D02Opc)",			//B07QH1MYPY
 				false);
 		
 		eb.addField("DIY - Formikarienbau und mehr",
@@ -56,7 +56,7 @@ public class ShoppingCmd extends ServerCommand {
 				+ "\n[Dremel](https://amzn.to/3r37R1g)"							//B01MRYZTJS
 				+ "\n[Forstnerbohrer Set](https://amzn.to/3pYzAyz)"				//B072XJ5NG3
 				+ "\n[Frässtifte für Dremel](https://amzn.to/3qYCwN5)"			//B075KB96S6
-				+ "\n[Gaze - fein (0,125mm Mesh)](https://amzn.to/3snYjOy)"		//B07NS653BP
+				+ "\n[Gaze - fein (0,125mm Mesh)](https://amzn.to/3DkOpW1)"		//B07NS653BP
 				+ "\n[Gaze - mittel (0,22mm Mesh)](https://amzn.to/2O43NPw)"	//B00IMJB3SO
 				+ "\n[Glasbohrer (27mm)](https://amzn.to/3q6LQgN)"				//B0015NULG4
 				+ "\n[Hobbymesser / Skalpell](https://amzn.to/3kEddO9)"			//B07V1MKKLB

@@ -10,7 +10,7 @@ import bot.antony.Antony;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class MuteReaction extends MessageReaction {

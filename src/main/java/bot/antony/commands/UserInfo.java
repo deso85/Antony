@@ -1,12 +1,6 @@
 package bot.antony.commands;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,7 +18,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class UserInfo implements IServerCommand {
 
@@ -113,9 +107,9 @@ public class UserInfo implements IServerCommand {
 				
 				sb.append("ID: " + getMember().getId() + "\n");
 				sb.append("Tag: " + getMember().getUser().getAsTag() + "\n");
-				sb.append("Nick: " + getMember().getUser().getName() + "\n");
+				sb.append("Name: " + getMember().getUser().getName().replace("|", "\\|"));
 				if(getMember().getNickname() != null) {
-					sb.append("Nickname: " + getMember().getNickname());
+					sb.append("\nNickname: " + getMember().getNickname().replace("|", "\\|"));
 				}
 				
 				channel.sendMessage(sb.toString()).queue();
@@ -139,8 +133,6 @@ public class UserInfo implements IServerCommand {
 
 	private EmbedBuilder getUserEB() {
 		UserData user = usrCntrl.loadUserData(getMember());
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-		LocalDateTime date;
 		
 		//Set last online
 		String lastOnline;
@@ -151,8 +143,7 @@ public class UserInfo implements IServerCommand {
 			user.setLastOnline(System.currentTimeMillis());
 		} else {
 			if(user.getLastOnline() != null) {
-				date = LocalDateTime.ofInstant(Instant.ofEpochMilli(user.getLastOnline()), ZoneId.systemDefault());
-				lastOnline = date.format(formatter);
+				lastOnline = "<t:" + Instant.ofEpochMilli(user.getLastOnline()).getEpochSecond() + ":R>";
 			} else {
 				lastOnline = "?";
 			}
@@ -215,19 +206,19 @@ public class UserInfo implements IServerCommand {
 				.setDescription(sbStatus.toString())
 				.setColor(getMember().getColor())
 				.setThumbnail(getMember().getUser().getEffectiveAvatarUrl())
-				.addField("Discord beigetreten", getMember().getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + "\n(Vor "
-						+ getFormattedPeriod(getMember().getTimeCreated(), formatter) + ")",
-						false)
-				.addField("Server beigetreten", getMember().getTimeJoined().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + "\n(Vor "
-						+ getFormattedPeriod(getMember().getTimeJoined(), formatter) + ")",
-						false)
+				.addField("Discord beigetreten", "<t:" + getMember().getTimeCreated().toEpochSecond() + ":f>"
+						+ "\n(<t:" + getMember().getTimeCreated().toEpochSecond() + ":R>)",
+						true)
+				.addField("Server beigetreten", "<t:" + getMember().getTimeJoined().toEpochSecond() + ":f>"
+						+ "\n(<t:" + getMember().getTimeJoined().toEpochSecond() + ":R>)",
+						true)
 				.addField("Zuletzt online gesehen", lastOnline, false);
 		
 		if(names.length() > 0) {
-			eb.addField("Bekannte Namen", names.toString(), false);
+			eb.addField("Bekannte Namen", names.toString().replace("|", "\\|"), false);
 		}
 		if(nicknames.length() > 0) {
-			eb.addField("Bekannte Nicknames", nicknames.toString(), false);
+			eb.addField("Bekannte Nicknames", nicknames.toString().replace("|", "\\|"), false);
 		}
 				
 		eb.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());
@@ -248,36 +239,6 @@ public class UserInfo implements IServerCommand {
 		return eb;
 	}
 	
-	private String getFormattedPeriod(OffsetDateTime odt, DateTimeFormatter formatter) {
-		StringBuilder sb = new StringBuilder();
-		LocalDate currentDate = LocalDate.now();
-		LocalDate passedDate = LocalDate.parse(odt.atZoneSameInstant(ZoneId.systemDefault()).format(formatter), formatter);
-		Period period = Period.between(passedDate, currentDate);
-		//Years
-		if(period.getYears() > 0) {
-			sb.append(period.getYears() + " Jahr");
-			if(period.getYears() > 1) {
-				sb.append("en");
-			}
-			sb.append(", ");
-		}
-		//Months
-		if(period.getYears() > 0 || period.getMonths() > 0) {
-			sb.append(period.getMonths() + " Monat");
-			if(period.getMonths() != 1) {
-				sb.append("en");
-			}
-			sb.append(", ");
-		}
-		//Days
-		sb.append(period.getDays() + " Tag");
-		if(period.getDays() != 1) {
-			sb.append("en");
-		}
-		
-		return sb.toString();
-	}
-
 	/**
 	 * Attempts to find a user in a channel, first look for account name then for
 	 * nickname

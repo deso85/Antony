@@ -5,7 +5,7 @@ import bot.antony.controller.UserController;
 import bot.antony.events.softban.UserDataSB;
 import bot.antony.guild.UserData;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

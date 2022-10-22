@@ -8,9 +8,9 @@ import bot.antony.commands.notification.UserNotification;
 import bot.antony.guild.ChannelData;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

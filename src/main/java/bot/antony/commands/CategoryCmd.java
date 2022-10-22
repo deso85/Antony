@@ -7,12 +7,12 @@ import java.util.List;
 import bot.antony.commands.types.ServerCommand;
 import bot.antony.comparators.ChannelComparator;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 
 public class CategoryCmd extends ServerCommand {
 
@@ -95,7 +95,7 @@ public class CategoryCmd extends ServerCommand {
 	}
 
 	public String getCategoryChannels(String catName) {
-		List<net.dv8tion.jda.api.entities.Category> categories = channel.getGuild().getCategoriesByName(catName, false);
+		List<net.dv8tion.jda.api.entities.channel.concrete.Category> categories = channel.getGuild().getCategoriesByName(catName, false);
 		if(categories.size() > 0) {
 			StringBuilder categoryChannels = new StringBuilder();
 			categoryChannels.append("Die Kategorie **" + catName + "** enthält folgende Kanäle:");
@@ -111,14 +111,14 @@ public class CategoryCmd extends ServerCommand {
 	public String listCategories() {
 		StringBuilder allCategories = new StringBuilder();
 		allCategories.append("**Verfügbare Kategorien:**\n");
-		for(net.dv8tion.jda.api.entities.Category cat : channel.getGuild().getCategories()) {
+		for(net.dv8tion.jda.api.entities.channel.concrete.Category cat : channel.getGuild().getCategories()) {
 			allCategories.append(cat.getAsMention() + "\n");
 		}
 		return allCategories.toString();
 	}
 	
 	public boolean sortByName(String catName) {
-		List<net.dv8tion.jda.api.entities.Category> categories = channel.getGuild().getCategoriesByName(catName, true);
+		List<net.dv8tion.jda.api.entities.channel.concrete.Category> categories = channel.getGuild().getCategoriesByName(catName, true);
 		if(categories.size() > 0) {
 			sort(categories.get(0));
 			return true;
@@ -126,7 +126,7 @@ public class CategoryCmd extends ServerCommand {
 		return false;
 	}
 	
-	public static void sort(net.dv8tion.jda.api.entities.Category category) {
+	public static void sort(net.dv8tion.jda.api.entities.channel.concrete.Category category) {
 		if(category.getTextChannels().size() > 0) {
 			category.modifyTextChannelPositions().sortOrder(new ChannelComparator()).queue();
 		}
@@ -136,7 +136,7 @@ public class CategoryCmd extends ServerCommand {
 	}
 	
 	private boolean sync(String catName, boolean withOwner) {
-		List<net.dv8tion.jda.api.entities.Category> categories = channel.getGuild().getCategoriesByName(catName, true);
+		List<net.dv8tion.jda.api.entities.channel.concrete.Category> categories = channel.getGuild().getCategoriesByName(catName, true);
 		if(categories.size() > 0) {
 			sync(categories.get(0), withOwner);
 			return true;
@@ -145,7 +145,7 @@ public class CategoryCmd extends ServerCommand {
 		}
 	}
 	
-	private void sync(net.dv8tion.jda.api.entities.Category category, boolean withOwner) {
+	private void sync(net.dv8tion.jda.api.entities.channel.concrete.Category category, boolean withOwner) {
 		ArrayList<Permission> allow = new ArrayList<Permission>();
 		allow.add(Permission.VIEW_CHANNEL);
 		allow.add(Permission.MESSAGE_SEND);

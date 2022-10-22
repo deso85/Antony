@@ -3,7 +3,7 @@ package bot.antony.events.reaction.add;
 import java.util.Arrays;
 
 import bot.antony.Antony;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class AamProposalDecision extends MessageReaction {

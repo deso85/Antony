@@ -9,7 +9,7 @@ import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class ChangelogCmd extends ServerCommand {
 
@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("22.10.2022 - Version 7.4.0", "Programmbibliotheken aktualisiert und hierdurch notwendige Änderungen vorgenommen. Produktempfehlungen (***" + cmdPrefix + "shopping***) aktualisiert. Der ***" + cmdPrefix + "userinfo*** Befehl wurde so abgeändert, dass das Sonderzeichen \"|\" escaped und es somit nicht versehentlich zur Textformatierung genutzt wird."));
 		changeLog.add(new ChangeLogEntry("06.09.2022 - Version 7.3.2", "AAM spezifisches Release: Korrekturen an der Kontrolle der Haltungsberichte vorgenommen."));
 		changeLog.add(new ChangeLogEntry("27.08.2022 - Version 7.3.1", "Kaufempfehlungen aktualisiert."));
 		changeLog.add(new ChangeLogEntry("18.08.2022 - Version 7.3.0", "Die zugrunde liegende Programmbibliothek JDA wurde auf den neusten Stand aktualisiert und sämtlicher Code daran angepasst."));

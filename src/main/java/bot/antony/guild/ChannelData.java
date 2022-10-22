@@ -1,6 +1,6 @@
 package bot.antony.guild;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 /**
  * Class to store channel data to help manage the notifications

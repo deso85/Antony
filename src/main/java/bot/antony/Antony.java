@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.security.auth.login.LoginException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +25,7 @@ import bot.antony.events.GuildMemberJoin;
 import bot.antony.events.GuildMemberLeave;
 import bot.antony.events.GuildMemberUpdateNickname;
 import bot.antony.events.GuildUpdateName;
-import bot.antony.events.GuildVoiceJoin;
-import bot.antony.events.GuildVoiceLeave;
-import bot.antony.events.GuildVoiceMove;
+import bot.antony.events.GuildVoiceUpdate;
 import bot.antony.events.MessageReceived;
 import bot.antony.events.MessageUpdate;
 import bot.antony.events.NotificationListener;
@@ -109,9 +105,7 @@ public class Antony extends ListenerAdapter {
 					.addEventListeners(new MessageReceived())
 					.addEventListeners(new MessageUpdate())
 					.addEventListeners(new CommandListener())			// Listener for commands
-					.addEventListeners(new GuildVoiceJoin())
-					.addEventListeners(new GuildVoiceMove())
-					.addEventListeners(new GuildVoiceLeave())
+					.addEventListeners(new GuildVoiceUpdate())
 					.addEventListeners(new NotificationListener())		// Listener for notification function
 					.addEventListeners(new OfferListener())				// listener which checks if an offer in a specific channel has been posted
 					.addEventListeners(new ProposalListener())
@@ -170,8 +164,6 @@ public class Antony extends ListenerAdapter {
 			timerThread.start();
 			
 			
-		} catch (LoginException e) {
-			logger.error("Could not login to Discord!", e);
 		} catch (InterruptedException e) {
 			logger.error("Antony thread is interrupted while waiting!", e);
 		}
