@@ -84,7 +84,12 @@ public class RedFlagReaction extends MessageReaction {
 	
 	public void printHeader() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(emote.getFormatted() + " **" + userList.size() + "**\n");
+		if(guild.getEmojisByName(emote.getName(), true).size() > 0) {
+			sb.append(guild.getEmojisByName(emote.getName(), true).get(0).getFormatted());
+		} else {
+			sb.append("REDFLAG");
+		}
+		sb.append(" **" + userList.size() + "**\n");
 		sb.append("Markiert von: ");
 		
 		int counter = 1;

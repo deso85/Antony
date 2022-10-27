@@ -178,14 +178,15 @@ public class AAMHBController {
 	private void sendPN(Member member, List<TextChannel> chans) {
 		Antony.getLogger().debug("[AAM HB Controller] sending PN to " + member.getAsMention());
 		StringBuilder sb = new StringBuilder();
-		sb.append("Hallo " + member.getEffectiveName() + ",\n");
-		sb.append("ich habe heute alle Haltungsberichte auf dem Server **" + guild.getName() + "** überprüft und dabei leider festgestellt, dass du schon lange keine Updates mehr in folgenden Kanälen geschrieben hast:");
+		sb.append("Hallo " + member.getEffectiveName() + ",");
+		sb.append("\nich bin ein Bot und kann leider nicht antworten, für Rückfragen wende dich bitte an ein AAM-Teammitglied.");
+		sb.append("\n\nIch habe heute alle Haltungsberichte auf dem Server **" + guild.getName() + "** überprüft und dabei leider festgestellt, dass du schon lange keine Updates mehr in folgenden Kanälen geschrieben hast:");
 		for(TextChannel chan : chans) {
 			sb.append("\n- " + chan.getAsMention());
 		}
 		sb.append("\n\nEin gut geführter Haltungsbericht, der häufig aktualisiert wird und viele Details enthält, ist die beste Erinnerung für dich und sorgt dafür, dass er von vielen Usern gelesen wird.");
 		sb.append("\nSolltest du mehrere Male von mir erinnert werden, wird auch die Server-Moderation informiert und dann kann es passieren, dass der Kanal gelöscht wird.");
-		sb.append("\nWenn du den HB nicht mehr fortführen möchtest, informiere doch bitte jemanden vom AAM-Team hierüber.");
+		sb.append("\nWenn du den HB nicht mehr fortführen möchtest oder Rückfragen hast, wende dich doch bitte an jemanden aus dem AAM-Administrationsteam (siehe #infos-und-regeln).");
 		sb.append("\n\nIch hoffe, ich konnte dich motivieren, bald ein neues Update zu verfassen.\nViele Grüße");
 		try {
 			member.getUser().openPrivateChannel().complete().sendMessage(sb.toString()).complete();
