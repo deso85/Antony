@@ -8,19 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
@@ -42,12 +31,7 @@ public class Sells implements IServerCommand {
 	@Override
 	public void performCommand(Member m, TextChannel channel, Message message) {
 
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-		client.register(instance);
-		instance.registerProvider(ResteasyJackson2Provider.class);
-		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
-		AntCheckClient antCheckClient = target.proxy(AntCheckClient.class);
+		AntCheckClient antCheckClient = Utils.getAntCheckClient();
 
 		String[] userMessage = message.getContentDisplay().split(" ");
 
@@ -55,7 +39,7 @@ public class Sells implements IServerCommand {
 			// get ant species name to work with
 			String antSpeciesName = Utils.getAntSpeciesName(Arrays.copyOfRange(userMessage, 1, userMessage.length));
 
-			List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
+			List<Specie> species = antCheckClient.getSpecies(antSpeciesName.replace(" ", "_"));
 
 			// no ants found
 			if (species.isEmpty()) {
@@ -89,54 +73,8 @@ public class Sells implements IServerCommand {
 					} else {
 						handleMultipleSpeciesWithVariantsFound(channel, speciesWithVariants);
 					}
-
 				}
-
 			}
-
-		}
-
-	}
-
-	private List<Specie> getSpecies(AntCheckClient client, String antName) {
-		Response response = client.getSpecies(antName);
-		String responsePayload = response.readEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(responsePayload, new TypeReference<List<Specie>>() {
-			});
-		} catch (JsonProcessingException e) {
-			return new ArrayList<>();
-		} finally {
-			response.close();
-		}
-	}
-
-	private List<Variant> getVariants(AntCheckClient client, String id) {
-		Response response = client.getVariants(id, null);
-		String responsePayload = response.readEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(responsePayload, new TypeReference<List<Variant>>() {
-			});
-		} catch (JsonProcessingException e) {
-			return new ArrayList<>();
-		} finally {
-			response.close();
-		}
-	}
-
-	private List<Shop> getShops(AntCheckClient client, String id) {
-		Response response = client.getShops(id);
-		String responsePayload = response.readEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(responsePayload, new TypeReference<List<Shop>>() {
-			});
-		} catch (JsonProcessingException e) {
-			return new ArrayList<>();
-		} finally {
-			response.close();
 		}
 	}
 
@@ -150,26 +88,19 @@ public class Sells implements IServerCommand {
 
 	private String handleSpeciesFoundWithoutVariants(List<Specie> species) {
 		StringBuilder sb = new StringBuilder();
-		//Old output - Changerequest to not post variants if they are not on sale
-		/*sb.append("Folgende Ameisenarten wurden gefunden, stehen aktuell aber nicht zum Verkauf:");
-		for (Specie specie : species) {
-			sb.append("\n*- ");
-			sb.append(specie.getName());
-			sb.append("*");
-		}*/
 		sb.append("Es wurden " + species.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.");
 		return sb.toString();
 	}
 
 	private void handleOnlyOneSpecieWithVariant(TextChannel channel, AntCheckClient client, List<Specie> speciesWithVariants) {
 		Specie specie = speciesWithVariants.get(0);
-		List<Variant> variants = this.getVariants(client, specie.getId());
+		List<Variant> variants = client.getVariants(specie.getId(), null);
 		List<Variant> variantsWithShopIds = variants.stream()
 				.filter(v -> v.getShopid() != null && !v.getShopid().equals("-1")).collect(Collectors.toList());
 		Set<Shop> allShopsForVariants = new HashSet<>();
 		
 		for (Variant variant : variantsWithShopIds) {
-			List<Shop> shops = this.getShops(client, variant.getShopid());
+			List<Shop> shops = client.getShops(variant.getShopid());
 			allShopsForVariants.addAll(shops);
 		}
 		
@@ -220,11 +151,6 @@ public class Sells implements IServerCommand {
 				eb.setThumbnail(specieImageurl);
 			}
 			
-			/*SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-			Date now = new Date();
-			StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten zuletzt aktualisiert: ");
-			sb.append(sdf.format(now.getTime()));
-			sb.append(" 00:00 Uhr.");*/
 			StringBuilder sb = new StringBuilder("Preise und Verfügbarkeiten werden täglich mehrfach aktualisiert.");
 			eb.setFooter(sb.toString());
 			
@@ -244,7 +170,6 @@ public class Sells implements IServerCommand {
 				eb.addField(shopField);
 			}
 			channel.sendMessageEmbeds(eb.build()).complete();
-			
 	}
 
 	private void handleMultipleSpeciesWithVariantsFound(TextChannel channel, List<Specie> speciesWithVariants) {

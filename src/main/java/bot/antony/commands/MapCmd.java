@@ -1,20 +1,7 @@
 package bot.antony.commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
@@ -45,19 +32,14 @@ public class MapCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-		client.register(instance);
-		instance.registerProvider(ResteasyJackson2Provider.class);
-		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
-		AntCheckClient antCheckClient = target.proxy(AntCheckClient.class);
+		AntCheckClient antCheckClient = Utils.getAntCheckClient();
 		
 		String[] userMessage = message.getContentDisplay().split(" ");
 		
 		if (userMessage.length > 1) {
 			// get ant species name to work with
 			String antSpeciesName = Utils.getAntSpeciesName(Arrays.copyOfRange(userMessage, 1, userMessage.length));
-			List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
+			List<Specie> species = antCheckClient.getSpecies(antSpeciesName.replace(" ", "_"));
 			
 			if (species.isEmpty()) {
 				channel.sendMessage(
@@ -101,18 +83,4 @@ public class MapCmd extends ServerCommand {
 		
 	}
 	
-	private List<Specie> getSpecies(AntCheckClient client, String antName) {
-		Response response = client.getSpecies(antName);
-		String responsePayload = response.readEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(responsePayload, new TypeReference<List<Specie>>() {
-			});
-		} catch (JsonProcessingException e) {
-			return new ArrayList<>();
-		} finally {
-			response.close();
-		}
-	}
-
 }

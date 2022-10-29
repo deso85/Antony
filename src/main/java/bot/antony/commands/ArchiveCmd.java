@@ -15,10 +15,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
@@ -81,7 +81,7 @@ public class ArchiveCmd extends ServerCommand {
 	private StringBuilder getHtmlContentFromMsgHistory(List<Message> msgHistory) {
 		DateTimeFormatter textFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 		StringBuilder htmlContent = new StringBuilder();
-		for(Message msg : Lists.reverse(msgHistory)) {
+		for(Message msg : msgHistory.stream().sorted(Comparator.comparing(Message::getTimeCreated)).collect(Collectors.toList())) {
 			net.dv8tion.jda.api.entities.User msgAuthor = msg.getAuthor();
 			
 			htmlContent.append("<div class=\"message\">");

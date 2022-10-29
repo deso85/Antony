@@ -187,6 +187,7 @@ public class AAMHBController {
 		sb.append("\n\nEin gut geführter Haltungsbericht, der häufig aktualisiert wird und viele Details enthält, ist die beste Erinnerung für dich und sorgt dafür, dass er von vielen Usern gelesen wird.");
 		sb.append("\nSolltest du mehrere Male von mir erinnert werden, wird auch die Server-Moderation informiert und dann kann es passieren, dass der Kanal gelöscht wird.");
 		sb.append("\nWenn du den HB nicht mehr fortführen möchtest oder Rückfragen hast, wende dich doch bitte an jemanden aus dem AAM-Administrationsteam (siehe #infos-und-regeln).");
+		sb.append(" - ***Bitte antworte nicht direkt auf diese Nachricht. Da ich ein Bot bin, kann ich darauf nicht reagieren.***");
 		sb.append("\n\nIch hoffe, ich konnte dich motivieren, bald ein neues Update zu verfassen.\nViele Grüße");
 		try {
 			member.getUser().openPrivateChannel().complete().sendMessage(sb.toString()).complete();

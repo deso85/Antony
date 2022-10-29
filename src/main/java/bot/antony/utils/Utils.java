@@ -8,20 +8,26 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 import bot.antony.Antony;
+import bot.antony.commands.antcheck.client.AntCheckClient;
+import jakarta.ws.rs.client.ClientBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
-public class Utils {
+public abstract class Utils {
 
 	public static void sendPM(Member member, EmbedBuilder eb) {
 		try {
@@ -164,11 +170,10 @@ public class Utils {
 		}
 	};
 	
-	public Role findRole(Member member, String name) {
-	    List<Role> roles = member.getRoles();
-	    return roles.stream()
-	                .filter(role -> role.getName().equals(name)) // filter by role name
-	                .findFirst() // take first result
-	                .orElse(null); // else return null
+	public static AntCheckClient getAntCheckClient() {
+		ResteasyClient client = (ResteasyClient) ClientBuilder.newClient();
+		client.register(JacksonJsonProvider.class);	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
+		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
+		return target.proxy(AntCheckClient.class);
 	}
 }

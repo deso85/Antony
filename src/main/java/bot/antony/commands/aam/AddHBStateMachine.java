@@ -6,21 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
 import bot.antony.commands.antcheck.client.dto.Specie;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -136,12 +125,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleAntSpecies(String content, Message message) {
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-		client.register(instance);
-		instance.registerProvider(ResteasyJackson2Provider.class);
-		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
-		AntCheckClient antCheckClient = target.proxy(AntCheckClient.class);
+		AntCheckClient antCheckClient = Utils.getAntCheckClient();
 
 		String antSpeciesName = content.replace("-", " ");
 		String antSpeciesChannelName = antSpeciesName.trim().replace("spec.", "sp.").replace("conf.", "cf.").replaceAll(" +", " ");
@@ -149,7 +133,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 		antSpeciesName = antSpeciesName.replace("cf.", "").replace("conf.", "");
 		antSpeciesName = antSpeciesName.trim().replaceAll(" +", " ");
 		
-		List<Specie> species = getSpecies(antCheckClient, antSpeciesName.replace(" ", "_"));
+		List<Specie> species = antCheckClient.getSpecies(antSpeciesName.replace(" ", "_"));
 
 		if (species.isEmpty()) {
 			errorCount++;
@@ -334,17 +318,4 @@ public class AddHBStateMachine extends ListenerAdapter {
 		}
 	}
 
-	private List<Specie> getSpecies(AntCheckClient client, String antName) {
-		Response response = client.getSpecies(antName);
-		String responsePayload = response.readEntity(String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(responsePayload, new TypeReference<List<Specie>>() {
-			});
-		} catch (JsonProcessingException e) {
-			return new ArrayList<>();
-		} finally {
-			response.close();
-		}
-	}
 }

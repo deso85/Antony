@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("25.10.2022 - Version 7.5.0", "Programmbibliotheken wurden aufgrund von Security-Schwachstellen aktualisiert. Notwendiges Refactoring wurde vorgenommen."));
 		changeLog.add(new ChangeLogEntry("27.10.2022 - Version 7.4.2", "Es wurden Anpassungen an Nachrichten vorgenommen, um die Interaktion mit Antony zu erleichtern. Kleinere Fehlerbehebungen an den Ausgaben."));
 		changeLog.add(new ChangeLogEntry("25.10.2022 - Version 7.4.1", "Programmbibliotheken wurden aufgrund von Security-Schwachstellen aktualisiert."));
 		changeLog.add(new ChangeLogEntry("22.10.2022 - Version 7.4.0", "Programmbibliotheken aktualisiert und hierdurch notwendige Änderungen vorgenommen. Produktempfehlungen (***" + cmdPrefix + "shopping***) aktualisiert. Der ***" + cmdPrefix + "userinfo*** Befehl wurde so abgeändert, dass das Sonderzeichen \"|\" escaped und es somit nicht versehentlich zur Textformatierung genutzt wird."));

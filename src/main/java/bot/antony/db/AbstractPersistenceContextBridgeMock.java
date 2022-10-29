@@ -21,8 +21,6 @@ import javax.sql.DataSource;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
-import com.google.common.collect.ImmutableMap;
-
 public abstract class AbstractPersistenceContextBridgeMock implements EntityManagerBridge {
 	protected InitialContext context;
 	protected EntityManager em;
@@ -36,7 +34,7 @@ public abstract class AbstractPersistenceContextBridgeMock implements EntityMana
 		if (this.em == null) {
 			EntityManagerFactory entityManagerFactory = (new HibernatePersistenceProvider())
 					.createContainerEntityManagerFactory(archiverPersistenceUnitInfo(),
-							ImmutableMap.builder().putAll(this.getSessionFactoryProperties()).build());
+							Collections.unmodifiableMap(this.getSessionFactoryProperties()));
 			this.em = entityManagerFactory.createEntityManager();
 		}
 
