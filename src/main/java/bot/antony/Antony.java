@@ -15,6 +15,7 @@ import bot.antony.commands.aam.events.ProposalListener;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.AAMHBController;
 import bot.antony.controller.BlackListController;
+import bot.antony.controller.GiveawayController;
 import bot.antony.controller.GuildController;
 import bot.antony.controller.SoftbanController;
 import bot.antony.controller.UserController;
@@ -64,6 +65,7 @@ public class Antony extends ListenerAdapter {
 	private static GuildController guildController;
 	private static UserController userController;
 	private static AAMHBController hbController;
+	private static GiveawayController gaController;
 	private static int usercount;
 	private static String configFile = null;
 
@@ -97,6 +99,7 @@ public class Antony extends ListenerAdapter {
 		guildController = new GuildController();
 		userController = new UserController();
 		hbController = new AAMHBController();
+		gaController = new GiveawayController();
 		usercount = 0;
 		
 		try {
@@ -147,6 +150,7 @@ public class Antony extends ListenerAdapter {
 			logger.info(postStartLogEntry.toString());
 			
 			hbController.setVars(jda);
+			gaController.run(jda);
 			//Thread which is used to do timed actions
 			Thread timerThread = new Thread() {
 				public void run() {
@@ -344,7 +348,11 @@ public class Antony extends ListenerAdapter {
 	public static AAMHBController getHBController() {
 		return hbController;
 	}
-
+	
+	public static GiveawayController getGiveawayController() {
+		return gaController;
+	}
+	
 	public static int getUsercount() {
 		return usercount;
 	}

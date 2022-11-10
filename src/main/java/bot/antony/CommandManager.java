@@ -10,7 +10,6 @@ import bot.antony.commands.CategoryCmd;
 import bot.antony.commands.ChangelogCmd;
 import bot.antony.commands.ChannelCmd;
 import bot.antony.commands.CommandCmd;
-import bot.antony.commands.Giveaway;
 import bot.antony.commands.GuildCmd;
 import bot.antony.commands.HelpCmd;
 import bot.antony.commands.MapCmd;
@@ -27,6 +26,7 @@ import bot.antony.commands.UserCmd;
 import bot.antony.commands.UserInfo;
 import bot.antony.commands.aam.AddHBCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
+import bot.antony.commands.giveaway.GiveawayCmd;
 import bot.antony.commands.lists.BlacklistCmd;
 import bot.antony.commands.lists.WatchlistCmd;
 import bot.antony.commands.lists.WhitelistCmd;
@@ -55,6 +55,7 @@ public class CommandManager {
 		commands.put("channel", new ChannelCmd());
 		commands.put("command", new CommandCmd());
 		commands.put("emergency", new EmergencyCmd());
+		commands.put("giveaway", new GiveawayCmd());
 		commands.put("guild", new GuildCmd());
 		commands.put("map", new MapCmd());
 		commands.put("pnlink", new PnLinkCmd());
@@ -77,7 +78,6 @@ public class CommandManager {
 		modCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		usrCommands.put("giveaway", new Giveaway());
 		usrCommands.put("notify", new Notify());
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());

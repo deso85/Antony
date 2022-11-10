@@ -52,27 +52,6 @@ public class ServerCommand implements IServerCommand {
 	}
 	
 	public void printHelp(TextChannel channel) {
-		/*StringBuilder helptext = new StringBuilder();
-		helptext.append("------------------------------\n");
-		helptext.append("Befehl: *" + Antony.getCmdPrefix() + cmdName + "*\n");
-		helptext.append("Zugriffsbeschränkung: *" + (privileged ? "ja" : "nein") + "*\n");
-		helptext.append("Beschreibung: *" + description + "*\n");
-		if(!cmdParams.isEmpty()) {
-			helptext.append("------------------------------\n");
-			helptext.append("Benutzung:\n");
-			for(Map.Entry<String, String> entry : cmdParams.entrySet()) {
-				helptext.append("**" + Antony.getCmdPrefix() + cmdName + " " + entry.getKey() + "**");
-				if(entry.getValue() != null && !entry.getValue().equals("")) {
-					helptext.append(" - " + entry.getValue());
-				}
-				helptext.append("\n");
-			}
-		}
-		helptext.append("------------------------------\n");
-		channel.sendMessage(helptext.toString()).queue();*/
-		
-		
-		
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())
 				.setTitle(Antony.getCmdPrefix() + name)
