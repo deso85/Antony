@@ -29,9 +29,10 @@ public class GiveawayController {
 
 	private List<Giveaway> giveaways = new ArrayList<Giveaway>();
 	private String gaListFileName = "antony.giveaways.json";
+	private boolean isRunning = false;
 	
 	/**
-     * Constructs a new GiveawayController instance, which can be used to start, monitor and end {@link bot.antony.commands.giveaway.Giveaway giveaways}.
+     * Constructs a new GiveawayController instance, which can be used to start, monitor and end {@link bot.antony.commands.giveaway.Giveaway Giveaways}.
      */
 	public GiveawayController() {
 		Antony.getLogger().info("Created giveaway controller.");
@@ -49,15 +50,16 @@ public class GiveawayController {
      *         where {@link bot.antony.commands.giveaway.Giveaway Giveaways} take place
      */
 	public void run(JDA jda) {
-		load();
-		Thread timerThread = new Thread() {
-			public void run() {
-				while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
-					try {
-						if(giveaways.size() > 0) {
+		if(!isRunning && giveaways.size() > 0) {
+			isRunning = true;
+			Antony.getLogger().info("[Giveaway Controller] Starting Runner");
+			Thread timerThread = new Thread() {
+				public void run() {
+					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE
+							&& giveaways.size() > 0) {
+						try {
 							for(Giveaway giveaway : new ArrayList<Giveaway>(giveaways)) {
 								if(giveaway.hasEnded()) {
-									
 									Guild guild = jda.getGuildById(giveaway.getGuildID());
 									String winner = getWinner(guild, giveaway.getChanID(), giveaway.getMsgID(), giveaway.getWinCount());
 									String sponsorName = giveaway.getSponsorName();
@@ -81,15 +83,17 @@ public class GiveawayController {
 								}
 								Thread.sleep(5000);
 							}
+							Thread.sleep(15000); //15sec
+						} catch (InterruptedException e) {
+							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
 						}
-						Thread.sleep(15000); //15sec
-					} catch (InterruptedException e) {
-						Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
 					}
+					isRunning = false;
+					Antony.getLogger().info("[Giveaway Controller] Stopping Runner because there are no more giveaways");
 				}
-			}
-		};
-		timerThread.start();
+			};
+			timerThread.start();
+		}
 	}
 	
 	/**
@@ -111,23 +115,12 @@ public class GiveawayController {
 	*         The amount of people who can win the giveaway.
 	*/
 	public void addGA(User sponsor, String description, TextChannel channel, int runtimeMin, int winCount) {
-		EmbedBuilder eb = getEmbedBuilder(sponsor.getName(),
-				sponsor.getAvatarUrl(),
-				description,
-				winCount,
-				(Instant.now().getEpochSecond() + (runtimeMin*60)));
+		EmbedBuilder eb = getEmbedBuilder(sponsor.getName(), sponsor.getAvatarUrl(), description, winCount, (Instant.now().getEpochSecond() + (runtimeMin*60)));
 		eb.addField("Teilnahme", "Reagiere mit 🎁, um am Giveaway teilnehmen zu können.", false);
-		
-		channel.sendMessageEmbeds(eb.build()).queue(msg -> {
-			Giveaway ga = new Giveaway(sponsor.getId(),
-					sponsor.getName(),
-					description,
-					msg,
-					runtimeMin,
-					winCount);
-			addGA(ga);
-			msg.addReaction(Emoji.fromUnicode("🎁")).queue();
-		});
+		Message message = channel.sendMessageEmbeds(eb.build()).complete();
+		message.addReaction(Emoji.fromUnicode("🎁")).queue();
+		addGA(new Giveaway(sponsor.getId(), sponsor.getName(), description, message, runtimeMin, winCount));
+		run(sponsor.getJDA());
 	}
 	
 	/**

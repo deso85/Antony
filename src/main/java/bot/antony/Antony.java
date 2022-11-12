@@ -150,6 +150,7 @@ public class Antony extends ListenerAdapter {
 			logger.info(postStartLogEntry.toString());
 			
 			hbController.setVars(jda);
+			gaController.load();
 			gaController.run(jda);
 			//Thread which is used to do timed actions
 			Thread timerThread = new Thread() {
