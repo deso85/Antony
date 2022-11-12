@@ -1,18 +1,18 @@
 package bot.antony.commands.giveaway;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 
+/**
+ * Command to interact with the {@link bot.antony.controller.GiveawayController GiveawayController}.
+ *
+ * @since  7.6.0
+ * @author deso85
+ */
 public class GiveawayCmd extends ServerCommand {
 	
 	// --------------------------------------------------
@@ -24,6 +24,9 @@ public class GiveawayCmd extends ServerCommand {
 		this.name = "giveaway";
 		this.description = "Mit diesem Befehl lassen sich Giveaways starten. Der Bot unterstützt bei der Anlage des Giveaways.";
 		this.shortDescription = "Befehl zur starten eines Giveaways.";
+		this.example = "reroll https://discord.com/channels/375031723601297409/605451097699647665/1040599569970516039";
+		this.cmdParams.put("`ohne`", "Startet den Giveaway-Dialog, um ein neues Giveaway anzulegen");
+		this.cmdParams.put("reroll (Link to Message) [Amount of Winners]", "Lost Gewinner neu aus, benötigt administrative Rechte");
 	}
 	
 	// --------------------------------------------------
@@ -56,35 +59,8 @@ public class GiveawayCmd extends ServerCommand {
 						
 						TextChannel gaChannel = channel.getGuild().getTextChannelById(gaChannelId);
 						Message gaMessage = gaChannel.retrieveMessageById(gaMessageId).complete();
-						List<User> usrListA = gaMessage.getReaction(Emoji.fromUnicode("🎁")).retrieveUsers().complete();
-						List<User> usrListB = new ArrayList<User>();
-						for(User usr : usrListA) {
-							if(channel.getGuild().getMember(usr) != null
-									&& !usr.isBot()) {
-								usrListB.add(usr);
-							}
-						}
-						usrListA = new ArrayList<>(usrListB);
-						usrListB = new ArrayList<>();
-						Random rand = new Random();
-						for (int i = 0; i < gaWinnerCount; i++) {
-							if(usrListA.size() > 0) {
-								int randomIndex = rand.nextInt(usrListA.size());
-								usrListB.add(usrListA.get(randomIndex));
-						        usrListA.remove(randomIndex);
-							}
-						}
-						StringBuilder winner = new StringBuilder();
-						for (int i = 0; i < usrListB.size(); i++) {
-							winner.append(usrListB.get(i).getAsMention());
-							if(i < usrListB.size()-1) {
-								winner.append(", ");
-							}
-						}
-						if(winner.length() == 0) {
-							winner.append("Niemand 😢");
-						}
-						channel.sendMessage("Folgende User wurden neu ausgelost: " + winner.toString()).queue();
+						String winner = Antony.getGiveawayController().getWinner(channel.getGuild(), gaChannel.getIdLong(), gaMessage.getIdLong(), gaWinnerCount);
+						channel.sendMessage("Folgende User wurden neu ausgelost: " + winner).queue();
 					}
 					
 				}
