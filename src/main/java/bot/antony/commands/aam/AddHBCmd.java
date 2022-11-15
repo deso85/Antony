@@ -2,10 +2,10 @@ package bot.antony.commands.aam;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public class AddHBCmd extends ServerCommand {
 	
@@ -29,8 +29,7 @@ public class AddHBCmd extends ServerCommand {
 		message.reply(
 			"Ein Haltungsbericht sollte über einen längeren Zeitraum geführt, idealerweise in regelmäßigen Abständen aktualisiert werden und sowohl positive als auch negative Entwicklungen und mögliche Gründe enthalten.\nTraust du dir einen HB zu?")
 			.queue(msg -> {
-				msg.addReaction(Emoji.fromUnicode("✅")).queue();
-				msg.addReaction(Emoji.fromUnicode("❌")).queue();
+				Utils.addBooleanChoiceReactions(msg);
 				message.getJDA().addEventListener(
 						new AddHBStateMachine(channel, member.getUser(), message.getIdLong(), msg.getIdLong()));
 			});

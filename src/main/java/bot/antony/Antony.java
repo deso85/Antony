@@ -314,16 +314,13 @@ public class Antony extends ListenerAdapter {
 		Antony.cmdPrefix = cmdPrefix;
 	}
 
-
 	public static long getNotificationPendingTime() {
 		return notificationPendingTime;
 	}
 
-
 	public static void setNotificationPendingTime(long notificationPendingTime) {
 		Antony.notificationPendingTime = notificationPendingTime;
 	}
-
 
 	public static WhiteListController getWhitelistController() {
 		return whitelistController;
@@ -341,7 +338,6 @@ public class Antony extends ListenerAdapter {
 		return guildController;
 	}
 
-
 	public static UserController getUserController() {
 		return userController;
 	}
@@ -358,15 +354,12 @@ public class Antony extends ListenerAdapter {
 		return usercount;
 	}
 
-
 	public static void setUsercount(int usercount) {
 		Antony.usercount = usercount;
 	}
 
-
 	public static SoftbanController getSoftbanController() {
 		return softbanController;
 	}
-	
 	
 }

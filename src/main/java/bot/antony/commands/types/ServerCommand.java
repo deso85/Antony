@@ -10,6 +10,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
+/**
+ * A generic ServerCommand Class. Can be used to build new functionality for the bot.
+ * 
+ * @since  7.0.0
+ * @author deso85
+ */
 public class ServerCommand implements IServerCommand {
 	
 	protected Boolean privileged = false;
@@ -19,25 +25,42 @@ public class ServerCommand implements IServerCommand {
 	protected String example;
 	protected Map<String, String> cmdParams = new LinkedHashMap<String, String>(); //<parameter, explanation>
 	
-	// --------------------------------------------------
-	// Constructor
-	// --------------------------------------------------
+	/**
+	 * Constructs a new ServerCommand instance.
+	 */
 	public ServerCommand() {
 		super();
 	}
 	
+	/**
+	 * Constructs a new ServerCommand instance and sets the commands name.
+	 */
 	public ServerCommand(String cmdName) {
 		super();
 		this.name = cmdName;
 	}
 	
-	// --------------------------------------------------
-	// Functions
-	// --------------------------------------------------
+	/**
+	 * Function which gets triggered by the user
+	 * 
+	 * @param  member
+	 *         Member who called the function
+	 * @param  channel
+	 *         Channel in which the function got called
+	 * @param  message
+	 *         Members message which could include parameters
+	 */
 	public void performCommand(Member member, TextChannel channel, Message message) {
 		
 	}
 	
+	/**
+	 * Function to check if the member may use this ServerCommand
+	 * 
+	 * @param  member
+	 * @return boolean
+	 *         if the member may use the called function
+	 */
 	public boolean mayUse(Member member){
 		if(member == null || member.getUser().isBot()) {
 			return false;
@@ -51,6 +74,11 @@ public class ServerCommand implements IServerCommand {
 		return Antony.getGuildController().memberMayUseCommand(member, name);
 	}
 	
+	/**
+	 * Prints a standardized help for the member to let him know how to use the ServerCommand
+	 * 
+	 * @param  channel
+	 */
 	public void printHelp(TextChannel channel) {
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())

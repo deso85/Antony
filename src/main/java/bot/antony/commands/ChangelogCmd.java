@@ -44,7 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
-		changeLog.add(new ChangeLogEntry("13.11.2022 - Version 7.6.1", "Der Code der ***" + cmdPrefix + "giveaway*** Funktion wurde noch einmal umgeschrieben, um sie wartbarer zu machen und kleinere Fehler zu beheben."));
+		changeLog.add(new ChangeLogEntry("15.11.2022 - Version 7.6.1", "Der Code der ***" + cmdPrefix + "giveaway*** Funktion wurde noch einmal umgeschrieben, um sie wartbarer zu machen und kleinere Fehler zu beheben. Es wurden ebenfalls ein paar Fehler der ***" + cmdPrefix + "addhb*** Funktion behoben."));
 		changeLog.add(new ChangeLogEntry("11.11.2022 - Version 7.6.0", "Die ***" + cmdPrefix + "giveaway*** Funktion wurde vollständig überarbeitet. Der Bot startet und beendet nun die Giveaways automatisch."));
 		changeLog.add(new ChangeLogEntry("25.10.2022 - Version 7.5.0", "Programmbibliotheken wurden aufgrund von Security-Schwachstellen aktualisiert. Notwendiges Refactoring wurde vorgenommen."));
 		changeLog.add(new ChangeLogEntry("27.10.2022 - Version 7.4.2", "Es wurden Anpassungen an Nachrichten vorgenommen, um die Interaktion mit Antony zu erleichtern. Kleinere Fehlerbehebungen an den Ausgaben."));

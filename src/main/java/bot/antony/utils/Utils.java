@@ -23,8 +23,10 @@ import bot.antony.commands.antcheck.client.AntCheckClient;
 import jakarta.ws.rs.client.ClientBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 public abstract class Utils {
@@ -187,5 +189,10 @@ public abstract class Utils {
 		client.register(JacksonJsonProvider.class);	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
 		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
 		return target.proxy(AntCheckClient.class);
+	}
+	
+	public static void addBooleanChoiceReactions(Message msg) {
+		msg.addReaction(Emoji.fromUnicode("✅")).queue();
+		msg.addReaction(Emoji.fromUnicode("❌")).queue();
 	}
 }

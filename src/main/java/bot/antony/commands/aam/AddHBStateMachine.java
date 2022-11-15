@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -42,67 +41,57 @@ public class AddHBStateMachine extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		if (event.getAuthor().isBot())
-			return; // don't respond to other bots
-		if (event.getChannel().getIdLong() != channelId)
-			return; // ignore other channels
-		if (event.getAuthor().getIdLong() != authorId)
-			return;
-		if (!awaitApproval) {
-			// Stop because of another command
-			if (event.getMessage().getContentRaw().startsWith("!") || event.getMessage().getContentRaw().toLowerCase().contains("stop")) {
-				event.getJDA().removeEventListener(this);
-				return;
-			}
-			
-			if(errorCount >= 5) {
-				event.getJDA().removeEventListener(this);
-				return;
-			}
-			
-			String content = event.getMessage().getContentRaw();
-			if(content.startsWith("#")) {
-				content = content.replace("#", "");
-			}
-			Message message = event.getMessage();
-
-			// 2. have to name the ant
-			if (antSpecies.equals("")) {
-				handleAntSpecies(content, message);
-			}
-
-			// 4. in which category shall the channel be?
-			if (hbCategory == null && antAvailable == true) {
-				handleCategory(event, content, message);
+		if (mayInteract(event.getMember(), event.getChannel())) {
+			if (!awaitApproval) {
+				// Stop because of another command
+				if (event.getMessage().getContentRaw().startsWith("!") || event.getMessage().getContentRaw().toLowerCase().contains("stop")) {
+					event.getJDA().removeEventListener(this);
+					Antony.getLogger().info("HB dialogue intentionally stopped");
+					return;
+				}
+				
+				if(errorCount >= 5) {
+					event.getJDA().removeEventListener(this);
+					return;
+				}
+				
+				String content = event.getMessage().getContentRaw();
+				if(content.startsWith("#")) {
+					content = content.replace("#", "");
+				}
+				Message message = event.getMessage();
+	
+				// 2. have to name the ant
+				if (antSpecies.equals("")) {
+					handleAntSpecies(content, message);
+				}
+	
+				// 4. in which category shall the channel be?
+				if (hbCategory == null && antAvailable == true) {
+					handleCategory(event, content, message);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
-		if (event.getMember().getUser().isBot())
-			return; // don't respond to bots
-		if (event.getMember().getIdLong() != authorId
-				&& !Antony.getGuildController().memberIsMod(event.getMember())
-				&& !Antony.getGuildController().memberIsAdmin(event.getMember()))
-			return;
-
-		// 1. User has to ensure he wants to write regularly
-		if(rightsResponsibilities == false) {
-			handleRightsResponsibilities(event);
+		if(mayInteract(event.getMember())) {
+			// 1. User has to ensure he wants to write regularly
+			if(rightsResponsibilities == false) {
+				handleRightsResponsibilities(event);
+			}
+			
+			// 3. user has to verify that the colony exists
+			if (antAvailable == false) {
+				handleAntAvailable(event);
+			}
 		}
-		
-		// 3. user has to verify that the colony exists
-		if (antAvailable == false) {
-			handleAntAvailable(event);
-		}
-
 		// 5. mods have to decide if the channel shall be created
-		if (awaitApproval) {
+		if (awaitApproval && mayApprove(event.getMember())) {
 			handleApproval(event);
 		}
 	}
-	
 	
 	private void handleRightsResponsibilities(MessageReactionAddEvent event) {
 		if (event.getMessageIdLong() == startInteractionMsgId) {
@@ -168,11 +157,13 @@ public class AddHBStateMachine extends ListenerAdapter {
 				}
 			} else {
 				errorCount = 0;
-				//antSpecies = species.get(0).getName();
-				antSpecies = antSpeciesChannelName;
+				if(!antSpeciesChannelName.contains("sp.") && !antSpeciesChannelName.contains("cf.")) {
+					antSpecies = species.get(0).getName();
+				} else {
+					antSpecies = antSpeciesChannelName;
+				}
 				message.reply("**" + antSpecies + "** - Hast du die Kolonie schon?").queue(msg -> {
-					msg.addReaction(Emoji.fromUnicode("✅")).queue();
-					msg.addReaction(Emoji.fromUnicode("❌")).queue();
+					Utils.addBooleanChoiceReactions(msg);
 					availCheckMsgID = msg.getIdLong();
 				});
 			}
@@ -236,8 +227,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 			sb.append("Soll der Haltungsbericht angelegt werden?");
 
 			replyChan.sendMessage(sb.toString()).queue(msg -> {
-				msg.addReaction(Emoji.fromUnicode("✅")).queue();
-				msg.addReaction(Emoji.fromUnicode("❌")).queue();
+				Utils.addBooleanChoiceReactions(msg);
 				approvalMsgID = msg.getIdLong();
 			});
 			Antony.getLogger().info("HB dialogue is over and user awaits approval.");
@@ -245,77 +235,99 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleApproval(MessageReactionAddEvent event) {
-		boolean mayApprove = false;
-		ArrayList<String> approvalRoles = new ArrayList<String>();
-		approvalRoles.add("Team-Administration-Strategie");
-		approvalRoles.add("Team-Beiträge");
-		
-		if(Antony.getGuildController().memberIsMod(event.getMember())) {
-			mayApprove = true;
-		} else {
-			for(String roleName : approvalRoles) {
-				if(event.getGuild().getRolesByName(roleName, true).size() > 0) {
-					if(event.getMember().getRoles().contains(event.getGuild().getRolesByName(roleName, true).get(0))) {
-						mayApprove = true;
-						break;
-					}
-				}
-			}
-		}
-		
-		if (mayApprove) {
-			if (event.getMessageIdLong() == approvalMsgID) {
-				if (event.getEmoji().getFormatted().equals("✅")) {
-					// add channel
-					List<Member> members = new ArrayList<Member>();
-					members.add(event.getGuild().getMemberById(authorId));
-					TextChannel newChan = bot.antony.commands.ChannelCmd.addChannel(
-							antSpecies + "—" + event.getGuild().getMemberById(authorId).getEffectiveName(),
-							hbCategory, members, event.getMember(), true);
+		if (event.getMessageIdLong() == approvalMsgID) {
+			if (event.getEmoji().getFormatted().equals("✅")) {
+				// add channel
+				List<Member> members = new ArrayList<Member>();
+				members.add(event.getGuild().getMemberById(authorId));
+				TextChannel newChan = bot.antony.commands.ChannelCmd.addChannel(
+						antSpecies + "—" + event.getGuild().getMemberById(authorId).getEffectiveName(),
+						hbCategory, members, event.getMember(), true);
 
-					event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
-						msg.reply("Der neue Haltungsbericht " + newChan.getAsMention() + " wurde angelegt.")
-								.queue();
-					});
+				event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
+					msg.reply("Der neue Haltungsbericht " + newChan.getAsMention() + " wurde angelegt.")
+							.queue();
+				});
 
-					event.getJDA().removeEventListener(this);
-				} else if (event.getEmoji().getFormatted().equals("❌")) {
-					//Message in channel is not wanted -> switch to pm
-					/*event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
-						msg.reply(
-								"Leider wurde die Erstellung eines Haltungsberichtes abgelehnt. Bitte wende dich für mögliche Rückfragen direkt an die Moderation.")
-								.queue();
-					});*/
-					//send pm
-					Member member = event.getGuild().getMemberById(authorId);
-					try {
-						member.getUser().openPrivateChannel().complete().sendMessage("Deine Anfrage zur Erstellung eines Haltungsberichts wurde bearbeitet und leider abgelehnt. Falls sich nicht schon ein Teammitglied bei dir gemeldet hat, wende dich für Rückfragen bitte direkt an das @Team-Beiträge."
-								+ "\nDas zuständige Team findest du unter: https://discord.com/channels/375031723601297409/789417087382192148/793624078497611786").complete();
-					} catch (ErrorResponseException e) {
-						LocalDateTime now = LocalDateTime.now();
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-						
-						TextChannel channel = Antony.getGuildController().getLogChannel(member.getGuild());
-						
-						if(channel != null) {
-							channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
-							EmbedBuilder eb = new EmbedBuilder()
-									.setColor(Color.red)
-									.setAuthor(member.getUser().getAsTag() + " | ID: " + member.getId(), null, member.getUser().getAvatarUrl())
-									.setDescription("Ich konnte keine PN an den User " + member.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
-											+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
-											+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
-											+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
-									.setFooter(now.format(formatter) + " Uhr");
-							channel.sendMessageEmbeds(eb.build()).complete();
-						}
-						
-						Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + member.getUser().getAsTag() + " (ID " + member.getId() + ")");
+				event.getJDA().removeEventListener(this);
+			} else if (event.getEmoji().getFormatted().equals("❌")) {
+				//Message in channel is not wanted -> switch to pm
+				/*event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
+					msg.reply(
+							"Leider wurde die Erstellung eines Haltungsberichtes abgelehnt. Bitte wende dich für mögliche Rückfragen direkt an die Moderation.")
+							.queue();
+				});*/
+				//send pm
+				Member member = event.getGuild().getMemberById(authorId);
+				try {
+					member.getUser().openPrivateChannel().complete().sendMessage("Deine Anfrage zur Erstellung eines Haltungsberichts wurde bearbeitet und leider abgelehnt. Falls sich nicht schon ein Teammitglied bei dir gemeldet hat, wende dich für Rückfragen bitte direkt an das @Team-Beiträge."
+							+ "\nDas zuständige Team findest du unter: https://discord.com/channels/375031723601297409/789417087382192148/793624078497611786").complete();
+				} catch (ErrorResponseException e) {
+					LocalDateTime now = LocalDateTime.now();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+					
+					TextChannel channel = Antony.getGuildController().getLogChannel(member.getGuild());
+					
+					if(channel != null) {
+						channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
+						EmbedBuilder eb = new EmbedBuilder()
+								.setColor(Color.red)
+								.setAuthor(member.getUser().getAsTag() + " | ID: " + member.getId(), null, member.getUser().getAvatarUrl())
+								.setDescription("Ich konnte keine PN an den User " + member.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
+										+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
+										+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
+										+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
+								.setFooter(now.format(formatter) + " Uhr");
+						channel.sendMessageEmbeds(eb.build()).complete();
 					}
-					event.getJDA().removeEventListener(this);
+					
+					Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + member.getUser().getAsTag() + " (ID " + member.getId() + ")");
 				}
+				event.getJDA().removeEventListener(this);
 			}
 		}
 	}
 
+	private boolean mayInteract(Member member, MessageChannel channel) {
+		if (member.getUser().isBot())
+			return false; // don't respond to other bots
+		if (channel.getIdLong() != channelId)
+			return false; // ignore other channels
+		if (member.getIdLong() == authorId)
+			return true; // Member who started the dialogue may interact
+		
+		return false;
+	}
+	
+	private boolean mayInteract(Member member) {
+		if (member.getUser().isBot())
+			return false; // don't respond to other bots
+		if (member.getIdLong() == authorId)
+			return true; // Member who started the dialogue may interact
+		if(Antony.getGuildController().memberIsMod(member))
+			return true; // Mods (old authorization system) may approve
+		
+		return false;
+	}
+	
+	private boolean mayApprove(Member member) {
+		if (member.getUser().isBot())
+			return false; // don't respond to other bots
+		if (Antony.getGuildController().memberIsMod(member))
+			return true; // Mods (old authorization system) may approve
+		
+		ArrayList<String> approvalRoles = new ArrayList<String>();
+		approvalRoles.add("Team-Administration-Strategie");
+		approvalRoles.add("Team-Beiträge");
+		for(String roleName : approvalRoles) {
+			if(member.getGuild().getRolesByName(roleName, true).size() > 0) { // Guild has special role
+				if(member.getRoles().contains(member.getGuild().getRolesByName(roleName, true).get(0))) { // Member has special role
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 }

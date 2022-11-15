@@ -61,7 +61,7 @@ public class GiveawayController {
 							for(Giveaway giveaway : new ArrayList<Giveaway>(giveaways)) {
 								if(giveaway.hasEnded()) {
 									Guild guild = jda.getGuildById(giveaway.getGuildID());
-									String winner = getWinner(guild, giveaway.getChanID(), giveaway.getMsgID(), giveaway.getWinCount());
+									String winner = getWinner(guild, giveaway.getChanID(), giveaway.getMessageID(), giveaway.getWinCount());
 									String sponsorName = giveaway.getSponsorName();
 									String sponsorAvatar = null;
 									String replyMessage = "Das Giveaway wurde beendet, " + sponsorName + " ist aber nicht mehr auf dem Server... 😲";
@@ -75,7 +75,7 @@ public class GiveawayController {
 									}
 									EmbedBuilder eb = getEmbedBuilder(sponsorName, sponsorAvatar, giveaway.getDescription(), giveaway.getWinCount(), giveaway.getGaEndEpochSeconds());
 									eb.addField("Gewinner", winner, false);
-									Message gaMessage = guild.getTextChannelById(giveaway.getChanID()).retrieveMessageById(giveaway.getMsgID()).complete();
+									Message gaMessage = guild.getTextChannelById(giveaway.getChanID()).retrieveMessageById(giveaway.getMessageID()).complete();
 									gaMessage.editMessageEmbeds(eb.build()).queue();
 									gaMessage.reply(replyMessage).queue();
 									
