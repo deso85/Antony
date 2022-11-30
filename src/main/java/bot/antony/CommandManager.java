@@ -6,9 +6,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.commands.AntonyCmd;
 import bot.antony.commands.ArchiveCmd;
+import bot.antony.commands.BeerCmd;
 import bot.antony.commands.CategoryCmd;
 import bot.antony.commands.ChangelogCmd;
 import bot.antony.commands.ChannelCmd;
+import bot.antony.commands.CoffeeCmd;
 import bot.antony.commands.CommandCmd;
 import bot.antony.commands.GuildCmd;
 import bot.antony.commands.HelpCmd;
@@ -30,6 +32,7 @@ import bot.antony.commands.giveaway.GiveawayCmd;
 import bot.antony.commands.lists.BlacklistCmd;
 import bot.antony.commands.lists.WatchlistCmd;
 import bot.antony.commands.lists.WhitelistCmd;
+import bot.antony.commands.reminder.ReminderCmd;
 import bot.antony.commands.types.IServerCommand;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
@@ -50,9 +53,11 @@ public class CommandManager {
 		commands.put("changelog", new ChangelogCmd());
 		commands.put("addhb", new AddHBCmd());
 		commands.put("archive", new ArchiveCmd());
+		commands.put("beer", new BeerCmd());
 		commands.put("blacklist", new BlacklistCmd());
 		commands.put("category", new CategoryCmd());
 		commands.put("channel", new ChannelCmd());
+		commands.put("coffee", new CoffeeCmd());
 		commands.put("command", new CommandCmd());
 		commands.put("emergency", new EmergencyCmd());
 		commands.put("giveaway", new GiveawayCmd());
@@ -60,6 +65,7 @@ public class CommandManager {
 		commands.put("map", new MapCmd());
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
+		commands.put("reminder", new ReminderCmd());
 		commands.put("shopping", new ShoppingCmd());
 		commands.put("showavatar", new ShowAvatarCmd());
 		commands.put("shutdown", new ShutdownCmd());
@@ -73,6 +79,8 @@ public class CommandManager {
 		aliases.put("einkaufsliste", commands.get("shopping"));
 		aliases.put("karte", commands.get("map"));
 		aliases.put("avatar", commands.get("showavatar"));
+		aliases.put("bier", commands.get("beer"));
+		aliases.put("kaffee", commands.get("coffee"));
 		
 		usrCommands = new ConcurrentHashMap<>();
 		modCommands = new ConcurrentHashMap<>();

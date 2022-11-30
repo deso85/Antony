@@ -17,6 +17,7 @@ import bot.antony.controller.AAMHBController;
 import bot.antony.controller.BlackListController;
 import bot.antony.controller.GiveawayController;
 import bot.antony.controller.GuildController;
+import bot.antony.controller.ReminderController;
 import bot.antony.controller.SoftbanController;
 import bot.antony.controller.UserController;
 import bot.antony.controller.WatchListController;
@@ -66,6 +67,7 @@ public class Antony extends ListenerAdapter {
 	private static UserController userController;
 	private static AAMHBController hbController;
 	private static GiveawayController gaController;
+	private static ReminderController reminderController;
 	private static int usercount;
 	private static String configFile = null;
 
@@ -100,6 +102,7 @@ public class Antony extends ListenerAdapter {
 		userController = new UserController();
 		hbController = new AAMHBController();
 		gaController = new GiveawayController();
+		reminderController = new ReminderController();
 		usercount = 0;
 		
 		try {
@@ -152,6 +155,8 @@ public class Antony extends ListenerAdapter {
 			hbController.setVars(jda);
 			gaController.load();
 			gaController.run(jda);
+			reminderController.load();
+			reminderController.run(jda);
 			//Thread which is used to do timed actions
 			Thread timerThread = new Thread() {
 				public void run() {
@@ -348,6 +353,10 @@ public class Antony extends ListenerAdapter {
 	
 	public static GiveawayController getGiveawayController() {
 		return gaController;
+	}
+	
+	public static ReminderController getReminderController() {
+		return reminderController;
 	}
 	
 	public static int getUsercount() {

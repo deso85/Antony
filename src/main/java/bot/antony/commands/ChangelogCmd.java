@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("30.11.2022 - Version 7.7.0", "Die ***" + cmdPrefix + "reminder*** Funktion wurde hinzugefügt und kann nun genutzt werden, um sich in der Zukunft an etwas erinnern zu lassen."));
 		changeLog.add(new ChangeLogEntry("15.11.2022 - Version 7.6.1", "Der Code der ***" + cmdPrefix + "giveaway*** Funktion wurde noch einmal umgeschrieben, um sie wartbarer zu machen und kleinere Fehler zu beheben. Es wurden ebenfalls ein paar Fehler der ***" + cmdPrefix + "addhb*** Funktion behoben."));
 		changeLog.add(new ChangeLogEntry("11.11.2022 - Version 7.6.0", "Die ***" + cmdPrefix + "giveaway*** Funktion wurde vollständig überarbeitet. Der Bot startet und beendet nun die Giveaways automatisch."));
 		changeLog.add(new ChangeLogEntry("25.10.2022 - Version 7.5.0", "Programmbibliotheken wurden aufgrund von Security-Schwachstellen aktualisiert. Notwendiges Refactoring wurde vorgenommen."));

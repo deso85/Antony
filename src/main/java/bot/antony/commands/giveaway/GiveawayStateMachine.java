@@ -147,7 +147,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 		StringBuilder logMsg = new StringBuilder();
 		logMsg.append("[GiveawayStateMachine] Analyze user input for duration: " + usrInput + " -> ");
 		
-		int pim = 0;		
+		int pim = 0;
 		Pattern pattern = Pattern.compile("\\d+[dhm]");
 		Matcher matcher = pattern.matcher(usrInput);
 		while(matcher.find()) {

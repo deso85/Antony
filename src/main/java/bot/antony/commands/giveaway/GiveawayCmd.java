@@ -25,7 +25,7 @@ public class GiveawayCmd extends ServerCommand {
 		this.privileged = false;
 		this.name = "giveaway";
 		this.description = "Mit diesem Befehl lassen sich Giveaways starten. Der Bot unterstützt bei der Anlage des Giveaways.";
-		this.shortDescription = "Befehl zur starten eines Giveaways.";
+		this.shortDescription = "Befehl zum starten eines Giveaways.";
 		this.example = "reroll https://discord.com/channels/375031723601297409/605451097699647665/1040599569970516039";
 		this.cmdParams.put("start", "Startet den Giveaway-Dialog, um ein neues Giveaway anzulegen");
 		this.cmdParams.put("reroll (Link to Message) [Amount of Winners]", "Lost Gewinner neu aus, benötigt administrative Rechte");
@@ -33,24 +33,28 @@ public class GiveawayCmd extends ServerCommand {
 	
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
-		this.channel = channel;
-		String[] userMessage = message.getContentDisplay().split(" ");
-		
-		if(userMessage.length >= 2) {
-			switch (userMessage[1].toLowerCase()) {
-			case "start":
+		if(mayUse(member)) {
+			this.channel = channel;
+			String[] userMessage = message.getContentDisplay().split(" ");
+			
+			if(userMessage.length >= 2) {
+				switch (userMessage[1].toLowerCase()) {
+				case "start":
+					startGiveaway(message, member);
+					break;
+				case "reroll":
+					if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR))
+						performReroll(userMessage);
+					break;
+				default:
+					printHelp(channel);
+					break;
+				}
+			} else { // no parameters starts the dialogue
 				startGiveaway(message, member);
-				break;
-			case "reroll":
-				if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR))
-					performReroll(userMessage);
-				break;
-			default:
-				printHelp(channel);
-				break;
 			}
-		} else { // no parameters starts the dialogue
-			startGiveaway(message, member);
+		} else {
+			printHelp(channel);
 		}
 	}
 	
