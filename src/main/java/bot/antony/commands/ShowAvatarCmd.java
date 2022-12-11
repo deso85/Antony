@@ -51,7 +51,7 @@ public class ShowAvatarCmd extends ServerCommand {
 		}
 
 		if (member != null) {
-			channel.sendMessage(member.getUser().getEffectiveAvatarUrl() + "?size=2048").queue();
+			channel.sendMessage(member.getEffectiveAvatarUrl() + "?size=2048").queue();
 		} else {
 			channel.sendMessage("Ich konnte niemanden mit dem Namen " + fullMemberName + " finden.").queue();
 		}

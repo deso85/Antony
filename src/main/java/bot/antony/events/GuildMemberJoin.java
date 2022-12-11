@@ -59,7 +59,7 @@ public class GuildMemberJoin extends ListenerAdapter {
 				}
 				sb.append("Discord beigetreten: " + member.getTimeCreated().atZoneSameInstant(ZoneId.systemDefault()).format(formatter) + " Uhr");
 				Antony.getGuildController().getLogChannel(guild).sendMessage("ℹ️ Neu gejointer Account ist jünger als 30 Tage").complete();
-				Antony.getGuildController().getLogChannel(guild).sendMessage(member.getUser().getEffectiveAvatarUrl() + "?size=2048").complete();
+				Antony.getGuildController().getLogChannel(guild).sendMessage(member.getEffectiveAvatarUrl() + "?size=2048").complete();
 				Antony.getGuildController().getLogChannel(guild).sendMessage(sb.toString()).complete();
 			}
 		}
