@@ -38,62 +38,60 @@ public class CommandCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
-		if(mayUse(member)) {
-			String[] userMessage = message.getContentDisplay().split(" ");
-			if (userMessage.length > 1) {
-				switch (userMessage[1].toLowerCase()) {
-				case "list":
-					list(channel);
-					break;
-				case "show":
-					if (userMessage.length > 2) {
-						show(channel, userMessage[2].toLowerCase());
-					} else {
-						printHelp(channel);
-					}
-					break;
-				case "addrole":
-					if (userMessage.length > 3 && !message.getMentions().getRoles().isEmpty()) {
-						addRole(channel, userMessage[2].toLowerCase(), message.getMentions().getRoles().get(0));
-					} else {
-						printHelp(channel);
-					}
-					break;
-				case "addmember":
-					if (userMessage.length > 3 && !message.getMentions().getMembers().isEmpty()) {
-						addMember(channel, userMessage[2].toLowerCase(), message.getMentions().getMembers().get(0));
-					} else {
-						printHelp(channel);
-					}
-					break;
-				case "removerole":
-					if (userMessage.length > 3 && !message.getMentions().getRoles().isEmpty()) {
-						removeRole(channel, userMessage[2].toLowerCase(), message.getMentions().getRoles().get(0));
-					} else {
-						printHelp(channel);
-					}
-					break;
-				case "removemember":
-					if (userMessage.length > 3 && !message.getMentions().getMembers().isEmpty()) {
-						removeMember(channel, userMessage[2].toLowerCase(), message.getMentions().getMembers().get(0));
-					} else {
-						printHelp(channel);
-					}
-					break;
-				case "clear":
-					if (userMessage.length > 2) {
-						clearCommandPermissions(channel, userMessage[2].toLowerCase());
-					} else {
-						printHelp(channel);
-					}
-					break;
-				default:
+		String[] userMessage = message.getContentDisplay().split(" ");
+		if (userMessage.length > 1) {
+			switch (userMessage[1].toLowerCase()) {
+			case "list":
+				list(channel);
+				break;
+			case "show":
+				if (userMessage.length > 2) {
+					show(channel, userMessage[2].toLowerCase());
+				} else {
 					printHelp(channel);
-					break;
 				}
-			} else {
+				break;
+			case "addrole":
+				if (userMessage.length > 3 && !message.getMentions().getRoles().isEmpty()) {
+					addRole(channel, userMessage[2].toLowerCase(), message.getMentions().getRoles().get(0));
+				} else {
+					printHelp(channel);
+				}
+				break;
+			case "addmember":
+				if (userMessage.length > 3 && !message.getMentions().getMembers().isEmpty()) {
+					addMember(channel, userMessage[2].toLowerCase(), message.getMentions().getMembers().get(0));
+				} else {
+					printHelp(channel);
+				}
+				break;
+			case "removerole":
+				if (userMessage.length > 3 && !message.getMentions().getRoles().isEmpty()) {
+					removeRole(channel, userMessage[2].toLowerCase(), message.getMentions().getRoles().get(0));
+				} else {
+					printHelp(channel);
+				}
+				break;
+			case "removemember":
+				if (userMessage.length > 3 && !message.getMentions().getMembers().isEmpty()) {
+					removeMember(channel, userMessage[2].toLowerCase(), message.getMentions().getMembers().get(0));
+				} else {
+					printHelp(channel);
+				}
+				break;
+			case "clear":
+				if (userMessage.length > 2) {
+					clearCommandPermissions(channel, userMessage[2].toLowerCase());
+				} else {
+					printHelp(channel);
+				}
+				break;
+			default:
 				printHelp(channel);
+				break;
 			}
+		} else {
+			printHelp(channel);
 		}
 	}
 

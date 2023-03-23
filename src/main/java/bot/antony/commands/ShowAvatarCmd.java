@@ -55,7 +55,6 @@ public class ShowAvatarCmd extends ServerCommand {
 		} else {
 			channel.sendMessage("Ich konnte niemanden mit dem Namen " + fullMemberName + " finden.").queue();
 		}
-
 	}
 
 	/**

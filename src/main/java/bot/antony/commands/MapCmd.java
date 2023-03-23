@@ -80,7 +80,6 @@ public class MapCmd extends ServerCommand {
 		} else {
 			printHelp(channel);
 		}
-		
 	}
 	
 }

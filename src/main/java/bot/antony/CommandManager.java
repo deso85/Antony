@@ -15,7 +15,7 @@ import bot.antony.commands.CommandCmd;
 import bot.antony.commands.GuildCmd;
 import bot.antony.commands.HelpCmd;
 import bot.antony.commands.MapCmd;
-import bot.antony.commands.Notify;
+import bot.antony.commands.NotifyCmd;
 import bot.antony.commands.PnLinkCmd;
 import bot.antony.commands.ReactionCmd;
 import bot.antony.commands.Sells;
@@ -63,6 +63,7 @@ public class CommandManager {
 		commands.put("giveaway", new GiveawayCmd());
 		commands.put("guild", new GuildCmd());
 		commands.put("map", new MapCmd());
+		commands.put("notify", new NotifyCmd());
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
 		commands.put("reminder", new ReminderCmd());
@@ -86,7 +87,6 @@ public class CommandManager {
 		modCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		usrCommands.put("notify", new Notify());
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
 		usrCommands.put("userinfo", new UserInfo());
@@ -114,13 +114,17 @@ public class CommandManager {
 		//Commands
 		ServerCommand cmd;
 		if ((cmd = this.commands.get(command.toLowerCase())) != null) {
-			cmd.performCommand(member, channel, message);
-			return true;
+			if(cmd.mayUse(member)) {
+				cmd.performCommand(member, channel, message);
+				return true;
+			}
 		}
 		//Aliases
 		if((cmd = this.aliases.get(command.toLowerCase())) != null) {
-			cmd.performCommand(member, channel, message);
-			return true;
+			if(cmd.mayUse(member)) {
+				cmd.performCommand(member, channel, message);
+				return true;
+			}
 		}
 		return false;
 	}

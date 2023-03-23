@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>7.7.2</version>
+	<version>7.7.3</version>
 
 	<properties>
 		<resteasy.version>6.2.1.Final</resteasy.version>
@@ -12,7 +12,7 @@
 		<jackson.version>2.14.0-rc3</jackson.version>
 		<hibernate.version>5.6.5.Final</hibernate.version>
 		<hibernate.validator.version>7.0.3.Final</hibernate.validator.version>
-		<jda.version>5.0.0-beta.2</jda.version>
+		<jda.version>5.0.0-beta.6</jda.version>
 		<jda.utilities.version>3.0.5</jda.utilities.version>
 		<sqlite.version>3.36.0.3</sqlite.version>
 		<sqlite.dialect.version>0.1.2</sqlite.dialect.version>

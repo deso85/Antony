@@ -25,7 +25,6 @@ public class ShoppingCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, TextChannel channel, Message message) {
-		
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())
 				.setTitle("Kaufempfehlungen")
