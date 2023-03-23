@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>7.7.1</version>
+	<version>7.7.2</version>
 
 	<properties>
 		<resteasy.version>6.2.1.Final</resteasy.version>

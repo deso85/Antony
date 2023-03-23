@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("06.01.2023 - Version 7.7.2", "Wenn ein Haltungsbericht geschlossen bzw. pausiert wurde, konnte es vorkommen, dass der Verfasser des HBs wegen ausbleibender Updates angeschrieben wurde, wenn er zuvor auch schon erinnert wurde. Dieser Fehler wurde behoben. Zudem wurden die Artikel aus dem ***" + cmdPrefix + "shopping*** Befehl kontrolliert und teilweise ausgetauscht."));
 		changeLog.add(new ChangeLogEntry("11.12.2022 - Version 7.7.1", "User Avatare werden jetzt aus dem Server-Profil ausgelesen und angezeigt."));
 		changeLog.add(new ChangeLogEntry("30.11.2022 - Version 7.7.0", "Die ***" + cmdPrefix + "reminder*** Funktion wurde hinzugefügt und kann nun genutzt werden, um sich in der Zukunft an etwas erinnern zu lassen."));
 		changeLog.add(new ChangeLogEntry("15.11.2022 - Version 7.6.1", "Der Code der ***" + cmdPrefix + "giveaway*** Funktion wurde noch einmal umgeschrieben, um sie wartbarer zu machen und kleinere Fehler zu beheben. Es wurden ebenfalls ein paar Fehler der ***" + cmdPrefix + "addhb*** Funktion behoben."));

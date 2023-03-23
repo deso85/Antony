@@ -217,9 +217,15 @@ public class AAMHBController {
 	private void trimOverdueList(){
 		Map<Long, String> newList = new HashMap<Long, String>();
 		newList.putAll(overdueList);
+		ArrayList<Long> chanIDs = getChanIDs(relChans);
 		for (Map.Entry<Long, String> entry : overdueList.entrySet()) {
-			if(!getChanIDs(relChans).contains(entry.getKey())) {
+			if(chanIDs.contains(entry.getKey())) {
 				newList.remove(entry.getKey());
+			} else {
+				String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
+				if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
+					newList.remove(entry.getKey());
+				}
 			}
 		}
 		overdueList = newList;
