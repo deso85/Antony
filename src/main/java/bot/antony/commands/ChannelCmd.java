@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
+import bot.antony.comparators.ChannelComparator;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -33,6 +34,7 @@ public class ChannelCmd extends ServerCommand {
 		this.example = "list abandoned";
 		this.cmdParams.put("add [sort, #referenceChannel, @Member] channelName", "Legt einen neuen Kanal mit den Berechtigungen der übergeordneten Kategorie an.");
 		this.cmdParams.put("list (abandoned | verlassen) [monate]", "Listet Kanäle auf.");
+		this.cmdParams.put("move [sort] #channel (Kategorie | #referenceChannel)", "Verschiebt einen Kanal in eine Kategorie. Die Ziel-Kategorie kann ausgeschrieben oder ein anderer Kanal als Referenz verwendet werden. Der Parameter *sort* kann genutzt werden, um die Kategorie im Anschluss zu sortieren.");
 	}
 	
 	// --------------------------------------------------
@@ -56,7 +58,7 @@ public class ChannelCmd extends ServerCommand {
 						refChannel = message.getMentions().getChannels(TextChannel.class).get(0);
 					}
 					
-					Boolean sort = false;
+					boolean sort = false;
 					if(userMessage[2].equalsIgnoreCase("sort")) {
 						sort = true;
 					}
@@ -112,6 +114,79 @@ public class ChannelCmd extends ServerCommand {
 					printHelp(channel);
 				}
 				break;
+			case "move":
+				
+				if(userMessage.length > 3 && message.getMentions().getChannels(TextChannel.class).size() > 0) {
+					TextChannel chan = message.getMentions().getChannels(TextChannel.class).get(0);
+					StringBuilder catName = new StringBuilder();
+					Category cat = null;
+					boolean sort = false;
+					
+					//Check if Category shall be sorted
+					if(userMessage[2].toLowerCase().equals("sort")) {
+						sort = true;
+					}
+					
+					//Get Category to move channel
+					if(message.getMentions().getChannels(TextChannel.class).size() > 1) {
+						cat = message.getMentions().getChannels(TextChannel.class).get(1).getParentCategory();
+					} else {
+						int offset = 0;
+						if(sort) {
+							offset = 1;
+						}
+						for(int i = 3+offset; i < userMessage.length; i++) {
+							catName.append(userMessage[i]);
+							if(i+1 < userMessage.length) {
+								catName.append(" ");
+							}
+						}
+						if(guild.getCategoriesByName(catName.toString(), true).size() > 0) {
+							cat = guild.getCategoriesByName(catName.toString(), true).get(0);
+						}
+					}
+					
+					//move channel if category exists
+					if(cat != null) {
+						if(sort) {
+							guild.modifyTextChannelPositions()
+								.selectPosition(chan)
+								.setCategory(cat)
+								.sortOrder(new ChannelComparator())
+								.queue();
+						} else {
+							guild.modifyTextChannelPositions()
+								.selectPosition(chan)
+								.setCategory(cat)
+								.queue();
+						}
+						channel.sendMessage("Der Kanal wurde verschoben.").queue();
+					} else {
+						channel.sendMessage("Die Kategorie \"" + catName.toString() + "\" existiert nicht.").queue();
+					}
+					
+					
+				} else {
+					printHelp(channel);
+				}
+				
+				break;
+			
+			case "sync":
+				if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+					for(TextChannel textChan : message.getMentions().getChannels(TextChannel.class)) {
+						textChan.getManager().sync().complete();
+					}
+					if(message.getMentions().getChannels(TextChannel.class).size() < 2) {
+						channel.sendMessage("Der Kanal wurden synchronisiert.").queue();
+					} else {
+						channel.sendMessage("Die Kanäle wurden synchronisiert.").queue();
+					}
+				} else {
+					printHelp(channel);
+				}
+				break;
+				
 			default:
 				printHelp(channel);
 				break;
