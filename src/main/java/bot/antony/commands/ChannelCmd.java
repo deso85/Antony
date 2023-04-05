@@ -148,18 +148,15 @@ public class ChannelCmd extends ServerCommand {
 					
 					//move channel if category exists
 					if(cat != null) {
+
 						if(sort) {
-							guild.modifyTextChannelPositions()
-								.selectPosition(chan)
-								.setCategory(cat)
-								.sortOrder(new ChannelComparator())
-								.queue();
+							chan.getManager().setParent(cat).delay(500, TimeUnit.MILLISECONDS).queue(v -> {
+								chan.getParentCategory().modifyTextChannelPositions().sortOrder(new ChannelComparator()).queue();
+							});
 						} else {
-							guild.modifyTextChannelPositions()
-								.selectPosition(chan)
-								.setCategory(cat)
-								.queue();
+							chan.getManager().setParent(cat).queue();
 						}
+						
 						channel.sendMessage("Der Kanal wurde verschoben.").queue();
 					} else {
 						channel.sendMessage("Die Kategorie \"" + catName.toString() + "\" existiert nicht.").queue();
