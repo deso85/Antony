@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("11.04.2023 - Version 7.7.6", "Bugfix-Release: Der ***" + cmdPrefix + "sells*** Befehl gibt nun auch Ergebnisse zurück, wenn das Zeichenlimit von Discord überschritten wird."));
 		changeLog.add(new ChangeLogEntry("05.04.2023 - Version 7.7.5", "Bugfix-Release: Es wurden ungewollt alle Kanäle sortiert, wenn ein Kanal verschoben wurde. Das passiert nun nicht mehr."));
 		changeLog.add(new ChangeLogEntry("04.04.2023 - Version 7.7.4", "Kanäle lassen sich jetzt über den Befehl ***" + cmdPrefix + "channel*** in andere Kategorien verschieben und mit dieser synchronisieren."));
 		changeLog.add(new ChangeLogEntry("23.03.2023 - Version 7.7.3", "Verwendete Programmbibliotheken aktualisiert. ***" + cmdPrefix + "notify*** wurde auf das aktuelle Berechtigungssystem portiert. Die Berechtigungsprüfung wurde vorgelagert, um dessen Ausführung sicherzustellen."));

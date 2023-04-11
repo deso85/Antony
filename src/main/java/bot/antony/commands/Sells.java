@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -173,14 +174,18 @@ public class Sells implements IServerCommand {
 	}
 
 	private void handleMultipleSpeciesWithVariantsFound(TextChannel channel, List<Specie> speciesWithVariants) {
-		StringBuilder sb = new StringBuilder("Folgende Ameisenarten wurden im Verkauf gefunden:\n\n");
+		StringBuilder sb = new StringBuilder("Folgende " + speciesWithVariants.size() + " Ameisenarten wurden im Verkauf gefunden:\n\n");
 		for (Specie specie : speciesWithVariants) {
+			if((sb.length() + specie.getName().length() + 6) >= 2000) {
+				channel.sendMessage(sb.toString()).queue();
+				sb = new StringBuilder();
+			}
 			sb.append("*- ");
 			sb.append(specie.getName());
 			sb.append("*\n");
 		}
 		sb.append("\nBitte schränke die Suche weiter ein.");
-		channel.sendMessage(sb.toString()).queue();
+		channel.sendMessage(sb.toString()).delay(500, TimeUnit.MILLISECONDS).queue();
 	}
 
 }
