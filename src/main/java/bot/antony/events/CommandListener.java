@@ -2,7 +2,7 @@ package bot.antony.events;
 
 import bot.antony.Antony;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -14,8 +14,9 @@ public class CommandListener extends ListenerAdapter {
 		String message = event.getMessage().getContentDisplay();
 		
 		//check which channel ...
-		if(event.isFromType(ChannelType.TEXT)) {
-			final TextChannel channel = event.getChannel().asTextChannel();
+		if(event.isFromType(ChannelType.TEXT) || event.isFromThread() &&
+				!event.getAuthor().equals(event.getJDA().getSelfUser())) {
+			final GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
 			
 			//!cmd arg0 arg1 arg2 ...
 			if(message.startsWith(Antony.getCmdPrefix())) {

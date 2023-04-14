@@ -4,7 +4,7 @@ import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public class BeerCmd extends ServerCommand {
@@ -24,7 +24,7 @@ public class BeerCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		
 		Thread timerThread = new Thread() {
 			public void run() {

@@ -13,15 +13,16 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class Softban implements IServerCommand {
 	
 	Guild guild;
-	TextChannel channel;
+	GuildMessageChannel channel;
 	TextChannel responseChannel;
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		this.channel = channel;
 		guild = channel.getGuild();
 		responseChannel = Antony.getGuildController().getLogChannel(channel.getGuild());

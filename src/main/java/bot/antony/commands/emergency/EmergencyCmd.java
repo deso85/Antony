@@ -10,7 +10,7 @@ import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class EmergencyCmd extends ServerCommand {
 
@@ -32,7 +32,7 @@ public class EmergencyCmd extends ServerCommand {
 	}
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 
 		if (userMessage.length > 1) {

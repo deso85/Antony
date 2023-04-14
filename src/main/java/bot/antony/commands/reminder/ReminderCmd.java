@@ -9,7 +9,7 @@ import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
  * Command to interact with the {@link bot.antony.controller.ReminderController ReminderController}.
@@ -32,7 +32,7 @@ public class ReminderCmd extends ServerCommand {
 	}
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		if(mayUse(member)) {
 			String[] userMessage = message.getContentDisplay().split(" ");
 			

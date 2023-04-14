@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 public class ArchiveCmd extends ServerCommand {
@@ -48,7 +49,7 @@ public class ArchiveCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		if (userMessage.length > 1 && message.getMentions().getChannels(TextChannel.class).size() > 0) {
 			TextChannel archiveChan = message.getMentions().getChannels(TextChannel.class).get(0);

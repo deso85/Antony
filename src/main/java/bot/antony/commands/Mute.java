@@ -4,14 +4,14 @@ import bot.antony.Antony;
 import bot.antony.commands.types.IServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class Mute implements IServerCommand {
 
-	private TextChannel channel;
+	private GuildMessageChannel channel;
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		setChannel(channel);
 
 		
@@ -26,11 +26,11 @@ public class Mute implements IServerCommand {
 	// Getter & Setter
 	// --------------------------------------------------
 
-	public TextChannel getChannel() {
+	public GuildMessageChannel getChannel() {
 		return channel;
 	}
 
-	public void setChannel(TextChannel channel) {
+	public void setChannel(GuildMessageChannel channel) {
 		this.channel = channel;
 	}
 

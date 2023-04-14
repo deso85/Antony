@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public class NotifyCmd extends ServerCommand {
@@ -36,7 +37,7 @@ public class NotifyCmd extends ServerCommand {
 	}
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		NotificationController nc = Antony.getNotificationController();
 		GuildData guild = new GuildData(message.getGuild());

@@ -7,7 +7,7 @@ import bot.antony.commands.types.ServerCommand;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class ShowAvatarCmd extends ServerCommand {
 	
@@ -27,7 +27,7 @@ public class ShowAvatarCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		String fullMemberName = "";
 		
@@ -65,7 +65,7 @@ public class ShowAvatarCmd extends ServerCommand {
 	 * @param searchText the name to look for
 	 * @return IUser | null
 	 */
-	public Member findUserIn(TextChannel channel, String searchText) {
+	public Member findUserIn(GuildMessageChannel channel, String searchText) {
 		List<Member> users = channel.getGuild().getMembers();
 		List<Member> potential = new ArrayList<>();
 		int smallestDiffIndex = 0, smallestDiff = -1;

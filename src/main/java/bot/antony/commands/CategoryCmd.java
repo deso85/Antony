@@ -13,10 +13,11 @@ import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class CategoryCmd extends ServerCommand {
 
-	private TextChannel channel;
+	private GuildMessageChannel channel;
 
 	// --------------------------------------------------
 	// Constructor
@@ -37,7 +38,7 @@ public class CategoryCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		this.channel = channel;
 		String[] userMessage = message.getContentDisplay().split(" ");
 		List<String> usrMsgList = Arrays.asList(userMessage);

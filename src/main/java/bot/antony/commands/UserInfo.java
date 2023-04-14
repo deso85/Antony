@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class UserInfo implements IServerCommand {
 
@@ -31,7 +31,7 @@ public class UserInfo implements IServerCommand {
 	
 
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member m, GuildMessageChannel channel, Message message) {
 		usrCntrl = Antony.getUserController();
 		guild = channel.getGuild();
 		setMemberList(guild.getMembers().stream().collect(Collectors.toList()));
@@ -247,7 +247,7 @@ public class UserInfo implements IServerCommand {
 	 * @param searchText the name to look for
 	 * @return IUser | null
 	 */
-	public Member findUserIn(TextChannel channel, String searchText) {
+	public Member findUserIn(GuildMessageChannel channel, String searchText) {
 		// List<Member> users = channel.getGuild().getMembers();
 		List<Member> users = getMemberList();
 		List<Member> potential = new ArrayList<>();

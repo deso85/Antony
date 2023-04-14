@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class CommandCmd extends ServerCommand {
 
@@ -37,7 +37,7 @@ public class CommandCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		if (userMessage.length > 1) {
 			switch (userMessage[1].toLowerCase()) {
@@ -95,7 +95,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 
-	public void list(TextChannel channel) {
+	public void list(GuildMessageChannel channel) {
 		StringBuilder retVal = new StringBuilder();
 		
 		if(Antony.getCmdMan().getCommands().isEmpty()) {
@@ -116,7 +116,7 @@ public class CommandCmd extends ServerCommand {
 		channel.sendMessage(retVal.toString()).queue();
 	}
 	
-	public void show(TextChannel channel, String cmdName) {
+	public void show(GuildMessageChannel channel, String cmdName) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			retVal.append("**" + Antony.getCmdPrefix() + cmdName + "** - Berechtigungen:");
@@ -166,7 +166,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private void addRole(TextChannel channel, String cmdName, Role role) {
+	private void addRole(GuildMessageChannel channel, String cmdName, Role role) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -180,7 +180,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private void addMember(TextChannel channel, String cmdName, Member member) {
+	private void addMember(GuildMessageChannel channel, String cmdName, Member member) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			if(Antony.getCmdMan().getCommand(cmdName).isPrivileged()) {
@@ -198,7 +198,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private void removeRole(TextChannel channel, String cmdName, Role role) {
+	private void removeRole(GuildMessageChannel channel, String cmdName, Role role) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			if(Antony.getCmdMan().getCommand(cmdName).isPrivileged()) {
@@ -216,7 +216,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private void removeMember(TextChannel channel, String cmdName, Member member) {
+	private void removeMember(GuildMessageChannel channel, String cmdName, Member member) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -230,7 +230,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private void clearCommandPermissions(TextChannel channel, String cmdName) {
+	private void clearCommandPermissions(GuildMessageChannel channel, String cmdName) {
 		if(hasCommand(channel, cmdName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -246,7 +246,7 @@ public class CommandCmd extends ServerCommand {
 		}
 	}
 	
-	private boolean hasCommand(TextChannel channel, String cmdName) {
+	private boolean hasCommand(GuildMessageChannel channel, String cmdName) {
 		if(Antony.getCmdMan().hasCommand(cmdName)) {
 			return true;
 		} else {

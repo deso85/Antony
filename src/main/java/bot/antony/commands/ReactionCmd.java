@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class ReactionCmd extends ServerCommand {
 
@@ -38,7 +38,7 @@ public class ReactionCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		if (userMessage.length > 1) {
 			switch (userMessage[1].toLowerCase()) {
@@ -96,7 +96,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 
-	public void list(TextChannel channel) {
+	public void list(GuildMessageChannel channel) {
 		StringBuilder retVal = new StringBuilder();
 		
 		if(Antony.getReactionMan().getReactions().isEmpty()) {
@@ -121,7 +121,7 @@ public class ReactionCmd extends ServerCommand {
 		channel.sendMessage(retVal.toString()).queue();
 	}
 	
-	public void show(TextChannel channel, String reactionName) {
+	public void show(GuildMessageChannel channel, String reactionName) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			if(channel.getGuild().getEmojisByName(reactionName, false).isEmpty()) {
@@ -176,7 +176,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private void addRole(TextChannel channel, String reactionName, Role role) {
+	private void addRole(GuildMessageChannel channel, String reactionName, Role role) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			if(Antony.getReactionMan().getReaction(reactionName).isPrivileged()) {
@@ -194,7 +194,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private void addMember(TextChannel channel, String reactionName, Member member) {
+	private void addMember(GuildMessageChannel channel, String reactionName, Member member) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			if(Antony.getReactionMan().getReaction(reactionName).isPrivileged()) {
@@ -212,7 +212,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private void removeRole(TextChannel channel, String reactionName, Role role) {
+	private void removeRole(GuildMessageChannel channel, String reactionName, Role role) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -226,7 +226,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private void removeMember(TextChannel channel, String reactionName, Member member) {
+	private void removeMember(GuildMessageChannel channel, String reactionName, Member member) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -240,7 +240,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private void clearReactionPermissions(TextChannel channel, String reactionName) {
+	private void clearReactionPermissions(GuildMessageChannel channel, String reactionName) {
 		if(hasReaction(channel, reactionName)) {
 			StringBuilder retVal = new StringBuilder();
 			GuildData guildData = Antony.getGuildController().loadGuildData(channel.getGuild());
@@ -262,7 +262,7 @@ public class ReactionCmd extends ServerCommand {
 		}
 	}
 	
-	private boolean hasReaction(TextChannel channel, String reactionName) {
+	private boolean hasReaction(GuildMessageChannel channel, String reactionName) {
 		if(Antony.getReactionMan().hasReaction(reactionName)) {
 			return true;
 		} else {

@@ -7,7 +7,7 @@ import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class HelpCmd extends ServerCommand {
 
@@ -28,7 +28,7 @@ public class HelpCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
 		if (userMessage.length > 1) {
 			if(Antony.getCmdMan().getAvailableCommands(member).get(userMessage[1].toLowerCase()) != null) {
@@ -41,7 +41,7 @@ public class HelpCmd extends ServerCommand {
 		}
 	}
 	
-	public void printHelp(TextChannel channel, Member member) {
+	public void printHelp(GuildMessageChannel channel, Member member) {
 		StringBuilder helptext = new StringBuilder();
 		helptext.append("Folgende Befehle stehen dir zur Verfügung:\n");
 		for(Entry<String, ServerCommand> entry : Antony.getCmdMan().getAvailableCommands(member).entrySet()) {

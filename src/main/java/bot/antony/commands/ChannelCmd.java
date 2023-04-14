@@ -15,12 +15,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class ChannelCmd extends ServerCommand {
 
-	private TextChannel channel;
+	private GuildMessageChannel channel;
 	
 	// --------------------------------------------------
 	// Constructor
@@ -41,7 +43,7 @@ public class ChannelCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		this.channel = channel;
 		String[] userMessage = message.getContentDisplay().split(" ");
 		Guild guild = message.getGuild();
@@ -51,11 +53,16 @@ public class ChannelCmd extends ServerCommand {
 			switch (userMessage[1].toLowerCase()) {
 			case "add":
 				
-				if(userMessage.length > 2) {
+				if(userMessage.length > 2 &&
+						(channel.getType().equals(ChannelType.TEXT) ||
+								message.getMentions().getChannels(TextChannel.class).size() > 0)) {
 					String channelName = userMessage[userMessage.length-1];
-					TextChannel refChannel = channel;
+					TextChannel refChannel;
+					
 					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
 						refChannel = message.getMentions().getChannels(TextChannel.class).get(0);
+					} else {
+						refChannel = (TextChannel) channel;
 					}
 					
 					boolean sort = false;

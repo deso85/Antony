@@ -23,14 +23,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class Sells implements IServerCommand {
 
 	static Logger logger = LoggerFactory.getLogger(Sells.class);
 
 	@Override
-	public void performCommand(Member m, TextChannel channel, Message message) {
+	public void performCommand(Member m, GuildMessageChannel channel, Message message) {
 
 		AntCheckClient antCheckClient = Utils.getAntCheckClient();
 
@@ -93,7 +93,7 @@ public class Sells implements IServerCommand {
 		return sb.toString();
 	}
 
-	private void handleOnlyOneSpecieWithVariant(TextChannel channel, AntCheckClient client, List<Specie> speciesWithVariants) {
+	private void handleOnlyOneSpecieWithVariant(GuildMessageChannel channel, AntCheckClient client, List<Specie> speciesWithVariants) {
 		Specie specie = speciesWithVariants.get(0);
 		List<Variant> variants = client.getVariants(specie.getId(), null);
 		List<Variant> variantsWithShopIds = variants.stream()
@@ -173,7 +173,7 @@ public class Sells implements IServerCommand {
 			channel.sendMessageEmbeds(eb.build()).complete();
 	}
 
-	private void handleMultipleSpeciesWithVariantsFound(TextChannel channel, List<Specie> speciesWithVariants) {
+	private void handleMultipleSpeciesWithVariantsFound(GuildMessageChannel channel, List<Specie> speciesWithVariants) {
 		StringBuilder sb = new StringBuilder("Folgende " + speciesWithVariants.size() + " Ameisenarten wurden im Verkauf gefunden:\n\n");
 		for (Specie specie : speciesWithVariants) {
 			if((sb.length() + specie.getName().length() + 6) >= 2000) {

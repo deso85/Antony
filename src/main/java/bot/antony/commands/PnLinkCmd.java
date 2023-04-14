@@ -3,7 +3,7 @@ package bot.antony.commands;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class PnLinkCmd extends ServerCommand {
 
@@ -24,7 +24,7 @@ public class PnLinkCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		if (message.getMentions().getChannels().size() > 0) {
 			channel.sendMessage("Hier ist der Link zu deinem Kanal *(Entferne das Leerzeichen vor \">\")*:\n"
 					+ "<#" + message.getMentions().getChannels().get(0).getId() + " >").complete();

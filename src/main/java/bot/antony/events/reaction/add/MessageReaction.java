@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -20,7 +21,7 @@ public class MessageReaction {
 	protected Emoji emote;
 	protected Guild guild;
 	protected Message message;
-	protected TextChannel responseChannel;	//Channel to respond to reaction
+	protected GuildMessageChannel responseChannel;	//Channel to respond to reaction
 	protected Member reactor;
 	protected StringBuilder logMessage = new StringBuilder();
 	
@@ -87,7 +88,7 @@ public class MessageReaction {
 		this.emote = event.getEmoji();
 		this.guild = event.getGuild();
 		this.message = event.retrieveMessage().complete();
-		this.responseChannel = message.getChannel().asTextChannel();
+		this.responseChannel = message.getChannel().asGuildMessageChannel();
 		this.reactor = event.getMember();
 	}
 
@@ -157,7 +158,7 @@ public class MessageReaction {
 		this.message = message;
 	}
 
-	public TextChannel getResponseChannel() {
+	public GuildMessageChannel getResponseChannel() {
 		return responseChannel;
 	}
 

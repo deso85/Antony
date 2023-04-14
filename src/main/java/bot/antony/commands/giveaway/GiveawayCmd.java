@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
  * Command to interact with the {@link bot.antony.controller.GiveawayController GiveawayController}.
@@ -15,7 +16,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
  */
 public class GiveawayCmd extends ServerCommand {
 	
-	private TextChannel channel;
+	private GuildMessageChannel channel;
 	
 	/**
      * Constructs a new GiveawayCmd instance, which can be used to interact with the {@link bot.antony.controller.GiveawayController GiveawayController}.
@@ -32,7 +33,7 @@ public class GiveawayCmd extends ServerCommand {
 	}
 	
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		if(mayUse(member)) {
 			this.channel = channel;
 			String[] userMessage = message.getContentDisplay().split(" ");

@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 /**
  * A generic ServerCommand Class. Can be used to build new functionality for the bot.
@@ -50,7 +50,7 @@ public class ServerCommand implements IServerCommand {
 	 * @param  message
 	 *         Members message which could include parameters
 	 */
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		
 	}
 	
@@ -79,7 +79,7 @@ public class ServerCommand implements IServerCommand {
 	 * 
 	 * @param  channel
 	 */
-	public void printHelp(TextChannel channel) {
+	public void printHelp(GuildMessageChannel channel) {
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())
 				.setTitle(Antony.getCmdPrefix() + name)

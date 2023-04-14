@@ -5,7 +5,7 @@ import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class ShoppingCmd extends ServerCommand {
 	
@@ -24,7 +24,7 @@ public class ShoppingCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Antony.getBaseColor())
 				.setTitle("Kaufempfehlungen")

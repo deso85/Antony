@@ -9,7 +9,7 @@ import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class ChangelogCmd extends ServerCommand {
 
@@ -28,7 +28,7 @@ public class ChangelogCmd extends ServerCommand {
 	// Functions
 	// --------------------------------------------------
 	@Override
-	public void performCommand(Member member, TextChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony - Changelog***")
 				.setColor(Antony.getBaseColor())
 				.setThumbnail(channel.getJDA().getSelfUser().getEffectiveAvatarUrl())
@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("15.04.2023 - Version 7.8.0", "Antony wurde so umgebaut, dass Commands nun auch im Forum und in Threads genutzt werden können."));
 		changeLog.add(new ChangeLogEntry("11.04.2023 - Version 7.7.6", "Bugfix-Release: Der ***" + cmdPrefix + "sells*** Befehl gibt nun auch Ergebnisse zurück, wenn das Zeichenlimit von Discord überschritten wird."));
 		changeLog.add(new ChangeLogEntry("05.04.2023 - Version 7.7.5", "Bugfix-Release: Es wurden ungewollt alle Kanäle sortiert, wenn ein Kanal verschoben wurde. Das passiert nun nicht mehr."));
 		changeLog.add(new ChangeLogEntry("04.04.2023 - Version 7.7.4", "Kanäle lassen sich jetzt über den Befehl ***" + cmdPrefix + "channel*** in andere Kategorien verschieben und mit dieser synchronisieren."));

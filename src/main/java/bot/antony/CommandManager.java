@@ -37,7 +37,7 @@ import bot.antony.commands.types.IServerCommand;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class CommandManager {
 
@@ -95,7 +95,7 @@ public class CommandManager {
 		modCommands.put("softban", new Softban());
 	}
 
-	public boolean perform(String command, Member member, TextChannel channel, Message message) {
+	public boolean perform(String command, Member member, GuildMessageChannel channel, Message message) {
 
 		IServerCommand icmd;
 		//Commands for everyone
