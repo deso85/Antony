@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import bot.antony.Antony;
-import bot.antony.commands.types.IServerCommand;
+import bot.antony.commands.types.ServerCommand;
 import bot.antony.controller.UserController;
 import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
-public class UserInfo implements IServerCommand {
+public class UserInfoCmd extends ServerCommand {
 
 	private UserController usrCntrl;
 	private List<Member> memberList;
@@ -29,9 +29,21 @@ public class UserInfo implements IServerCommand {
 	private String fullMemberName;
 	private Guild guild;
 	
+	// --------------------------------------------------
+	// Constructor
+	// --------------------------------------------------
+	public UserInfoCmd() {
+		super();
+		this.privileged = false;
+		this.name = "userinfo";
+		this.description = "Zeigt Details über einen Benutzer.";
+		this.shortDescription = "Zeigt Details über einen Benutzer.";
+		this.example = "MemberName";
+		this.cmdParams.put("[@Member | MemberName | UserID]", "Zeigt Informationen über den referenzierten Benutzer.");
+	}
 
 	@Override
-	public void performCommand(Member m, GuildMessageChannel channel, Message message) {
+	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		usrCntrl = Antony.getUserController();
 		guild = channel.getGuild();
 		setMemberList(guild.getMembers().stream().collect(Collectors.toList()));
@@ -44,7 +56,7 @@ public class UserInfo implements IServerCommand {
 		});
 
 		// initially set the member who called the function
-		setMember(m);
+		setMember(member);
 		
 		// overwrite member if needed
 		if (userMessage.length > 1) {

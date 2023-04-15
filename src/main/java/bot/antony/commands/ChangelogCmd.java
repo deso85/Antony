@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("15.04.2023 - Version 7.8.1", "Die ***" + cmdPrefix + "userinfo*** Funktion wurde auf das aktuelle Berechtigungssysten portiert. Vorbereitung einer zusätzlichen Sortierfunktion für Kanäle wurde implementiert."));
 		changeLog.add(new ChangeLogEntry("15.04.2023 - Version 7.8.0", "Antony wurde so umgebaut, dass Commands nun auch im Forum und in Threads genutzt werden können."));
 		changeLog.add(new ChangeLogEntry("11.04.2023 - Version 7.7.6", "Bugfix-Release: Der ***" + cmdPrefix + "sells*** Befehl gibt nun auch Ergebnisse zurück, wenn das Zeichenlimit von Discord überschritten wird."));
 		changeLog.add(new ChangeLogEntry("05.04.2023 - Version 7.7.5", "Bugfix-Release: Es wurden ungewollt alle Kanäle sortiert, wenn ein Kanal verschoben wurde. Das passiert nun nicht mehr."));

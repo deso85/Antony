@@ -25,7 +25,7 @@ import bot.antony.commands.ShowAvatarCmd;
 import bot.antony.commands.ShutdownCmd;
 import bot.antony.commands.Softban;
 import bot.antony.commands.UserCmd;
-import bot.antony.commands.UserInfo;
+import bot.antony.commands.UserInfoCmd;
 import bot.antony.commands.aam.AddHBCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
 import bot.antony.commands.giveaway.GiveawayCmd;
@@ -71,6 +71,7 @@ public class CommandManager {
 		commands.put("showavatar", new ShowAvatarCmd());
 		commands.put("shutdown", new ShutdownCmd());
 		commands.put("user", new UserCmd());
+		commands.put("userinfo", new UserInfoCmd());
 		commands.put("watchlist", new WatchlistCmd());
 		commands.put("whitelist", new WhitelistCmd());
 		
@@ -89,7 +90,6 @@ public class CommandManager {
 		// Everyone
 		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
-		usrCommands.put("userinfo", new UserInfo());
 
 		// Mod
 		modCommands.put("softban", new Softban());

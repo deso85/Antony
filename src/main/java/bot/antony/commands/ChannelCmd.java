@@ -37,6 +37,8 @@ public class ChannelCmd extends ServerCommand {
 		this.cmdParams.put("add [sort, #referenceChannel, @Member] channelName", "Legt einen neuen Kanal mit den Berechtigungen der übergeordneten Kategorie an.");
 		this.cmdParams.put("list (abandoned | verlassen) [monate]", "Listet Kanäle auf.");
 		this.cmdParams.put("move [sort] #channel (Kategorie | #referenceChannel)", "Verschiebt einen Kanal in eine Kategorie. Die Ziel-Kategorie kann ausgeschrieben oder ein anderer Kanal als Referenz verwendet werden. Der Parameter *sort* kann genutzt werden, um die Kategorie im Anschluss zu sortieren.");
+		//this.cmdParams.put("sort [above] #chanA #chanB", "Verschiebt #chanA unter #chanB. Mit dem Parameter \"above\" wird #chanA über #chanB geschoben.");
+		this.cmdParams.put("sync #channel", "Synchronisiert die Berechtigungen des Kanals mit der Kategorie.");
 	}
 	
 	// --------------------------------------------------
@@ -46,6 +48,7 @@ public class ChannelCmd extends ServerCommand {
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		this.channel = channel;
 		String[] userMessage = message.getContentDisplay().split(" ");
+		//List<String> userMessageList = Arrays.asList(userMessage);
 		Guild guild = message.getGuild();
 		
 		if (userMessage.length > 1) {
@@ -176,6 +179,30 @@ public class ChannelCmd extends ServerCommand {
 				
 				break;
 			
+			/*case "sort":
+				if(message.getMentions().getChannels(TextChannel.class).size() > 1) {
+					boolean sortunder = true;
+					if(userMessageList.contains("above") || userMessageList.contains("über")) {
+						sortunder = false;
+					}
+					TextChannel chanA = message.getMentions().getChannels(TextChannel.class).get(0);
+					TextChannel chanB = message.getMentions().getChannels(TextChannel.class).get(1);
+					
+					//if(sortunder) {
+					//	chanA.getManager().setPosition((chanB.getPosition()+1)).queue();
+					//} else {
+					//	chanA.getManager().setPosition((chanB.getPosition()-1)).queue();
+					//}
+					
+					chanA.getManager().setParent(chanB.getParentCategory()).delay(500, TimeUnit.MILLISECONDS).queue(v -> {
+						chanA.getManager().setPosition((chanB.getPosition()+1)).queue();
+					});
+					
+				} else {
+					printHelp(channel);
+				}
+				break;*/
+				
 			case "sync":
 				if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
 					for(TextChannel textChan : message.getMentions().getChannels(TextChannel.class)) {
