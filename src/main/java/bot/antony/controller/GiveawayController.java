@@ -73,7 +73,7 @@ public class GiveawayController {
 												+ ((giveaway.getWinCount() > 1) ? "die" : "der")
 												+ " Gewinner ausgelost.";
 									}
-									EmbedBuilder eb = getEmbedBuilder(sponsorName, sponsorAvatar, giveaway.getDescription(), giveaway.getWinCount(), giveaway.getGaEndEpochSeconds());
+									EmbedBuilder eb = getEmbedBuilder(sponsorName, sponsorAvatar, giveaway.getDescription(), giveaway.getAttachmentURLs(), giveaway.getWinCount(), giveaway.getGaEndEpochSeconds());
 									eb.addField("Gewinner", winner, false);
 									Message gaMessage = guild.getTextChannelById(giveaway.getChanID()).retrieveMessageById(giveaway.getMessageID()).complete();
 									gaMessage.editMessageEmbeds(eb.build()).queue();
@@ -114,12 +114,12 @@ public class GiveawayController {
 	* @param  winCount
 	*         The amount of people who can win the giveaway.
 	*/
-	public void addGA(User sponsor, String description, TextChannel channel, int runtimeMin, int winCount) {
-		EmbedBuilder eb = getEmbedBuilder(sponsor.getName(), sponsor.getAvatarUrl(), description, winCount, (Instant.now().getEpochSecond() + (runtimeMin*60)));
+	public void addGA(User sponsor, String description, ArrayList<String> attachmentURLs, TextChannel channel, int runtimeMin, int winCount) {
+		EmbedBuilder eb = getEmbedBuilder(sponsor.getName(), sponsor.getAvatarUrl(), description, attachmentURLs, winCount, (Instant.now().getEpochSecond() + (runtimeMin*60)));
 		eb.addField("Teilnahme", "Reagiere mit 🎁, um am Giveaway teilnehmen zu können.", false);
 		Message message = channel.sendMessageEmbeds(eb.build()).complete();
 		message.addReaction(Emoji.fromUnicode("🎁")).queue();
-		addGA(new Giveaway(sponsor.getId(), sponsor.getName(), description, message, runtimeMin, winCount));
+		addGA(new Giveaway(sponsor.getId(), sponsor.getName(), description, attachmentURLs, message, runtimeMin, winCount));
 		run(sponsor.getJDA());
 	}
 	
@@ -176,12 +176,24 @@ public class GiveawayController {
 	 *        The epoch second (seconds after 1970-01-01) of the time when the giveaway ends.
 	 * @return {@link net.dv8tion.jda.api.EmbedBuilder EmbedBuilder}
 	 */
-	private EmbedBuilder getEmbedBuilder(String sponsorName, String sponsorAvatar, String description, int winCount, long endEpochSecond) {
+	private EmbedBuilder getEmbedBuilder(String sponsorName, String sponsorAvatar, String description, ArrayList<String> attachmentURLs, int winCount, long endEpochSecond) {
 		EmbedBuilder eb = new EmbedBuilder();
 		eb.setColor(Antony.getBaseColor());
 		eb.setAuthor(sponsorName, null, sponsorAvatar);
 		eb.setTitle("Giveaway von " + sponsorName);
-		eb.setDescription(description);
+		
+		StringBuilder descriptionSB = new StringBuilder(description);
+		descriptionSB.append("\n");
+		int attachmentCount = 1;
+		for(String attachmentURL : attachmentURLs) {
+			descriptionSB.append("\n[Anhang " + attachmentCount + "](" + attachmentURL + ")");
+			attachmentCount++;
+		}
+		eb.setDescription(descriptionSB.toString());
+		
+		if(attachmentURLs.size() > 0) {
+			eb.setImage(attachmentURLs.get(0));
+		}
 		eb.addField("Gewinn-Chancen", winCount + "", false);
 		eb.addField(((endEpochSecond > Instant.now().getEpochSecond()) ? "Endet" : "Endete"), "<t:" + endEpochSecond + ":R>", false);
 		eb.setFooter("Das Giveaway wird ausschließlich durch den Veranstalter verantwortet.");

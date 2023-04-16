@@ -34,28 +34,24 @@ public class GiveawayCmd extends ServerCommand {
 	
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
-		if(mayUse(member)) {
-			this.channel = channel;
-			String[] userMessage = message.getContentDisplay().split(" ");
-			
-			if(userMessage.length >= 2) {
-				switch (userMessage[1].toLowerCase()) {
-				case "start":
-					startGiveaway(message, member);
-					break;
-				case "reroll":
-					if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR))
-						performReroll(userMessage);
-					break;
-				default:
-					printHelp(channel);
-					break;
-				}
-			} else { // no parameters starts the dialogue
+		this.channel = channel;
+		String[] userMessage = message.getContentDisplay().split(" ");
+		
+		if(userMessage.length >= 2) {
+			switch (userMessage[1].toLowerCase()) {
+			case "start":
 				startGiveaway(message, member);
+				break;
+			case "reroll":
+				if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR))
+					performReroll(userMessage);
+				break;
+			default:
+				printHelp(channel);
+				break;
 			}
-		} else {
-			printHelp(channel);
+		} else { // no parameters starts the dialogue
+			startGiveaway(message, member);
 		}
 	}
 	

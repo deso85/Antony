@@ -1,11 +1,13 @@
 package bot.antony.commands.giveaway;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bot.antony.Antony;
 import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -28,6 +30,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	private String reactionMsgID;
 	private User gaSponsor;
 	private String gaDescription;
+	private ArrayList<String> gaAttachmentURLs = new ArrayList<String>();
 	private int gaRuntimeInMin;
 	private TextChannel gaChannel;
 	private int gaWinCount;
@@ -125,7 +128,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 			} else if (state == 4) { //Final approval
 				
 				if (event.getEmoji().getFormatted().equals("✅")) {
-					Antony.getGiveawayController().addGA(gaSponsor, gaDescription, gaChannel, gaRuntimeInMin, gaWinCount);
+					Antony.getGiveawayController().addGA(gaSponsor, gaDescription, gaAttachmentURLs, gaChannel, gaRuntimeInMin, gaWinCount);
 				} else if (event.getEmoji().getFormatted().equals("❌")) {
 					channel.sendMessage("Giveaway abgebrochen ...").queue();
 				}
@@ -182,6 +185,12 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	 */
 	private void postDescriptionVerification(MessageReceivedEvent event) {
 		gaDescription = event.getMessage().getContentDisplay();
+		for(Attachment attachment : event.getMessage().getAttachments()) {
+			if(attachment.getContentType().contains("image") ||
+					attachment.getContentType().contains("video")) {
+				gaAttachmentURLs.add(attachment.getUrl());
+			}
+		}
 		event.getMessage().reply("Ist die Beschreibung vollständig?").queue(msg -> {
 			msg.addReaction(Emoji.fromUnicode("✅")).queue();
 			msg.addReaction(Emoji.fromUnicode("❌")).queue();

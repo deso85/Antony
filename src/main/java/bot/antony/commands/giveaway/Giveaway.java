@@ -1,6 +1,7 @@
 package bot.antony.commands.giveaway;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 import net.dv8tion.jda.api.entities.Message;
 
@@ -14,6 +15,7 @@ public class Giveaway {
 	String sponsorID;
 	String sponsorName;
 	String description;
+	ArrayList<String> attachmentURLs;
 	String guildID;
 	long chanID;
 	long messageID;
@@ -43,11 +45,12 @@ public class Giveaway {
 	 * @param  winCount
 	 *         Amount of people who can win the Giveaway
 	 */
-	public Giveaway(String sponsorID, String sponsorName, String description, Message message, int runtimeMin, int winCount) {
+	public Giveaway(String sponsorID, String sponsorName, String description, ArrayList<String> attachmentURLs, Message message, int runtimeMin, int winCount) {
 		super();
 		this.sponsorID = sponsorID;
 		this.sponsorName = sponsorName;
 		this.description = description;
+		this.attachmentURLs = attachmentURLs;
 		this.guildID = message.getGuild().getId();
 		this.chanID = message.getChannel().getIdLong();
 		this.messageID = message.getIdLong();
@@ -87,6 +90,12 @@ public class Giveaway {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public ArrayList<String> getAttachmentURLs() {
+		return this.attachmentURLs;
+	}
+	public void setAttachmentURLs(ArrayList<String> attachmentURLs) {
+		this.attachmentURLs = attachmentURLs;
 	}
 	public String getGuildID() {
 		return guildID;
