@@ -1,26 +1,29 @@
 package bot.antony.commands.antcheck.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Shop {
 
-	private String id;
+	private Integer id;
 
 	private String name;
 
-	private String url;
-
-	private String shippingurl;
+	private String shipping;
 
 	private String country;
 
-	private String priceinfo;
-	
 	private String currency;
 
-	public String getId() {
+	private Boolean crawler_active;
+	
+	private String last_update;
+	
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -32,20 +35,12 @@ public class Shop {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getShipping() {
+		return shipping;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getShippingurl() {
-		return shippingurl;
-	}
-
-	public void setShippingurl(String shippingurl) {
-		this.shippingurl = shippingurl;
+	public void setShipping(String shipping) {
+		this.shipping = shipping;
 	}
 
 	public String getCountry() {
@@ -56,26 +51,39 @@ public class Shop {
 		this.country = country;
 	}
 
-	public String getPriceinfo() {
-		return priceinfo;
-	}
-
-	public void setPriceinfo(String priceinfo) {
-		this.priceinfo = priceinfo;
-	}
-	
 	public String getCurrency() {
 		return currency;
 	}
-	
+
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
 
+	public Boolean getCrawler_active() {
+		return crawler_active;
+	}
+
+	public void setCrawler_active(Boolean crawler_active) {
+		this.crawler_active = crawler_active;
+	}
+
+	public String getLast_update() {
+		return last_update;
+	}
+
+	public void setLast_update(String last_update) {
+		this.last_update = last_update;
+	}
+
+	@JsonIgnore
+	public String getIdAndName() {
+		return "(" + id + ") " + name;
+	}
+	
 	@Override
 	public String toString() {
-		return "Shop [id=" + id + ", name=" + name + ", url=" + url + ", shippingurl=" + shippingurl + ", country="
-				+ country + ", priceinfo=" + priceinfo + ", currency=" + currency + "]";
+		return "Shop [id=" + id + ", name=" + name + ", shipping=" + shipping + ", country=" + country + ", currency="
+				+ currency + ", crawler_active=" + crawler_active + ", last_update=" + last_update + "]";
 	}
 
 	@Override

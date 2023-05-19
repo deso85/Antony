@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.antony.Antony;
-import bot.antony.commands.antcheck.client.AntCheckClient;
+import bot.antony.commands.antcheck.AntcheckController;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -31,6 +31,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 	private Boolean antAvailable = false;
 	private Category hbCategory;
 	private Boolean rightsResponsibilities = false;
+	private AntcheckController controller = Antony.getAntcheckController();
 
 	public AddHBStateMachine(MessageChannel channel, User author, long initMessageId, long startInteractionMsgId) {
 		this.channelId = channel.getIdLong();
@@ -114,15 +115,19 @@ public class AddHBStateMachine extends ListenerAdapter {
 	}
 	
 	private void handleAntSpecies(String content, Message message) {
-		AntCheckClient antCheckClient = Utils.getAntCheckClient();
-
+		List<Specie> species = new ArrayList<Specie>();
 		String antSpeciesName = content.replace("-", " ");
 		String antSpeciesChannelName = antSpeciesName.trim().replace("spec.", "sp.").replace("conf.", "cf.").replaceAll(" +", " ");
 		antSpeciesName = antSpeciesName.replace("sp.", "").replace("spec.", "");
 		antSpeciesName = antSpeciesName.replace("cf.", "").replace("conf.", "");
 		antSpeciesName = antSpeciesName.trim().replaceAll(" +", " ");
 		
-		List<Specie> species = antCheckClient.getSpecies(antSpeciesName.replace(" ", "_"));
+		String[] antSpeciesNameParts = antSpeciesName.replaceAll("\\s+", " ").trim().split(" ");
+		if (antSpeciesNameParts.length > 1) { //Genus and specie name are given
+			species = controller.findAnt(antSpeciesNameParts[0], antSpeciesNameParts[1]);
+		} else { //only genus or specie name is given
+			species = controller.findAnt(antSpeciesNameParts[0]);
+		}
 
 		if (species.isEmpty()) {
 			errorCount++;
@@ -244,6 +249,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 						antSpecies + "—" + event.getGuild().getMemberById(authorId).getEffectiveName(),
 						hbCategory, members, event.getMember(), true);
 
+				//TODO Doesn't work with Thread
 				event.getGuild().getTextChannelById(channelId).retrieveMessageById(initMessageId).queue(msg -> {
 					msg.reply("Der neue Haltungsbericht " + newChan.getAsMention() + " wurde angelegt.")
 							.queue();

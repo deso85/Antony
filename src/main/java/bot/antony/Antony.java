@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import bot.antony.commands.aam.events.OfferListener;
 import bot.antony.commands.aam.events.ProposalListener;
+import bot.antony.commands.antcheck.AntcheckController;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.AAMHBController;
 import bot.antony.controller.BlackListController;
@@ -58,6 +59,7 @@ public class Antony extends ListenerAdapter {
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan;
 	private static ReactionManager reactionMan;
+	private static AntcheckController antcheckController;
 	private static NotificationController notificationController;
 	private static WhiteListController whitelistController;
 	private static WatchListController watchlistController;
@@ -93,6 +95,7 @@ public class Antony extends ListenerAdapter {
 		dataPath = getProperty("flatfile.path");
 		cmdMan = new CommandManager();
 		reactionMan = new ReactionManager();
+		antcheckController = new AntcheckController();
 		notificationController = new NotificationController();
 		whitelistController = new WhiteListController();
 		watchlistController = new WatchListController();
@@ -164,6 +167,7 @@ public class Antony extends ListenerAdapter {
 						try {
 							notificationController.sendPendingNotifications(jda);
 							hbController.checkHBs();
+							antcheckController.updateData();
 							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {
 							logger.error("Wasn't able to put Thread asleep.", e);
@@ -279,6 +283,10 @@ public class Antony extends ListenerAdapter {
 	 */
 	public static ReactionManager getReactionMan() {
 		return reactionMan;
+	}
+	
+	public static AntcheckController getAntcheckController() {
+		return antcheckController;
 	}
 	
 	/**

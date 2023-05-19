@@ -1,71 +1,88 @@
 package bot.antony.commands.antcheck.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Specie {
 
-	private String id;
+	private Integer id;
 
-	private String name;
+	private String genus;
 
-	private Integer variants;
+	private String species;
 
-	private String imageurl;
-
-	private String licence;
-
-	private String caption;
+	private String image_url;
 	
-	public String getId() {
+	private String image_caption;
+
+	private String image_licence;
+	
+	private String url;
+	
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	public String getGenus() {
+		return genus;
+	}
+
+	public void setGenus(String genus) {
+		this.genus = genus;
+	}
+
+	public String getSpecies() {
+		return species;
+	}
+
+	public void setSpecies(String species) {
+		this.species = species;
+	}
+
+	public String getImage_url() {
+		return image_url;
+	}
+
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
+
+	public String getImage_caption() {
+		return image_caption;
+	}
+
+	public void setImage_caption(String image_caption) {
+		this.image_caption = image_caption;
+	}
+
+	public String getImage_licence() {
+		return image_licence;
+	}
+
+	public void setImage_licence(String image_licence) {
+		this.image_licence = image_licence;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	@JsonIgnore
 	public String getName() {
-		return name;
+		return genus + " " + species;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getVariants() {
-		return variants;
-	}
-
-	public void setVariants(Integer variants) {
-		this.variants = variants;
-	}
-
-	public String getImageurl() {
-		return imageurl;
-	}
-
-	public void setImageurl(String imageurl) {
-		this.imageurl = imageurl;
-	}
-
-	public String getLicence() {
-		return licence;
-	}
-
-	public void setLicence(String licence) {
-		this.licence = licence;
-	}
-
-	public String getCaption() {
-		return caption;
-	}
-
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
+	
 	@Override
 	public String toString() {
-		return "Species [id=" + id + ", name=" + name + ", variants=" + variants + ", imageurl=" + imageurl
-				+ ", licence=" + licence + ", caption=" + caption + "]";
+		return "Specie [id=" + id + ", genus=" + genus + ", species=" + species + ", image_url=" + image_url
+				+ ", image_caption=" + image_caption + ", image_licence=" + image_licence + ", url=" + url + "]";
 	}
 
 	@Override

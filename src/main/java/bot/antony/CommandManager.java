@@ -18,7 +18,7 @@ import bot.antony.commands.MapCmd;
 import bot.antony.commands.NotifyCmd;
 import bot.antony.commands.PnLinkCmd;
 import bot.antony.commands.ReactionCmd;
-import bot.antony.commands.Sells;
+import bot.antony.commands.SellsCmd;
 import bot.antony.commands.Serverstats;
 import bot.antony.commands.ShoppingCmd;
 import bot.antony.commands.ShowAvatarCmd;
@@ -27,6 +27,7 @@ import bot.antony.commands.Softban;
 import bot.antony.commands.UserCmd;
 import bot.antony.commands.UserInfoCmd;
 import bot.antony.commands.aam.AddHBCmd;
+import bot.antony.commands.antcheck.AntcheckCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
 import bot.antony.commands.giveaway.GiveawayCmd;
 import bot.antony.commands.lists.BlacklistCmd;
@@ -48,6 +49,7 @@ public class CommandManager {
 	public ConcurrentHashMap<String, IServerCommand> adminCommands;
 
 	public CommandManager() {
+		commands.put("antcheck", new AntcheckCmd());
 		commands.put("antony", new AntonyCmd());
 		commands.put("help", new HelpCmd());
 		commands.put("changelog", new ChangelogCmd());
@@ -67,6 +69,7 @@ public class CommandManager {
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
 		commands.put("reminder", new ReminderCmd());
+		commands.put("sells", new SellsCmd());
 		commands.put("shopping", new ShoppingCmd());
 		commands.put("showavatar", new ShowAvatarCmd());
 		commands.put("shutdown", new ShutdownCmd());
@@ -88,7 +91,6 @@ public class CommandManager {
 		modCommands = new ConcurrentHashMap<>();
 
 		// Everyone
-		usrCommands.put("sells", new Sells());
 		usrCommands.put("serverstats", new Serverstats());
 
 		// Mod

@@ -1,19 +1,19 @@
 package bot.antony.commands;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import bot.antony.Antony;
-import bot.antony.commands.antcheck.client.AntCheckClient;
+import bot.antony.commands.antcheck.AntcheckController;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.commands.types.ServerCommand;
-import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class MapCmd extends ServerCommand {
+	
 	
 	// --------------------------------------------------
 	// Constructor
@@ -32,18 +32,26 @@ public class MapCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
-		AntCheckClient antCheckClient = Utils.getAntCheckClient();
-		
+		AntcheckController controller = Antony.getAntcheckController();
 		String[] userMessage = message.getContentDisplay().split(" ");
 		
 		if (userMessage.length > 1) {
-			// get ant species name to work with
-			String antSpeciesName = Utils.getAntSpeciesName(Arrays.copyOfRange(userMessage, 1, userMessage.length));
-			List<Specie> species = antCheckClient.getSpecies(antSpeciesName.replace(" ", "_"));
+			List<Specie> species = new ArrayList<Specie>();
+			
+			if (userMessage.length > 2) { //Genus and specie name are given
+				species = controller.findAnt(userMessage[1], userMessage[2]);
+			} else if(userMessage.length > 1) { //only genus or specie name is given
+				species = controller.findAnt(userMessage[1]);
+			}
+			
+			StringBuilder antSpeciesName = new StringBuilder();
+			for(int i=1; i < userMessage.length; i++) {
+				antSpeciesName.append(userMessage[i] + " ");
+			}
 			
 			if (species.isEmpty()) {
 				channel.sendMessage(
-						"Es konnte keine Ameisenart mit \"" + antSpeciesName + "\" im Namen gefunden werden.\n"
+						"Es konnte keine Ameisenart mit \"" + antSpeciesName.toString() + "\" im Namen gefunden werden.\n"
 								+ "Bitte überprüfe die Schreibweise und versuche es erneut.")
 						.queue();
 			} else {
