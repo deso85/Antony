@@ -216,19 +216,40 @@ public class AAMHBController {
 	
 	private void trimOverdueList(){
 		Map<Long, String> newList = new HashMap<Long, String>();
+
+		//remove all channels which are deleted on the server
+		newList.putAll(overdueList);
+		for(Map.Entry<Long, String> entry : overdueList.entrySet()) {
+			if(guild.getTextChannelById(entry.getKey()) == null) {
+				newList.remove(entry.getKey());
+			}
+		}
+		overdueList.clear();
+		overdueList.putAll(newList);
+		
+		//remove all channels which are inside a category which is used as an archive or which is not related to HBs
+		newList.clear();
+		newList.putAll(overdueList);
+		for(Map.Entry<Long, String> entry : overdueList.entrySet()) {
+			String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
+			if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
+				newList.remove(entry.getKey());
+			}
+		}
+		overdueList.clear();
+		overdueList.putAll(newList);
+		
+		//remove all channels which are not relevant anymore / have been updated
+		newList.clear();
 		newList.putAll(overdueList);
 		ArrayList<Long> chanIDs = getChanIDs(relChans);
 		for (Map.Entry<Long, String> entry : overdueList.entrySet()) {
-			if(chanIDs.contains(entry.getKey())) {
+			if(!chanIDs.contains(entry.getKey())) {
 				newList.remove(entry.getKey());
-			} else {
-				String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
-				if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
-					newList.remove(entry.getKey());
-				}
 			}
 		}
-		overdueList = newList;
+		overdueList.clear();
+		overdueList.putAll(newList);
 	}
 	
 	private void setRelevantChannels() {
@@ -252,9 +273,8 @@ public class AAMHBController {
 			MessageHistory history = new MessageHistory(chan);
 			List<Message> messageList = history.retrievePast(1).complete();
 			//Check if channel is empty and older than 2 Weeks
-			if((messageList.isEmpty() || messageList.get(0).getAuthor().isBot())
-					&& chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now())
-					|| (!messageList.isEmpty() && messageList.get(0).getMember() == null)) {
+			if(((messageList.isEmpty() || messageList.get(0).getAuthor().isBot()) && chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now()))
+					|| (!messageList.isEmpty() && (messageList.get(0).getMember() == null || messageList.get(0).getMember().getId() == "456226577798135808" || guild.getMemberById(messageList.get(0).getMember().getId()) == null))) {
 				relChans.add(chan);
 				if(memChans.containsKey(1L)) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(1L));
@@ -266,7 +286,6 @@ public class AAMHBController {
 			} else if(!messageList.isEmpty() && messageList.get(0).getTimeCreated().plusMonths(6).isBefore(OffsetDateTime.now())) {
 				Antony.getLogger().debug("[AAM HB Controller] Channel with Author: " + messageList.get(0).getAuthor().getName() + " " + messageList.get(0).getAuthor().getId() ); 
 				relChans.add(chan);
-				//TODO: is it a problem if author isn't on the server anymore?
 				if(memChans.containsKey(messageList.get(0).getAuthor().getIdLong())) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(messageList.get(0).getAuthor().getIdLong()));
 					chanUpdate.add(chan);

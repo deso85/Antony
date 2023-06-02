@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("03.06.2023 - Version 7.9.1", "Änderungen an der Funktion zur Prüfung der HBs vorgenommen, um einen Bug zu entfernen, der das Scheduling beeinträchtigt hat."));
 		changeLog.add(new ChangeLogEntry("19.05.2023 - Version 7.9.0", "Die Antcheck-Schnittstelle wurde überarbeitet und auf die aktuelle API aktualisiert. Alle Funktionen, die die Schnittstelle nutzen, wurden angepasst. Verwendete Programmbibliotheken aktualisiert."));
 		changeLog.add(new ChangeLogEntry("16.04.2023 - Version 7.8.2", "Die ***" + cmdPrefix + "giveaway*** Funktion kann nun auch Anhänge wie z.B. Bilder verarbeiten."));
 		changeLog.add(new ChangeLogEntry("15.04.2023 - Version 7.8.1", "Die ***" + cmdPrefix + "userinfo*** Funktion wurde auf das aktuelle Berechtigungssysten portiert. Vorbereitung einer zusätzlichen Sortierfunktion für Kanäle wurde implementiert."));
