@@ -25,6 +25,8 @@ import bot.antony.commands.antcheck.client.dto.Offer;
 import bot.antony.commands.antcheck.client.dto.Shop;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.utils.Utils;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.OnlineStatus;
 
 /**
  * NotificationController controls all notifications
@@ -45,6 +47,7 @@ public class AntcheckController {
 	private List<Shop> shops = new ArrayList<Shop>();
 	private List<Specie> species = new ArrayList<Specie>();
 	private List<Shop> blShops = new ArrayList<Shop>();
+	private boolean isRunning = false;
 
 	// --------------------------------------------------
 	// Constructor
@@ -60,9 +63,29 @@ public class AntcheckController {
 	// --------------------------------------------------
 	public void updateData() {
 		if(nextUpdateDateTime.isBefore(LocalDateTime.now())) {
+			
+			/*Thread timerThread = new Thread() {
+				public void run() {
+					try {
+						updateData();
+						Thread.sleep(60000); //1min
+					} catch (InterruptedException e) {
+						Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+					}
+					
+					isRunning = false;
+					Antony.getLogger().info("[Antcheck Controller] Stopping Runner");
+				}
+			};
+			timerThread.start();*/
+			
+			Antony.getLogger().info("[Antcheck Controller] Updating Offers");
 			updateOffers();
+			Antony.getLogger().info("[Antcheck Controller] Updating Shops");
 			updateShops();
+			Antony.getLogger().info("[Antcheck Controller] Updating Species");
 			updateSpecies();
+			Antony.getLogger().info("[Antcheck Controller] Backing Up Data");
 			backupData();
 			lastUpdatedDateTime = LocalDateTime.now();
 			nextUpdateDateTime = LocalDateTime.now().plusMinutes(60).truncatedTo(ChronoUnit.HOURS);
@@ -346,6 +369,28 @@ public class AntcheckController {
 	public List<Shop> removeBlacklistedShops(List<Shop> shops) {
 		shops.removeAll(blShops);
 		return shops;
+	}
+	
+	public void run(JDA jda) {
+		if(!isRunning) {
+			isRunning = true;
+			Antony.getLogger().info("[Antcheck Controller] Starting Runner");
+			Thread timerThread = new Thread() {
+				public void run() {
+					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
+						try {
+							updateData();
+							Thread.sleep(60000); //1min
+						} catch (InterruptedException e) {
+							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+						}
+					}
+					isRunning = false;
+					Antony.getLogger().info("[Antcheck Controller] Stopping Runner");
+				}
+			};
+			timerThread.start();
+		}
 	}
 
 	// --------------------------------------------------

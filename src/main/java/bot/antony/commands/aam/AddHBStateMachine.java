@@ -42,7 +42,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		if (mayInteract(event.getMember(), event.getChannel())) {
+		if (event.getMember() != null && mayInteract(event.getMember(), event.getChannel())) {
 			if (!awaitApproval) {
 				// Stop because of another command
 				if (event.getMessage().getContentRaw().startsWith("!") || event.getMessage().getContentRaw().toLowerCase().contains("stop")) {

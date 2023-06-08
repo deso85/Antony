@@ -160,6 +160,7 @@ public class Antony extends ListenerAdapter {
 			gaController.run(jda);
 			reminderController.load();
 			reminderController.run(jda);
+			antcheckController.run(jda);
 			//Thread which is used to do timed actions
 			Thread timerThread = new Thread() {
 				public void run() {
@@ -167,7 +168,6 @@ public class Antony extends ListenerAdapter {
 						try {
 							notificationController.sendPendingNotifications(jda);
 							hbController.checkHBs();
-							antcheckController.updateData();
 							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {
 							logger.error("Wasn't able to put Thread asleep.", e);

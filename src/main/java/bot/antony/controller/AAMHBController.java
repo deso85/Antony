@@ -216,40 +216,26 @@ public class AAMHBController {
 	
 	private void trimOverdueList(){
 		Map<Long, String> newList = new HashMap<Long, String>();
-
-		//remove all channels which are deleted on the server
-		newList.putAll(overdueList);
+		newList.putAll(overdueList); //copy all data from overdueList
+		ArrayList<Long> chanIDs = getChanIDs(relChans); //get channel IDs from all channels which are currently overdue
 		for(Map.Entry<Long, String> entry : overdueList.entrySet()) {
+			//remove channel from list if deleted on the server
 			if(guild.getTextChannelById(entry.getKey()) == null) {
 				newList.remove(entry.getKey());
 			}
-		}
-		overdueList.clear();
-		overdueList.putAll(newList);
-		
-		//remove all channels which are inside a category which is used as an archive or which is not related to HBs
-		newList.clear();
-		newList.putAll(overdueList);
-		for(Map.Entry<Long, String> entry : overdueList.entrySet()) {
+			
+			//remove all channels which are inside a category which is used as an archive or which is not related to HBs
 			String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
 			if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
 				newList.remove(entry.getKey());
 			}
-		}
-		overdueList.clear();
-		overdueList.putAll(newList);
-		
-		//remove all channels which are not relevant anymore / have been updated
-		newList.clear();
-		newList.putAll(overdueList);
-		ArrayList<Long> chanIDs = getChanIDs(relChans);
-		for (Map.Entry<Long, String> entry : overdueList.entrySet()) {
+			
+			//remove all channels which are not relevant anymore / have been updated
 			if(!chanIDs.contains(entry.getKey())) {
 				newList.remove(entry.getKey());
 			}
 		}
-		overdueList.clear();
-		overdueList.putAll(newList);
+		overdueList = newList;
 	}
 	
 	private void setRelevantChannels() {
