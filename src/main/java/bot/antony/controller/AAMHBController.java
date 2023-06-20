@@ -219,14 +219,13 @@ public class AAMHBController {
 		newList.putAll(overdueList); //copy all data from overdueList
 		ArrayList<Long> chanIDs = getChanIDs(relChans); //get channel IDs from all channels which are currently overdue
 		for(Map.Entry<Long, String> entry : overdueList.entrySet()) {
-			//remove channel from list if deleted on the server
-			if(guild.getTextChannelById(entry.getKey()) == null) {
-				newList.remove(entry.getKey());
-			}
-			
 			//remove all channels which are inside a category which is used as an archive or which is not related to HBs
-			String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
-			if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
+			if(guild.getTextChannelById(entry.getKey()) != null && guild.getTextChannelById(entry.getKey()).getParentCategory() != null) {
+				String chanCatName = guild.getTextChannelById(entry.getKey()).getParentCategory().getName().toLowerCase();
+				if(chanCatName.contains("geschlossen") || !chanCatName.contains("hb")) {
+					newList.remove(entry.getKey());
+				}
+			} else { //remove channel from list if deleted on the server
 				newList.remove(entry.getKey());
 			}
 			

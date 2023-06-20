@@ -48,6 +48,7 @@ public class AntcheckController {
 	private List<Specie> species = new ArrayList<Specie>();
 	private List<Shop> blShops = new ArrayList<Shop>();
 	private boolean isRunning = false;
+	private Thread updateThread;
 
 	// --------------------------------------------------
 	// Constructor
@@ -64,32 +65,33 @@ public class AntcheckController {
 	public void updateData() {
 		if(nextUpdateDateTime.isBefore(LocalDateTime.now())) {
 			
-			/*Thread timerThread = new Thread() {
+			if(updateThread != null && updateThread.isAlive()) {
+				updateThread.interrupt();
+				Antony.getLogger().error("[Antcheck Controller] Update Thread interrupted due to a timeout.");
+			}
+			updateThread = new Thread() {
 				public void run() {
 					try {
-						updateData();
-						Thread.sleep(60000); //1min
+						Antony.getLogger().info("[Antcheck Controller] Updating Offers");
+						updateOffers();
+						Thread.sleep(5000); //5sec
+						Antony.getLogger().info("[Antcheck Controller] Updating Shops");
+						updateShops();
+						Thread.sleep(5000); //5sec
+						Antony.getLogger().info("[Antcheck Controller] Updating Species");
+						updateSpecies();
+						Antony.getLogger().info("[Antcheck Controller] Backing Up Data");
+						backupData();
+						lastUpdatedDateTime = LocalDateTime.now();
+						nextUpdateDateTime = LocalDateTime.now().plusMinutes(60).truncatedTo(ChronoUnit.HOURS);
+						Antony.getLogger().info("[Antcheck Controller] Updated Data. Next update: " + nextUpdateDateTime.format(dtFormatter));
+						
 					} catch (InterruptedException e) {
 						Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
 					}
-					
-					isRunning = false;
-					Antony.getLogger().info("[Antcheck Controller] Stopping Runner");
 				}
 			};
-			timerThread.start();*/
-			
-			Antony.getLogger().info("[Antcheck Controller] Updating Offers");
-			updateOffers();
-			Antony.getLogger().info("[Antcheck Controller] Updating Shops");
-			updateShops();
-			Antony.getLogger().info("[Antcheck Controller] Updating Species");
-			updateSpecies();
-			Antony.getLogger().info("[Antcheck Controller] Backing Up Data");
-			backupData();
-			lastUpdatedDateTime = LocalDateTime.now();
-			nextUpdateDateTime = LocalDateTime.now().plusMinutes(60).truncatedTo(ChronoUnit.HOURS);
-			Antony.getLogger().info("[Antcheck Controller] Updated Data. Next update: " + nextUpdateDateTime.format(dtFormatter));
+			updateThread.start();
 		}
 	}
 	

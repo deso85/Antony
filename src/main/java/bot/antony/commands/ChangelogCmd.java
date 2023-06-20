@@ -44,6 +44,9 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("20.06.2023 - Version 7.9.5", "Fehlerbehebung bei der HB-Überprüfung. Die zugrundeliegenden Programmbibliotheken wurden aktualisiert."));
+		changeLog.add(new ChangeLogEntry("14.06.2023 - Version 7.9.4", "Die Funktion zum Updaten der Antcheck Daten wurde so überarbeitet, dass der Abruf im Falle eines Timeouts abgebrochen werden kann."));
+		changeLog.add(new ChangeLogEntry("08.06.2023 - Version 7.9.3", "Kleinere Änderung am Aufruf der Antcheck-API, um möglichst einen Bug im Vebindungsaufbau zu beheben."));
 		changeLog.add(new ChangeLogEntry("08.06.2023 - Version 7.9.2", "Der aktuelle Status der Antcheck-Schnittstelle und Statistiken der zugrundeliegenden Daten lassen sich nun ausgeben. Es wurden kleinere Code-Optimierungen durchgeführt und Bugs behoben."));
 		changeLog.add(new ChangeLogEntry("03.06.2023 - Version 7.9.1", "Änderungen an der Funktion zur Prüfung der HBs vorgenommen, um einen Bug zu entfernen, der das Scheduling beeinträchtigt hat."));
 		changeLog.add(new ChangeLogEntry("19.05.2023 - Version 7.9.0", "Die Antcheck-Schnittstelle wurde überarbeitet und auf die aktuelle API aktualisiert. Alle Funktionen, die die Schnittstelle nutzen, wurden angepasst. Verwendete Programmbibliotheken aktualisiert."));

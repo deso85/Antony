@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -185,7 +186,11 @@ public abstract class Utils {
 	};
 	
 	public static AntCheckClient getAntCheckClient() {
-		ResteasyClient client = (ResteasyClient) ClientBuilder.newClient();
+		//ResteasyClient client = (ResteasyClient) ClientBuilder.newClient();
+		ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder()
+				.connectTimeout(10, TimeUnit.SECONDS)
+				.readTimeout(10, TimeUnit.SECONDS)
+				.build();
 		client.register(JacksonJsonProvider.class);	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
 		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
 		return target.proxy(AntCheckClient.class);

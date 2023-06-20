@@ -15,8 +15,6 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/api/antcheck")
 @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
 @Consumes(MediaType.APPLICATION_JSON)
-//@Produces(MediaType.TEXT_HTML + "; charset=UTF-8")
-//@Consumes(MediaType.TEXT_HTML)
 public interface AntCheckClient {
 
 	public static String BASE_URL = "https://antcheck.info";
