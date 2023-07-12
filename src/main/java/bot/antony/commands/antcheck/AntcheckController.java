@@ -342,6 +342,16 @@ public class AntcheckController {
 		return offerList;
 	}
 	
+	public List<Offer> getOffersForAntWithoutBlShops(Specie ant) {
+		List<Offer> offerList = getOffersForAnt(ant);
+		
+		for(Shop shop : getBlShops()) {
+			offerList.removeIf(offer -> offer.getShopid().equals(shop.getId()));
+		}
+		
+		return offerList;
+	}
+	
 	public List<Shop> getShopsByOffers(List<Offer> offers){
 		Set<Shop> shops = new HashSet<>();
 		

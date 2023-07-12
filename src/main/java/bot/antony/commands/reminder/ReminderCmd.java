@@ -33,20 +33,15 @@ public class ReminderCmd extends ServerCommand {
 	
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
-		if(mayUse(member)) {
-			String[] userMessage = message.getContentDisplay().split(" ");
-			
-			int pim = parseDuration(message.getContentDisplay());
-			if(userMessage.length >= 2 && pim > 0) {
-				Antony.getReminderController().addReminder(message, pim);
-				message.reply("Ich erinnere dich ca. am <t:" + (Instant.now().getEpochSecond() + pim*60) + ":f> Uhr").queue();
-			} else {
-				printHelp(channel);
-			}
+		String[] userMessage = message.getContentDisplay().split(" ");
+		
+		int pim = parseDuration(message.getContentDisplay());
+		if(userMessage.length >= 2 && pim > 0) {
+			Antony.getReminderController().addReminder(message, pim);
+			message.reply("Ich erinnere dich ca. am <t:" + (Instant.now().getEpochSecond() + pim*60) + ":f> Uhr").queue();
 		} else {
 			printHelp(channel);
 		}
-		
 	}
 	
 	
