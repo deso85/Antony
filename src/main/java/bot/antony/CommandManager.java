@@ -16,6 +16,7 @@ import bot.antony.commands.GuildCmd;
 import bot.antony.commands.HelpCmd;
 import bot.antony.commands.MapCmd;
 import bot.antony.commands.NotifyCmd;
+import bot.antony.commands.OfferNotificationCmd;
 import bot.antony.commands.PnLinkCmd;
 import bot.antony.commands.ReactionCmd;
 import bot.antony.commands.SellsCmd;
@@ -66,6 +67,7 @@ public class CommandManager {
 		commands.put("guild", new GuildCmd());
 		commands.put("map", new MapCmd());
 		commands.put("notify", new NotifyCmd());
+		commands.put("offernotification", new OfferNotificationCmd());
 		commands.put("pnlink", new PnLinkCmd());
 		commands.put("reaction", new ReactionCmd());
 		commands.put("reminder", new ReminderCmd());

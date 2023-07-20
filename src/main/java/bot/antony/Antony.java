@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import bot.antony.commands.aam.events.OfferListener;
 import bot.antony.commands.aam.events.ProposalListener;
+import bot.antony.commands.antcheck.AntcheckNotificationController;
 import bot.antony.commands.antcheck.AntcheckController;
 import bot.antony.commands.notification.NotificationController;
 import bot.antony.controller.AAMHBController;
@@ -60,6 +61,7 @@ public class Antony extends ListenerAdapter {
 	private static CommandManager cmdMan;
 	private static ReactionManager reactionMan;
 	private static AntcheckController antcheckController;
+	private static AntcheckNotificationController antcheckNotificationController;
 	private static NotificationController notificationController;
 	private static WhiteListController whitelistController;
 	private static WatchListController watchlistController;
@@ -72,7 +74,7 @@ public class Antony extends ListenerAdapter {
 	private static ReminderController reminderController;
 	private static int usercount;
 	private static String configFile = null;
-
+	private static JDA jda;
 	/**
 	 * This is the method where the program starts.
 	 * @param args
@@ -96,6 +98,7 @@ public class Antony extends ListenerAdapter {
 		cmdMan = new CommandManager();
 		reactionMan = new ReactionManager();
 		antcheckController = new AntcheckController();
+		antcheckNotificationController = new AntcheckNotificationController();
 		notificationController = new NotificationController();
 		whitelistController = new WhiteListController();
 		watchlistController = new WatchListController();
@@ -110,7 +113,7 @@ public class Antony extends ListenerAdapter {
 		
 		try {
 			// build bot
-			JDA jda = JDABuilder.createDefault(getProperty("bot.token"))	// The token of the account that is logging in.
+			jda = JDABuilder.createDefault(getProperty("bot.token"))	// The token of the account that is logging in.
 					.addEventListeners(new MessageReceived())
 					.addEventListeners(new MessageUpdate())
 					.addEventListeners(new CommandListener())			// Listener for commands
@@ -161,6 +164,7 @@ public class Antony extends ListenerAdapter {
 			reminderController.load();
 			reminderController.run(jda);
 			antcheckController.run(jda);
+			antcheckNotificationController.run();
 			//Thread which is used to do timed actions
 			Thread timerThread = new Thread() {
 				public void run() {
@@ -289,6 +293,10 @@ public class Antony extends ListenerAdapter {
 		return antcheckController;
 	}
 	
+	public static AntcheckNotificationController getAntcheckNotificationController() {
+		return antcheckNotificationController;
+	}
+	
 	/**
 	 * Function to get the NotificationManager
 	 * @return NotificationManager
@@ -378,5 +386,8 @@ public class Antony extends ListenerAdapter {
 	public static SoftbanController getSoftbanController() {
 		return softbanController;
 	}
-	
+
+	public static JDA getJda() {
+		return jda;
+	}
 }

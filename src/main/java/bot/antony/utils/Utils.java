@@ -58,6 +58,32 @@ public abstract class Utils {
 		}
 	}
 	
+	public static void sendPM(Member member, StringBuilder text) {
+		try {
+			member.getUser().openPrivateChannel().complete().sendMessage(text.toString()).complete();
+		} catch (ErrorResponseException e) {
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+			
+			TextChannel channel = Antony.getGuildController().getLogChannel(member.getGuild());
+			
+			if(channel != null) {
+				channel.sendMessage(":postbox: Fehler bei der Zustellung einer privaten Nachricht.").complete();
+				EmbedBuilder eb = new EmbedBuilder()
+						.setColor(Color.red)
+						.setAuthor(member.getUser().getAsTag() + " | ID: " + member.getId(), null, member.getUser().getAvatarUrl())
+						.setDescription("Ich konnte keine PN an den User " + member.getAsMention() + " senden. Es ist sehr wahrscheinlich, dass seine Privatsphäre-Einstellungen einen direkten Versand an ihn verhindern. "
+								+ "Bitte informiert ihn hierüber, damit er die passenden Einstellungen setzen oder die Benachrichtigungen deaktivieren kann.\n\n"
+								+ "Hier finden sich Hintergrundinformationen zu dem Thema:\n"
+								+ "https://support.discord.com/hc/de/articles/217916488-Blocken-Datenschutzeinstellungen")
+						.setFooter(now.format(formatter) + " Uhr");
+				channel.sendMessageEmbeds(eb.build()).complete();
+			}
+			
+			Antony.getLogger().error("ErrorResponseException: Wasn't able to send PN to User " + member.getUser().getAsTag() + " (ID " + member.getId() + ")");
+		}
+	}
+	
 	/**
 	 * 
 	 * @param args	the arguments which came with the users message

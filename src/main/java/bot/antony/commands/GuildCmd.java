@@ -28,6 +28,7 @@ public class GuildCmd extends ServerCommand {
 		this.cmdParams.put("welcomechan (#welcomeChannel)", "Gibt den aktuellen Welcome-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("activationchan (#activationChannel)", "Gibt den aktuellen Activation-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("exitchan (#exitChannel)", "Gibt den aktuellen Exit-Kanal aus oder setzt diesen.");
+		this.cmdParams.put("commandchan (#commandChannel)", "Gibt den aktuellen Kanal für Commands aus oder setzt diesen.");
 	}
 	
 	// --------------------------------------------------
@@ -68,6 +69,13 @@ public class GuildCmd extends ServerCommand {
 						setExitChan(message.getMentions().getChannels(TextChannel.class).get(0));
 					} else {
 						printExitChan(message.getGuild());
+					}
+					break;
+				case "commandchan":
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						setCommmandChan(message.getMentions().getChannels(TextChannel.class).get(0));
+					} else {
+						printCommandChan(message.getGuild());
 					}
 					break;
 					
@@ -152,6 +160,24 @@ public class GuildCmd extends ServerCommand {
 			channel.sendMessage("Channel für Exit-Benachrichtigungen ist: " + guildController.getExitChannel(guild).getAsMention()).queue();
 		} else {
 			channel.sendMessage("Es ist kein Channel für Exit-Benachrichtigungen gesetzt.").queue();
+		}
+	}
+	
+	//Command Channel
+	private void setCommmandChan(TextChannel commandChan) {
+		GuildData guildData = Antony.getGuildController().loadGuildData(commandChan.getGuild());
+		guildData.setCommandsChannelID(commandChan.getIdLong());
+		Antony.getGuildController().saveGuildData(guildData, commandChan.getGuild());
+		channel.sendMessage("Channel für Commands gesetzt.").queue();
+		Antony.getLogger().info("Command channel of guild " + guildData.toString() + " set to " + commandChan.getAsMention());
+	}
+	
+	private void printCommandChan(Guild guild) {
+		GuildController guildController = Antony.getGuildController();
+		if(guildController.getCommandChannel(guild) != null) {
+			channel.sendMessage("Channel für Commands ist: " + guildController.getCommandChannel(guild).getAsMention()).queue();
+		} else {
+			channel.sendMessage("Es ist kein Channel für Commands gesetzt.").queue();
 		}
 	}
 }

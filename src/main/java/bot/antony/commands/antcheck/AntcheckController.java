@@ -29,7 +29,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 
 /**
- * NotificationController controls all notifications
+ * Controller for antcheck.info API
  */
 public class AntcheckController {
 	private String subdir = "antcheck" + File.separator;
@@ -56,6 +56,11 @@ public class AntcheckController {
 	public AntcheckController() {
 		loadData();
 		Antony.getLogger().info("Created antcheck controller.");
+		
+		File directory = new File(Antony.getDataPath() + backupdir);
+		if (!directory.exists()){
+			directory.mkdirs();
+	    }
 	}
 	
 	
