@@ -96,7 +96,7 @@ public class SellsCmd extends ServerCommand {
 			returnString.append("\nBitte schränke die Suche weiter ein.");
 			channel.sendMessage(returnString.toString()).queue();
 		} else if(speciesWithOffers.size() == 1) { // There is just 1 species with offers
-			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, gibt es aber nur für ***" + speciesWithOffers.get(0).getName() + "*** Angeboten.").queue();
+			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, gibt es aber nur für ***" + speciesWithOffers.get(0).getName() + "*** Angebote.").queue();
 			showOffersForAnt(speciesWithOffers.get(0));
 		} else { // No offer for any of the found species
 			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.").queue();
