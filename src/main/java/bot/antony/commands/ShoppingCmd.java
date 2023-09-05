@@ -94,6 +94,7 @@ public class ShoppingCmd extends ServerCommand {
 		eb.addField("Zubehör / Sonstiges",
 				"[Federstahlpinzette (spitz)](https://amzn.to/3r0Ok18)"					//B0772QZTJC
 				+ "\n[Federstahlpinzette (gerundet)](https://amzn.to/3pXOlSu)"			//B0772NN767
+				+ "\n[Handpumpe für Befeuchtung](https://amzn.to/3rHpAjJ)"				//B09KMRDPWM
 				+ "\n[Kanülen (stumpf)](https://amzn.to/3XbvHax)"						//B07Z5ZT8DH
 				+ "\n[LED Beleuchtung](https://amzn.to/2O2iUsL)"						//B07413VYZJ
 				+ "\n[Lupe mit Licht](https://amzn.to/3sBcwI5)"							//B07Q3WXLJW

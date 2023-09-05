@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.AntcheckController;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -24,7 +26,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class AddHBStateMachine extends ListenerAdapter {
 	private final long channelId, authorId, initMessageId; // id because keeping the entity would risk cache to become outdated
-	private long startInteractionMsgId, availCheckMsgID, approvalMsgID;
+	private long startInteractionMsgId, availCheckMsgID, nativeOrExoticMsgID, approvalMsgID;
 	private int errorCount = 0;
 	private Boolean awaitApproval = false;
 	private String antSpecies = "";
@@ -66,11 +68,6 @@ public class AddHBStateMachine extends ListenerAdapter {
 				if (antSpecies.equals("")) {
 					handleAntSpecies(content, message);
 				}
-	
-				// 4. in which category shall the channel be?
-				if (hbCategory == null && antAvailable == true) {
-					handleCategory(event, content, message);
-				}
 			}
 		}
 	}
@@ -86,6 +83,11 @@ public class AddHBStateMachine extends ListenerAdapter {
 			// 3. user has to verify that the colony exists
 			if (antAvailable == false) {
 				handleAntAvailable(event);
+			}
+			
+			// 4. in which category shall the channel be?
+			if (hbCategory == null && antAvailable == true) {
+				handleCategory(event);
 			}
 		}
 		// 5. mods have to decide if the channel shall be created
@@ -180,9 +182,14 @@ public class AddHBStateMachine extends ListenerAdapter {
 			if (event.getEmoji().getFormatted().equals("✅")) {
 				antAvailable = true;
 				event.getChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
-					msg.reply("In welcher Kategorie soll der HB erstellt werden?\n"
-							+ "*Du kannst den Kategorie-Namen schreiben oder einen bestehenden Kanal in der passenden Kategorie verlinken*")
-							.queue();
+					msg.reply("Bitte wähle aus, ob deine Kolonie einheimisch oder exotisch ist.\n"
+							+ "1️⃣ Einheimisch\n"
+							+ "2️⃣ Exotisch").queue(submsg -> {
+								submsg.addReaction(Emoji.fromUnicode("1️⃣")).queue();
+								submsg.addReaction(Emoji.fromUnicode("2️⃣")).queue();
+								nativeOrExoticMsgID = submsg.getIdLong();
+							});
+					
 				});
 			} else if (event.getEmoji().getFormatted().equals("❌")) {
 				event.getChannel().retrieveMessageById(availCheckMsgID).queue(msg -> {
@@ -195,48 +202,103 @@ public class AddHBStateMachine extends ListenerAdapter {
 		}
 	}
 	
-	private void handleCategory(MessageReceivedEvent event, String content, Message message) {
-		if (message.getMentions().getChannels(TextChannel.class).size() > 0) {
-			hbCategory = message.getMentions().getChannels(TextChannel.class).get(0).getParentCategory();
-		} else {
-			if (message.getGuild().getCategoriesByName(content, true).size() >= 1) {
-				hbCategory = message.getGuild().getCategoriesByName(content, true).get(0);
-			}
-		}
-		if (hbCategory == null) {
-			errorCount++;
-			if(errorCount <= 4) {
-				message.reply("Die Kategorie existiert nicht. Bitte versuch es erneut.").queue();
-			} else {
-				message.reply("Die Kategorie existiert nicht.\n"
-						+ "**Abbruch wegen zu häufiger Fehl-Eingaben.**").queue();
-				Antony.getLogger().info("HB dialogue cancelled because of too many mistakes by the user");
+	private void handleCategory(MessageReactionAddEvent event) {
+		if (event.getMessageIdLong() == nativeOrExoticMsgID) {
+			//get all Categories related to HBs
+			List<Category> categories = new ArrayList<Category>();
+			
+			//pre filter categories
+			if (event.getEmoji().getFormatted().equals("1️⃣")) { //native
+				categories = event.getGuild().getCategories().stream()
+					.filter(cat -> cat.getName().toLowerCase().contains("hb einheimisch"))
+					.filter(cat -> !cat.getName().toLowerCase().contains("geschlossen"))
+					.collect(Collectors.toList());
+			} else if(event.getEmoji().getFormatted().equals("2️⃣")) { //exotic
+				categories = event.getGuild().getCategories().stream()
+					.filter(cat -> cat.getName().toLowerCase().contains("hb exotisch"))
+					.filter(cat -> !cat.getName().toLowerCase().contains("geschlossen"))
+					.collect(Collectors.toList());
 			}
 			
-		} else {
-			awaitApproval = true;
-			message.reply(
-				"Danke für die Infos. Ein Mod wird zeitnah darüber entscheiden, ob ein Haltungsbericht angelegt wird und du wirst dann darüber informiert.")
-				.queue();
-			TextChannel replyChan;
-			if (Antony.getGuildController().getLogChannel(message.getGuild()) != null) {
-				replyChan = Antony.getGuildController().getLogChannel(message.getGuild());
-			} else {
-				replyChan = message.getChannel().asTextChannel();
+			//compare category name to ant species name
+			for(Category category : categories) {
+				String[] range = category.getName().substring(category.getName().lastIndexOf(" ")+1).split("-");
+				
+				//It is a category with a given range
+				if(range.length > 1) {
+					int rangeStartLength = range[0].length();
+					int rangeEndLength = range[1].length();
+					char[] rangeStartChars = giveChars(range[0]);
+					char[] rangeEndsChars = giveChars(range[1]);
+					char[] antSpecieChars = giveChars(antSpecies);
+					
+					boolean matches = true;
+					for(int i=0; i<rangeStartLength; i++) {
+						if(rangeStartChars[i] > antSpecieChars[i]) {
+							matches = false;
+							break;
+						}	
+					}
+					if(matches) {
+						for(int i=0; i<rangeEndLength; i++) {
+							if(rangeEndsChars[i] < antSpecieChars[i]) {
+								matches = false;
+								break;
+							}	
+						}
+					}
+					
+					if(matches) {
+						//Thats the category
+						hbCategory = category;
+					}
+					
+				} else { //this is a unique category
+					if(antSpecies.substring(0, range[0].length()).toLowerCase().equals(range[0].toLowerCase())) {
+						//Thats the category
+						hbCategory = category;
+					}
+				}
 			}
-			StringBuilder sb = new StringBuilder();
-			sb.append("ℹ️ Anfrage für neuen Haltungsbericht\n");
-			sb.append("Author: " + event.getMember().getAsMention() + "\n");
-			sb.append("Art: " + antSpecies + "\n");
-			sb.append("Kategorie: " + hbCategory.getName() + "\n\n");
-			sb.append("Soll der Haltungsbericht angelegt werden?");
-
-			replyChan.sendMessage(sb.toString()).queue(msg -> {
-				Utils.addBooleanChoiceReactions(msg);
-				approvalMsgID = msg.getIdLong();
-			});
-			Antony.getLogger().info("HB dialogue is over and user awaits approval.");
+			
+			if(hbCategory != null) {
+				awaitApproval = true;
+				
+				event.getChannel().retrieveMessageById(initMessageId).queue(msg -> {
+					msg.reply("Danke für die Infos. Ein Mod wird zeitnah darüber entscheiden, ob ein Haltungsbericht angelegt wird und du wirst dann darüber informiert.")
+							.queue();
+					TextChannel replyChan;
+					if (Antony.getGuildController().getLogChannel(msg.getGuild()) != null) {
+						replyChan = Antony.getGuildController().getLogChannel(msg.getGuild());
+					} else {
+						replyChan = msg.getChannel().asTextChannel();
+					}
+					StringBuilder sb = new StringBuilder();
+					sb.append("ℹ️ Anfrage für neuen Haltungsbericht\n");
+					sb.append("Author: " + event.getMember().getAsMention() + "\n");
+					sb.append("Art: " + antSpecies + "\n");
+					sb.append("Kategorie: " + hbCategory.getName() + "\n\n");
+					sb.append("Soll der Haltungsbericht angelegt werden?");
+	
+					replyChan.sendMessage(sb.toString()).queue(submsg -> {
+						Utils.addBooleanChoiceReactions(submsg);
+						approvalMsgID = submsg.getIdLong();
+					});
+				});
+				
+				Antony.getLogger().info("HB dialogue is over and user awaits approval.");
+			}
 		}
+	}
+	
+	public char[] giveChars(String text) {
+		String textLower = text.toLowerCase();
+		char[] charArray = new char[textLower.length()];
+        // Zeichen aus dem String in das Char-Array kopieren
+		for (int i = 0; i < textLower.length(); i++) {
+        	charArray[i] = textLower.charAt(i);
+        }
+		return charArray;
 	}
 	
 	private void handleApproval(MessageReactionAddEvent event) {

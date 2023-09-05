@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("05.09.2023 - Version 7.10.2", "Bei der Anlage von Haltungsberichten wird nun nicht mehr nach der konkreten Kategorie gefragt und der Prozess dadurch vereinfacht. Kleinere Korrekturen für administrative Funktionen vorgenommen. Verwendete Programmbibliotheken wurden aktualisiert."));
 		changeLog.add(new ChangeLogEntry("30.07.2023 - Version 7.10.1", "Rechtschreibfehler korrigiert."));
 		changeLog.add(new ChangeLogEntry("20.07.2023 - Version 7.10.0", "Der Befehl ***" + cmdPrefix + "offernotification*** kann nun genutzt werden, um sich über die Verfügbarkeit von Ameisenarten informieren zu lassen, die aktuell nicht zum Verkauf in gelisteten Shops stehen. Zusätzlich wurden kleinere Optimierungen und Fehlerbehebungen eingebaut."));
 		changeLog.add(new ChangeLogEntry("12.07.2023 - Version 7.9.6", "Die ***" + cmdPrefix + "sells*** Funktion gibt nun eine Liste aller Ameisenarten aus, die zum Verkauf stehen, wenn mehr als eine Ameisenart mit der Suche gefunden wurde."));

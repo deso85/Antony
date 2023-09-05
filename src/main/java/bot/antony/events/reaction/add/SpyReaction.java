@@ -32,7 +32,7 @@ public class SpyReaction extends MessageReaction {
 		sb.append("ID: " + message.getAuthor().getId() + "\n");
 		sb.append("Tag: " + message.getAuthor().getAsTag() + "\n");
 		sb.append("Name: " + message.getAuthor().getName().replace("|", "\\|"));
-		if(message.getMember().getNickname() != null) {
+		if(message.getMember() != null && message.getMember().getNickname() != null) {
 			sb.append("\nNickname: " + message.getMember().getNickname().replace("|", "\\|"));
 		}
 		if(responseChannel != null) {
