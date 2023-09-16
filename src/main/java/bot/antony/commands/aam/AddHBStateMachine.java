@@ -228,35 +228,47 @@ public class AddHBStateMachine extends ListenerAdapter {
 				if(range.length > 1) {
 					int rangeStartLength = range[0].length();
 					int rangeEndLength = range[1].length();
-					char[] rangeStartChars = giveChars(range[0]);
-					char[] rangeEndsChars = giveChars(range[1]);
-					char[] antSpecieChars = giveChars(antSpecies);
+					char[] rangeStartChars = giveChars(range[0].toLowerCase());
+					char[] rangeEndsChars = giveChars(range[1].toLowerCase());
+					char[] antSpecieChars = giveChars(antSpecies.toLowerCase());
 					
 					boolean matches = true;
 					for(int i=0; i<rangeStartLength; i++) {
 						if(rangeStartChars[i] > antSpecieChars[i]) {
+							//Is outside the range
 							matches = false;
 							break;
-						}	
+						} else if(rangeStartChars[i] < antSpecieChars[i]) {
+							//Is in range. No need to check next char
+							break;
+						}
 					}
 					if(matches) {
 						for(int i=0; i<rangeEndLength; i++) {
 							if(rangeEndsChars[i] < antSpecieChars[i]) {
+								//Is outside the range
 								matches = false;
 								break;
-							}	
+							} else if(rangeEndsChars[i] > antSpecieChars[i]) {
+								//Is in range. No need to check next char
+								break;
+							}
 						}
 					}
 					
 					if(matches) {
 						//Thats the category
+						Antony.getLogger().info("Category found: " + category.getName());
 						hbCategory = category;
+						break;
 					}
 					
 				} else { //this is a unique category
 					if(antSpecies.substring(0, range[0].length()).toLowerCase().equals(range[0].toLowerCase())) {
 						//Thats the category
+						Antony.getLogger().info("Category found: " + category.getName());
 						hbCategory = category;
+						break;
 					}
 				}
 			}
