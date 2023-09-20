@@ -83,7 +83,8 @@ public class Serverstats implements IServerCommand {
 		
 		//Basics
 		eb.addField("Allgemeines",
-				"Server-Boosts: " + boostCount
+				"Server erstellt: <t:" + guild.getTimeCreated().toEpochSecond() + ":D>"
+				+ "\nServer-Boosts: " + boostCount
 				+ "\nBoost Tier: " + boostTier
 				+ "\nEmote Count: " + emoteCount + " / " + maxEmoteCount,
 				false);

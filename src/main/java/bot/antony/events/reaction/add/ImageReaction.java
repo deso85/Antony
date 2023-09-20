@@ -37,7 +37,14 @@ public class ImageReaction extends MessageReaction {
 		}
 		if(responseChannel != null) {
 			responseChannel.sendMessage(sb.toString()).queue();
-			responseChannel.sendMessage(message.getAuthor().getEffectiveAvatarUrl() + "?size=2048").queue();
+			if(!message.getAuthor().getEffectiveAvatarUrl().equals(message.getMember().getEffectiveAvatarUrl())) {
+				responseChannel.sendMessage("Avatar:").queue();
+				responseChannel.sendMessage(message.getAuthor().getEffectiveAvatarUrl() + "?size=2048").queue();
+				responseChannel.sendMessage("Serverspezifischer Avatar:").queue();
+				responseChannel.sendMessage(message.getMember().getEffectiveAvatarUrl() + "?size=2048").queue();
+			} else {
+				responseChannel.sendMessage(message.getAuthor().getEffectiveAvatarUrl() + "?size=2048").queue();
+			}
 		}
 	}
 	
