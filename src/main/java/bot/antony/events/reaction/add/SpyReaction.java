@@ -30,10 +30,10 @@ public class SpyReaction extends MessageReaction {
 	public void printUserinfo() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ID: " + message.getAuthor().getId() + "\n");
-		sb.append("Tag: " + message.getAuthor().getAsTag() + "\n");
-		sb.append("Name: " + message.getAuthor().getName().replace("|", "\\|"));
+		sb.append("Tag: " + message.getAuthor().getAsTag().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*") + "\n");
+		sb.append("Name: " + message.getAuthor().getName().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"));
 		if(message.getMember() != null && message.getMember().getNickname() != null) {
-			sb.append("\nNickname: " + message.getMember().getNickname().replace("|", "\\|"));
+			sb.append("\nNickname: " + message.getMember().getNickname().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"));
 		}
 		if(responseChannel != null) {
 			responseChannel.sendMessage(sb.toString()).queue();

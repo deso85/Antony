@@ -118,10 +118,10 @@ public class UserInfoCmd extends ServerCommand {
 				StringBuilder sb = new StringBuilder();
 				
 				sb.append("ID: " + getMember().getId() + "\n");
-				sb.append("Tag: " + getMember().getUser().getAsTag() + "\n");
-				sb.append("Name: " + getMember().getUser().getName().replace("|", "\\|"));
+				sb.append("Tag: " + getMember().getUser().getAsTag().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*") + "\n");
+				sb.append("Name: " + getMember().getUser().getName().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"));
 				if(getMember().getNickname() != null) {
-					sb.append("\nNickname: " + getMember().getNickname().replace("|", "\\|"));
+					sb.append("\nNickname: " + getMember().getNickname().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"));
 				}
 				
 				channel.sendMessage(sb.toString()).queue();
@@ -227,10 +227,10 @@ public class UserInfoCmd extends ServerCommand {
 				.addField("Zuletzt online gesehen", lastOnline, false);
 		
 		if(names.length() > 0) {
-			eb.addField("Bekannte Namen", names.toString().replace("|", "\\|"), false);
+			eb.addField("Bekannte Namen", names.toString().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"), false);
 		}
 		if(nicknames.length() > 0) {
-			eb.addField("Bekannte Nicknames", nicknames.toString().replace("|", "\\|"), false);
+			eb.addField("Bekannte Nicknames", nicknames.toString().replace("|", "\\|").replace("_", "\\_").replace("*", "\\*"), false);
 		}
 				
 		eb.setFooter("Member #" + (getMemberList().indexOf(getMember())+1) + " | User ID: " + getMember().getId());

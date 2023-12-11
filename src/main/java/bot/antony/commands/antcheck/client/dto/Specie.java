@@ -1,7 +1,9 @@
 package bot.antony.commands.antcheck.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Specie {
 
 	private Integer id;

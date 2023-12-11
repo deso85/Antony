@@ -22,6 +22,7 @@ import bot.antony.commands.ReactionCmd;
 import bot.antony.commands.SellsCmd;
 import bot.antony.commands.Serverstats;
 import bot.antony.commands.ShoppingCmd;
+import bot.antony.commands.ShopsCmd;
 import bot.antony.commands.ShowAvatarCmd;
 import bot.antony.commands.ShutdownCmd;
 import bot.antony.commands.Softban;
@@ -73,6 +74,7 @@ public class CommandManager {
 		commands.put("reminder", new ReminderCmd());
 		commands.put("sells", new SellsCmd());
 		commands.put("shopping", new ShoppingCmd());
+		commands.put("shops", new ShopsCmd());
 		commands.put("showavatar", new ShowAvatarCmd());
 		commands.put("shutdown", new ShutdownCmd());
 		commands.put("user", new UserCmd());

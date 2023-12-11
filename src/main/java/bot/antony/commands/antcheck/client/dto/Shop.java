@@ -1,22 +1,28 @@
 package bot.antony.commands.antcheck.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Shop {
 
 	private Integer id;
 
 	private String name;
 
+	private String url;
+	
 	private String shipping;
 
 	private String country;
 
 	private String currency;
-
-	private Boolean crawler_active;
+	
+	private boolean active_listed;
 	
 	private String last_update;
+	
+	private Discount discount;
 	
 
 	public Integer getId() {
@@ -35,6 +41,14 @@ public class Shop {
 		this.name = name;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
 	public String getShipping() {
 		return shipping;
 	}
@@ -54,17 +68,17 @@ public class Shop {
 	public String getCurrency() {
 		return currency;
 	}
-
+	
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-
-	public Boolean getCrawler_active() {
-		return crawler_active;
+	
+	public boolean isActive_listed() {
+		return active_listed;
 	}
 
-	public void setCrawler_active(Boolean crawler_active) {
-		this.crawler_active = crawler_active;
+	public void setActive_listed(boolean active_listed) {
+		this.active_listed = active_listed;
 	}
 
 	public String getLast_update() {
@@ -75,6 +89,14 @@ public class Shop {
 		this.last_update = last_update;
 	}
 
+	public Discount getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
+	}
+
 	@JsonIgnore
 	public String getIdAndName() {
 		return "(" + id + ") " + name;
@@ -82,8 +104,9 @@ public class Shop {
 	
 	@Override
 	public String toString() {
-		return "Shop [id=" + id + ", name=" + name + ", shipping=" + shipping + ", country=" + country + ", currency="
-				+ currency + ", crawler_active=" + crawler_active + ", last_update=" + last_update + "]";
+		return "Shop [id=" + id + ", name=" + name + ", url=" + url + ", shipping=" + shipping + ", country=" + country
+				+ ", currency=" + currency + ", active_listed=" + active_listed + ", last_update=" + last_update
+				+ ", discount=" + discount + "]";
 	}
 
 	@Override
@@ -110,5 +133,5 @@ public class Shop {
 			return false;
 		return true;
 	}
-
+	
 }

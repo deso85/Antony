@@ -1,5 +1,8 @@
 package bot.antony.commands.antcheck.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Offer {
 
 	private Integer id;

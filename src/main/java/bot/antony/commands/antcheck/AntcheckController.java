@@ -388,6 +388,10 @@ public class AntcheckController {
 		return shops;
 	}
 	
+	public List<Shop> getNonBlacklistedShops() {
+		return removeBlacklistedShops(shops);
+	}
+	
 	public void run(JDA jda) {
 		if(!isRunning) {
 			isRunning = true;
