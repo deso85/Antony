@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("17.12.2023 - Version 7.12.0", "Die administrative Funktion ***" + cmdPrefix + "shoppingmanager*** wurde hinzugefügt. Den Befehl ***" + cmdPrefix + "shopping*** greift nun auf eine separat gespeicherte Liste zu."));
 		changeLog.add(new ChangeLogEntry("10.12.2023 - Version 7.11.0", "Der Befehl ***" + cmdPrefix + "shops*** wurde hinzugefügt. Über diesen Befehl lassen sich alle bekannten Shops, auch gefiltert, ausgeben. Zudem wurde eine Korrektur für den Befehl ***" + cmdPrefix + "userinfo*** implementiert, um durch Sonderzeichen hervorgerufene Anzeigefehler zu beheben. Ein paar Programmbibliotheken wurden aktualisiert."));
 		changeLog.add(new ChangeLogEntry("20.09.2023 - Version 7.10.4", "Die administrative Reaction zum Anzeigen des Avatars wurde dahingehend überarbeitet, dass nun auch der serverspezifische Avatar angezeigt wird, sofern dieser von dem User-Avatar abweicht. Der Befehl ***" + cmdPrefix + "showavatar*** zeigt weiterhin nur den für den Server gültigen Avatar. Zudem gibt ***" + cmdPrefix + "serverstats*** nun auch die Info aus, wann der Server erstellt wurde."));
 		changeLog.add(new ChangeLogEntry("17.09.2023 - Version 7.10.3", "Das Release enthält Fehlerkorrekturen für den ***" + cmdPrefix + "addhb*** Befehl."));
