@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -225,5 +226,28 @@ public abstract class Utils {
 	public static void addBooleanChoiceReactions(Message msg) {
 		msg.addReaction(Emoji.fromUnicode("✅")).queue();
 		msg.addReaction(Emoji.fromUnicode("❌")).queue();
+	}
+	
+	public static String escapeControlChars(String text) {
+		return text.replace("|", "\\|")
+				.replace("_", "\\_")
+				.replace("*", "\\*");
+	}
+	
+	public static String getAllUserInfos(Member member) {
+		User user = member.getUser();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("ID: " + user.getId() + "\n");
+		sb.append("Tag: " + escapeControlChars(user.getAsTag()) + "\n");
+		sb.append("Discord User Name: " + escapeControlChars(user.getName()));
+		if(user.getGlobalName() != null) {
+			sb.append("\nDisplay Name: " + escapeControlChars(user.getGlobalName()));
+		}
+		if(member != null && member.getNickname() != null) {
+			sb.append("\nNickname: " + escapeControlChars(member.getNickname()));
+		}
+		
+		return sb.toString();
 	}
 }

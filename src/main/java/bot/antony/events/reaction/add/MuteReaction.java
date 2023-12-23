@@ -102,10 +102,10 @@ public class MuteReaction extends MessageReaction {
 	private void printInfo(boolean muted) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ID: " + message.getAuthor().getId() + "\n");
-		sb.append("Tag: " + message.getAuthor().getAsTag() + "\n");
-		sb.append("Name: " + message.getAuthor().getName());
+		sb.append("Tag: " + Utils.escapeControlChars(message.getAuthor().getAsTag()) + "\n");
+		sb.append("Name: " + Utils.escapeControlChars(message.getAuthor().getName()));
 		if(message.getMember().getNickname() != null) {
-			sb.append("\nNickname: " + message.getMember().getNickname());
+			sb.append("\nNickname: " + Utils.escapeControlChars(message.getMember().getNickname()));
 		}
 		if(responseChannel != null) {
 			if(muted) {

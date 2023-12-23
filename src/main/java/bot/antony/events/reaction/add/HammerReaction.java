@@ -6,6 +6,7 @@ import java.util.Date;
 
 import bot.antony.Antony;
 import bot.antony.events.softban.UserDataSB;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -31,7 +32,7 @@ public class HammerReaction extends MessageReaction {
 		setVariables(event);
 		if(shallTrigger(event.getMember())) {
 			removeReaction();
-			UserDataSB user = new UserDataSB(message.getAuthor().getId(), message.getAuthor().getName());
+			UserDataSB user = new UserDataSB(message.getAuthor().getId(), Utils.escapeControlChars(message.getAuthor().getName()));
 			String logMsg = "";
 			if(Antony.getSoftbanController().ban(user)) {
 				logMsg = "🔨 User soft banned by " + reactor.getAsMention();
@@ -41,7 +42,7 @@ public class HammerReaction extends MessageReaction {
 				}
 			} else {
 				Antony.getSoftbanController().unban(user);
-				logMsg = "🔨 Softban removed from user \"" + user.getName() + "\" by " + reactor.getAsMention();
+				logMsg = "🔨 Softban removed from user \"" + Utils.escapeControlChars(user.getName()) + "\" by " + reactor.getAsMention();
 				if(responseChannel != null) {
 					responseChannel.sendMessage(logMsg).complete();
 				}
@@ -74,7 +75,7 @@ public class HammerReaction extends MessageReaction {
 		TextChannel txtChan = message.getChannel().asTextChannel();
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Color.red)
-				.setAuthor(message.getAuthor().getAsTag() + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())
+				.setAuthor(Utils.escapeControlChars(message.getAuthor().getAsTag()) + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())
 				.setDescription(message.getContentDisplay())
 				.addField("#" + txtChan.getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + txtChan.getId() + "/" + message.getId() + ")**", false)
 				.setFooter(formatter.format(date));

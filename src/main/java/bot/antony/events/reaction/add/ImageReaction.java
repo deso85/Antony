@@ -1,6 +1,7 @@
 package bot.antony.events.reaction.add;
 
 import bot.antony.Antony;
+import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class ImageReaction extends MessageReaction {
@@ -28,15 +29,8 @@ public class ImageReaction extends MessageReaction {
 	}
 	
 	public void printUserinfo() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("ID: " + message.getAuthor().getId() + "\n");
-		sb.append("Tag: " + message.getAuthor().getAsTag() + "\n");
-		sb.append("Name: " + message.getAuthor().getName());
-		if(message.getMember().getNickname() != null) {
-			sb.append("\nNickname: " + message.getMember().getNickname());
-		}
 		if(responseChannel != null) {
-			responseChannel.sendMessage(sb.toString()).queue();
+			responseChannel.sendMessage(Utils.getAllUserInfos(message.getMember())).queue();
 			if(!message.getAuthor().getEffectiveAvatarUrl().equals(message.getMember().getEffectiveAvatarUrl())) {
 				responseChannel.sendMessage("Avatar:").queue();
 				responseChannel.sendMessage(message.getAuthor().getEffectiveAvatarUrl() + "?size=2048").queue();

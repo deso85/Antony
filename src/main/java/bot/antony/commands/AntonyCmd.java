@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class AntonyCmd extends ServerCommand {
 
+	Member member;
+	GuildMessageChannel channel;
+	
 	// --------------------------------------------------
 	// Constructor
 	// --------------------------------------------------
@@ -29,6 +32,9 @@ public class AntonyCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
+		this.member = member;
+		this.channel = channel;
+		
 		String[] userMessage = message.getContentDisplay().split(" ");
 		if (userMessage.length > 1) {
 			switch (userMessage[1].toLowerCase()) {
@@ -36,34 +42,48 @@ public class AntonyCmd extends ServerCommand {
 					printHelp(channel);
 					break;
 				default:
-					channel.sendMessageEmbeds(getCommandList(member).build()).queue();
+					listCommands();
 					break;
 			}
 		} else {
-			channel.sendMessageEmbeds(getCommandList(member).build()).queue();
+			listCommands();
 		}
 	}
 
-	private EmbedBuilder getCommandList(Member member) {
+	private void listCommands() {
 		StringBuilder ebField;
 		EmbedBuilder eb = new EmbedBuilder().setTitle("***Antony***")
 				.setColor(Antony.getBaseColor())
 				.setDescription("Du kannst folgende Befehle nutzen:")
-				.setThumbnail(member.getJDA().getSelfUser().getEffectiveAvatarUrl())
-				.setFooter("Version " + Antony.getVersion());
+				.setThumbnail(member.getJDA().getSelfUser().getEffectiveAvatarUrl());
+				
 		
+		int fieldCounter = 0;
 		for(Entry<String, ServerCommand> entry : Antony.getCmdMan().getAvailableCommands(member).entrySet()) {
+			
+			if(fieldCounter >= 25) { //Embed may only have 25 fields
+				channel.sendMessageEmbeds(eb.build()).queue();
+				eb = new EmbedBuilder()
+						.setColor(Antony.getBaseColor());
+				fieldCounter = 0;
+			}
+			
 			ebField = new StringBuilder();
 			ebField.append(entry.getValue().getDescription());
+			if(entry.getValue().getDescription().isEmpty()) {
+				System.out.println("ALARM!");
+			}
 			if(entry.getValue().getExample() != null && !entry.getValue().getExample().isEmpty()) {
 				ebField.append("\n*__Beispiel:__ "
 						+ Antony.getCmdPrefix() + entry.getValue().getName() + " "
 						+ entry.getValue().getExample() + "*");
 			}
 			eb.addField(Antony.getCmdPrefix() + entry.getValue().getName(), ebField.toString(), false);
+			
+			fieldCounter++;
 		}
-		
-		return eb;
+		eb.setFooter("Version " + Antony.getVersion());
+		channel.sendMessageEmbeds(eb.build()).queue();
 	}
 	
 	/**
@@ -78,7 +98,6 @@ public class AntonyCmd extends ServerCommand {
 		BotCommand pnlink = new BotCommand("pnlink", "Gibt einen formatierten Text für einen Kanal aus, der z.B. in PNs genutzt werden kann, um Kanäle zu verlinken, was über # nicht möglich ist. (Das letzte Leerzeichen der Ausgabe muss entfernt werden)", "#kanal1");
 		BotCommand sells = new BotCommand("sells", "Listet zu der gesuchten Ameisenart alle Shops und zugehörigen Preise. Die Shops werden nach Namen sortiert ausgegeben. Die Daten werden von https://antcheck.info zur Verfügung gestellt. Vielen Dank hierfür!", "Lasius niger");
 		BotCommand serverstats = new BotCommand("serverstats", "Zeigt Serverstatistiken.");
-		BotCommand userinfo = new BotCommand("userinfo", "Zeigt Details über den Benutzer.", "Antony");
 		
 		//Commands for mods
 		BotCommand user = new BotCommand("user", "Funktion zur Verwaltung von Discord Usern.");

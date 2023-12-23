@@ -43,7 +43,7 @@ public class RedFlagReaction extends MessageReaction {
 		setVariables(event);
 		if(shallTrigger(event.getMember())) {
 			UserData usrData = new UserData(reactor);
-			logMessage.append("User [" + usrData.toString() + "] REDFLAGGED "
+			logMessage.append("User [" + Utils.escapeControlChars(usrData.toString()) + "] REDFLAGGED "
 					+ "message [" + message.getId() + "] "
 					+ "in channel #" + message.getChannel().getName() + " (CID: " + message.getChannel().getId() + ").");
 			
@@ -97,7 +97,7 @@ public class RedFlagReaction extends MessageReaction {
 			if(reactor.getUser().equals(user)) {
 				sb.append("__");
 			}
-			sb.append(user.getAsTag() + " (" + user.getId() + ")");
+			sb.append(Utils.escapeControlChars(user.getAsTag()) + " (" + user.getId() + ")");
 			if(reactor.getUser().equals(user)) {
 				sb.append("__");
 			}
@@ -117,7 +117,7 @@ public class RedFlagReaction extends MessageReaction {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 		EmbedBuilder eb = new EmbedBuilder()
 				.setColor(Color.red)
-				.setAuthor(message.getAuthor().getAsTag() + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())
+				.setAuthor(Utils.escapeControlChars(message.getAuthor().getAsTag()) + " | ID: " + message.getAuthor().getId(), null, message.getAuthor().getAvatarUrl())
 				.setDescription(message.getContentDisplay())
 				.addField("#" + message.getChannel().getName(), "**[Hier klicken, um zur Nachricht zu kommen.](https://discord.com/channels/" + guild.getId() + "/" + message.getChannel().getId() + "/" + message.getId() + ")**", false)
 				.setFooter(formatter.format(date));
