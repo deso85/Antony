@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
 public class EmergencyCmd extends ServerCommand {
 
-	boolean longtext = false;
+	boolean longtext;
 	StringBuilder fileName;
 	
 	// --------------------------------------------------
@@ -34,7 +34,8 @@ public class EmergencyCmd extends ServerCommand {
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
 		String[] userMessage = message.getContentDisplay().split(" ");
-
+		longtext = false;
+		
 		if (userMessage.length > 1) {
 			if (userMessage.length > 2) {
 				if(userMessage[2].toLowerCase().equals("long")) {
