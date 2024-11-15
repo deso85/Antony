@@ -4,16 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>7.12.2</version>
+	<version>7.13.0</version>
 
 	<properties>
-		<resteasy.version>6.2.6.Final</resteasy.version>
+		<resteasy.version>6.2.11.Final</resteasy.version>
 		<maven.compiler.release>8</maven.compiler.release>
-		<jackson.version>2.16.0</jackson.version>
+		<jackson.version>2.18.1</jackson.version>
 		<hibernate.version>5.6.15.Final</hibernate.version>
 		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
-		<jda.version>5.0.0-beta.20</jda.version>
-		<sqlite.version>3.44.1.0</sqlite.version>
+		<jda.version>5.2.1</jda.version>
+		<sqlite.version>3.47.0.0</sqlite.version>
 		<sqlite.dialect.version>0.1.4</sqlite.dialect.version>
 		<jaxrs.version>2.0.2.Final</jaxrs.version>
 		<jboss.weld.version>2.4.8.Final</jboss.weld.version>

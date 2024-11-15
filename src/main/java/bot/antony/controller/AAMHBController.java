@@ -238,28 +238,40 @@ public class AAMHBController {
 	}
 	
 	private void setRelevantChannels() {
+		Antony.getLogger().debug("[AAM HB Controller] Searching for relevant channels");
 		List<TextChannel> chans = new ArrayList<TextChannel>();
 		
 		//get all channels which are in the correct categories
 		for(Category cat : guild.getCategories()) {
 			if(cat.getName().toLowerCase().contains("hb")
 					&& !cat.getName().toLowerCase().contains("geschlossen")) {
+				Antony.getLogger().debug("[AAM HB Controller] Adding all " + cat.getTextChannels().size() + " channels from category '" + cat.getName() + "'");
 				chans.addAll(cat.getTextChannels());
 			}
 		}
+		Antony.getLogger().debug("[AAM HB Controller] Channels to filter: " + chans.size());
 		
-		//remove chat channels
+		//filter channels
 		chans = chans.stream()
-				.filter(chan -> !chan.getName().contains("chat-hb"))
+				.filter(chan -> !chan.getName().contains("chat-hb")) //remove chat channels
 				.collect(Collectors.toList());
 		
-		//romve channels which are up to date
+		Antony.getLogger().debug("[AAM HB Controller] Channels to filter after removing chat channels: " + chans.size());
+		
+		int chancount = 1;
+		//add only channels which are relevant
 		for(TextChannel chan : chans) {
+			Antony.getLogger().debug("[AAM HB Controller] Channel " + chancount + " from " + chans.size() + ": " + chan.getName());
+			chancount++;
+			
+			//TODO: Check if Bot has access, otherwise Bot just stops working
 			MessageHistory history = new MessageHistory(chan);
 			List<Message> messageList = history.retrievePast(1).complete();
 			//Check if channel is empty and older than 2 Weeks
 			if(((messageList.isEmpty() || messageList.get(0).getAuthor().isBot()) && chan.getTimeCreated().plusWeeks(2).isBefore(OffsetDateTime.now()))
-					|| (!messageList.isEmpty() && (messageList.get(0).getMember() == null || messageList.get(0).getMember().getId() == "456226577798135808" || guild.getMemberById(messageList.get(0).getMember().getId()) == null))) {
+					//or if channel has content and member is not known
+					|| (!messageList.isEmpty() && (messageList.get(0).getMember() == null || guild.getMemberById(messageList.get(0).getMember().getId()) == null))) {
+				Antony.getLogger().debug("[AAM HB Controller] Channel without owner relevant: " + chan.getId() + ", " + chan.getName());
 				relChans.add(chan);
 				if(memChans.containsKey(1L)) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(1L));
@@ -268,8 +280,10 @@ public class AAMHBController {
 				} else {
 					memChans.put(1L, Arrays.asList(chan));
 				}
-			} else if(!messageList.isEmpty() && messageList.get(0).getTimeCreated().plusMonths(6).isBefore(OffsetDateTime.now())) {
-				Antony.getLogger().debug("[AAM HB Controller] Channel with Author: " + messageList.get(0).getAuthor().getName() + " " + messageList.get(0).getAuthor().getId() ); 
+			}
+			//If channel is not empty and content is older than 6 months
+			else if(!messageList.isEmpty() && messageList.get(0).getTimeCreated().plusMonths(6).isBefore(OffsetDateTime.now())) {
+				Antony.getLogger().debug("[AAM HB Controller] Channel (" + chan.getId() + ", " + chan.getName() + ") with Author (" + messageList.get(0).getAuthor().getName() + " " + messageList.get(0).getAuthor().getId() + ") relevant"); 
 				relChans.add(chan);
 				if(memChans.containsKey(messageList.get(0).getAuthor().getIdLong())) {
 					List<TextChannel> chanUpdate = new ArrayList<TextChannel>(memChans.get(messageList.get(0).getAuthor().getIdLong()));
@@ -278,6 +292,9 @@ public class AAMHBController {
 				} else {
 					memChans.put(messageList.get(0).getAuthor().getIdLong(), Arrays.asList(chan));
 				}
+			}
+			else {
+				Antony.getLogger().debug("[AAM HB Controller] Channel not relevant");
 			}
 		}
 		
