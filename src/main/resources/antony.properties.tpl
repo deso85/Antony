@@ -14,3 +14,5 @@ flatfile.path = C:\\Antony\\
 sqlite.db.path = antony.db
 # Set Bot version from pom.xml
 bot.version = ${project.version}
+# Set Antcheck API Key
+antcheck.api.key = 123456789abcdef
