@@ -3,26 +3,20 @@ package bot.antony.commands.antcheck.client.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Objects;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Shop {
 
 	private Integer id;
-
 	private String name;
-
 	private String url;
-	
-	private String shipping;
-
 	private String country;
-
-	private String currency;
-	
-	private boolean active_listed;
-	
-	private String last_update;
-	
-	private Discount discount;
+	private String currency_iso;
+	private boolean online;
+	private boolean crawler_active;
+	private String products_crawl_stats;
+	private String antcheck_url;
 	
 
 	public Integer getId() {
@@ -48,14 +42,6 @@ public class Shop {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	public String getShipping() {
-		return shipping;
-	}
-
-	public void setShipping(String shipping) {
-		this.shipping = shipping;
-	}
 
 	public String getCountry() {
 		return country;
@@ -65,73 +51,75 @@ public class Shop {
 		this.country = country;
 	}
 
-	public String getCurrency() {
-		return currency;
-	}
-	
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-	
-	public boolean isActive_listed() {
-		return active_listed;
+	public String getCurrency_iso() {
+		return currency_iso;
 	}
 
-	public void setActive_listed(boolean active_listed) {
-		this.active_listed = active_listed;
+	public void setCurrency_iso(String currency_iso) {
+		this.currency_iso = currency_iso;
 	}
 
-	public String getLast_update() {
-		return last_update;
+	public boolean isOnline() {
+		return online;
 	}
 
-	public void setLast_update(String last_update) {
-		this.last_update = last_update;
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 
-	public Discount getDiscount() {
-		return discount;
+	public boolean isCrawler_active() {
+		return crawler_active;
 	}
 
-	public void setDiscount(Discount discount) {
-		this.discount = discount;
+	public void setCrawler_active(boolean crawler_active) {
+		this.crawler_active = crawler_active;
+	}
+
+	public String getProducts_crawl_stats() {
+		return products_crawl_stats;
+	}
+
+	public void setProducts_crawl_stats(String products_crawl_stats) {
+		this.products_crawl_stats = products_crawl_stats;
+	}
+
+	public String getAntcheck_url() {
+		return antcheck_url;
+	}
+
+	public void setAntcheck_url(String antcheck_url) {
+		this.antcheck_url = antcheck_url;
 	}
 
 	@JsonIgnore
 	public String getIdAndName() {
 		return "(" + id + ") " + name;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Shop [id=" + id + ", name=" + name + ", url=" + url + ", shipping=" + shipping + ", country=" + country
-				+ ", currency=" + currency + ", active_listed=" + active_listed + ", last_update=" + last_update
-				+ ", discount=" + discount + "]";
+		return "Shop{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", url='" + url + '\'' +
+				", country='" + country + '\'' +
+				", currency_iso='" + currency_iso + '\'' +
+				", online=" + online +
+				", crawler_active=" + crawler_active +
+				", products_crawl_stats='" + products_crawl_stats + '\'' +
+				", internal_url='" + antcheck_url + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		Shop shop = (Shop) o;
+		return online == shop.online && crawler_active == shop.crawler_active && Objects.equals(id, shop.id) && Objects.equals(name, shop.name) && Objects.equals(url, shop.url) && Objects.equals(country, shop.country) && Objects.equals(currency_iso, shop.currency_iso) && Objects.equals(products_crawl_stats, shop.products_crawl_stats) && Objects.equals(antcheck_url, shop.antcheck_url);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hash(id, name, url, country, currency_iso, online, crawler_active, products_crawl_stats, antcheck_url);
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Shop other = (Shop) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-	
 }

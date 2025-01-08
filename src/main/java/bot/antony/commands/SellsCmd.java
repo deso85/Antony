@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.AntcheckController;
-import bot.antony.commands.antcheck.client.dto.Offer;
 import bot.antony.commands.antcheck.client.dto.Shop;
 import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.commands.types.ServerCommand;
@@ -70,7 +69,7 @@ public class SellsCmd extends ServerCommand {
 	}
 
 	private void showMultipleSpeciesWithOffers(String searchString) {
-		List<Specie> speciesWithOffers = new ArrayList<Specie>();
+		/*List<Specie> speciesWithOffers = new ArrayList<Specie>();
 		StringBuilder returnString = new StringBuilder();
 		
 		for(Specie specie : specieList) {
@@ -100,7 +99,7 @@ public class SellsCmd extends ServerCommand {
 			showOffersForAnt(speciesWithOffers.get(0));
 		} else { // No offer for any of the found species
 			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.").queue();
-		}
+		}*/
 	}
 	
 	private void sendNoAntMessage(String searchString) {
@@ -119,7 +118,7 @@ public class SellsCmd extends ServerCommand {
 	}
 	
 	private void showOffersForAnt(Specie ant) {
-		List<Offer> offerList = new ArrayList<Offer>();
+		/*List<Offer> offerList = new ArrayList<Offer>();
 		List<Shop> shopList = new ArrayList<Shop>();
 		// 2. Search for offers with the given ant
 		offerList = controller.getOffersForAntWithoutBlShops(ant);
@@ -130,11 +129,11 @@ public class SellsCmd extends ServerCommand {
 			shopList = controller.getShopsByOffers(offerList).stream()
 					.sorted(Comparator.comparing(Shop::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList());
-			
+			*/
 			/* ================================================================================
 			 * 4. Combine shops with offers in embed fields
 			 * ================================================================================ */
-			List<Field> shopFields = new ArrayList<Field>();
+			/*List<Field> shopFields = new ArrayList<Field>();
 			for(Shop shop : shopList) {
 				StringBuilder fieldPart = new StringBuilder();
 				StringBuilder tempFieldPart;
@@ -159,19 +158,18 @@ public class SellsCmd extends ServerCommand {
 
 				Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
 				shopFields.add(shopField);
-			}
+			}*/
 			
 			/* ================================================================================
 			 * 5. Build and present embed
 			 * ================================================================================ */
-			EmbedBuilder eb = new EmbedBuilder();
+			/*EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle("*" + ant.getName() + "*", "https://antwiki.org/wiki/" + ant.getName().replace(" ", "_"));
 			eb.setColor(Antony.getBaseColor());
 			eb.setDescription("Die folgenden Daten wurden von https://antcheck.info/ bereitgestellt.\n\n"
 					+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
-			if (ant.getImage_url() != null && !ant.getImage_url().isEmpty()) {
-				eb.setThumbnail(ant.getImage_url());
-				
+			if (ant.getImages().size() > 0 && !ant.getImages().getFirst().getUrl().isEmpty()) {
+				eb.setThumbnail(ant.getImages().getFirst().getUrl());
 			}
 			eb.setFooter("Preise und Verfügbarkeiten werden täglich mehrfach aktualisiert.\n"
 					+ "Letzter erfolgreicher Abruf der Antcheck-Schnittstelle: "
@@ -191,7 +189,7 @@ public class SellsCmd extends ServerCommand {
 				eb.addField(field);
 			}
 			channel.sendMessageEmbeds(eb.build()).complete();
-		}
+		}*/
 	}
 	
 }

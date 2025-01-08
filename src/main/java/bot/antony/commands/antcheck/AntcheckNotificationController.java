@@ -41,7 +41,7 @@ public class AntcheckNotificationController {
 	// Functions
 	// --------------------------------------------------
 	public void checkAvailability() {
-		if(nextCheckDateTime.isBefore(LocalDateTime.now())) {
+		/*if(nextCheckDateTime.isBefore(LocalDateTime.now())) {
 
 			Antony.getLogger().info("[Antcheck Availability Controller] Found " + anrs.size() + " notification requests to check.");
 			int newSpecieOffers = 0;
@@ -71,7 +71,7 @@ public class AntcheckNotificationController {
 			
 			lastCheckDateTime = LocalDateTime.now();
 			nextCheckDateTime = LocalDateTime.now().plusMinutes(60).truncatedTo(ChronoUnit.HOURS);
-		}
+		}*/
 	}
 	
 	public List<Member> getMemberByANR(Guild guild, List<UserData> user){

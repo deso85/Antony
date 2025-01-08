@@ -3,8 +3,10 @@ package bot.antony.commands.antcheck;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import bot.antony.Antony;
+import bot.antony.commands.antcheck.client.dto.Currency;
 import bot.antony.commands.antcheck.client.dto.Shop;
 import bot.antony.commands.types.ServerCommand;
 import bot.antony.utils.Utils;
@@ -29,12 +31,14 @@ public class AntcheckCmd extends ServerCommand {
 		this.description = "Administration der Antcheck Schnittstelle";
 		this.shortDescription = "Administration der Antcheck Schnittstelle";
 		this.example = "shops list";
-		this.cmdParams.put("offers count", "Gibt die Anzahl Angebote aus.");
+		this.cmdParams.put("currencies (count | list)", "Gibt die Anzahl oder eine Liste der Währungen und deren Euro-Umrechnungsfaktoren aus.");
+		this.cmdParams.put("products count", "Gibt die Anzahl der Produkte aus.");
 		this.cmdParams.put("shops (count | list)", "Gibt die Anzahl oder eine Liste der Shops aus.");
 		this.cmdParams.put("shops blacklist (count | list | add | remove) (ShopId | ShopName)", "Interaktion mit der Blacklist von Shops.");
 		this.cmdParams.put("species count", "Gibt die Anzahl Ameisen Arten aus.");
+		this.cmdParams.put("variants count", "Gibt die Anzahl der Produktvarianten aus.");
 		this.cmdParams.put("status", "Gibt den aktuellen Status der Schnittstelle aus.");
-		this.cmdParams.put("update [offers | shops | species]", "Aktualisiert die spezifizierten Daten. Ohne weitere Parameter werden alle Daten aktualisiert.");
+		this.cmdParams.put("update [currencies | products | shops | species | variants]", "Aktualisiert die spezifizierten Daten. Ohne weitere Parameter werden alle Daten aktualisiert.");
 	}
 
 	// --------------------------------------------------
@@ -49,8 +53,11 @@ public class AntcheckCmd extends ServerCommand {
 		
 		if (userMessage.length > 1) {
 			switch (userMessage[1].toLowerCase()) {
-				case "offers":
-					performOffers();
+				case "currencies":
+					performCurrencies();
+					break;
+				case "products":
+					performProducts();
 					break;
 				case "shops":
 					performShops();
@@ -58,10 +65,10 @@ public class AntcheckCmd extends ServerCommand {
 				case "species":
 					performSpecies();
 					break;
-				case "status":
-					performStatus();
+				case "variants":
+					performVariants();
 					break;
-				case "update":
+                case "update":
 					performUpdate();
 					break;
 				default:
@@ -73,11 +80,40 @@ public class AntcheckCmd extends ServerCommand {
 		}
 	}
 	
-	public void performOffers() {
+	public void performCurrencies() {
 		if (userMessage.length > 2) {
 			switch (userMessage[2].toLowerCase()) {
 				case "count":
-					channel.sendMessage("Antcheck hat **" + controller.getOffers().size() + "** Angebote gelistet."
+					channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getCurrencies().size()) + "** Währungen und deren Euro-Umrechnungsfaktoren gelistet."
+							+ "\n*Stand: " + lastUpdated + " Uhr*").queue();
+					break;
+				case "list":
+					StringBuilder returnString = new StringBuilder();
+					returnString.append("Folgende Währungen und Euro-Umrechnungsfaktoren existieren:\n");
+					for(Currency currency : controller.getCurrencies()) {
+						if((returnString.length() + currency.print().length() + 4) > 1000) {
+							channel.sendMessage(returnString.toString()).queue();
+							returnString = new StringBuilder();
+						}
+						returnString.append("- " + currency.print() + "\n");
+					}
+					channel.sendMessage(returnString.toString()).queue();
+					break;
+			}
+		} else {
+			printHelp(channel);
+		}
+	}
+
+	public void performProducts() {
+		if (userMessage.length > 2) {
+			switch (userMessage[2].toLowerCase()) {
+				case "count":
+					int productCount = controller.getProducts().size();
+					int antCount = controller.getAntProducts().size();
+					String antCountPercent = String.format("%.2f", ((float)antCount/productCount)*100);
+                    channel.sendMessage("Antcheck hat **" + String.format("%,d", productCount) + "** Produkte gelistet."
+							+ "\nDavon sind **" + String.format("%,d", antCount) + " (" + antCountPercent + "%)** Produkte Ameisen."
 							+ "\n*Stand: " + lastUpdated + " Uhr*").queue();
 					break;
 			}
@@ -94,7 +130,7 @@ public class AntcheckCmd extends ServerCommand {
 				performShopsBlacklist();
 				break;	
 			case "count":
-				channel.sendMessage("Antcheck hat **" + controller.getShops().size() + "** Shops gelistet.\n*Stand: " + lastUpdated + " Uhr*").queue();
+				channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getShops().size()) + "** Shops gelistet.\n*Stand: " + lastUpdated + " Uhr*").queue();
 				break;
 			case "list":
 				returnString.append("Folgende Shops sind gelistet:\n");
@@ -141,7 +177,7 @@ public class AntcheckCmd extends ServerCommand {
 				}
 				break;	
 			case "count":
-					channel.sendMessage("Es sind **" + controller.getBlShops().size() + "** Shops auf der Blacklist.").queue();;
+					channel.sendMessage("Es sind **" + String.format("%,d", controller.getBlShops().size()) + "** Shops auf der Blacklist.").queue();;
 					break;
 			case "list":
 				if(controller.getBlShops().size() > 0) {
@@ -187,7 +223,20 @@ public class AntcheckCmd extends ServerCommand {
 		if (userMessage.length > 2) {
 			switch (userMessage[2].toLowerCase()) {
 				case "count":
-					channel.sendMessage("Antcheck hat **" + controller.getSpecies().size() + "** Arten gelistet."
+					channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getSpecies().size()) + "** Arten gelistet."
+							+ "\n*Stand: " + lastUpdated + " Uhr*").queue();
+					break;
+			}
+		} else {
+			printHelp(channel);
+		}
+	}
+
+	public void performVariants() {
+		if (userMessage.length > 2) {
+			switch (userMessage[2].toLowerCase()) {
+				case "count":
+					channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getVariants().size()) + "** Produktvarianten gelistet."
 							+ "\n*Stand: " + lastUpdated + " Uhr*").queue();
 					break;
 			}
@@ -198,25 +247,32 @@ public class AntcheckCmd extends ServerCommand {
 	
 	public void performStatus() {
 		StringBuilder returnString = new StringBuilder();
-		if(Utils.getAntCheckClient().getShops() != null && Utils.getAntCheckClient().getShops().size() > 0) {
+		if(Utils.getAntCheckClient().getShops("1") != null && !Utils.getAntCheckClient().getShops("1").isEmpty()) {
 			returnString.append("\n**API:** erreichbar");
 		} else {
 			returnString.append("\n**API:** nicht erreichbar");
 		}
 		returnString.append("\n**Letzter erfolgreicher Datenabruf:** " + lastUpdated + " Uhr");
-		returnString.append("\n**Arten:** " + controller.getSpecies().size());
-		returnString.append("\n**Shops:** " + controller.getShops().size());
-		returnString.append("\n* *Davon auf der Blacklist: " + controller.getBlShops().size() + "*");
-		returnString.append("\n**Angebote:** " + controller.getOffers().size());
+		returnString.append("\n**Währungen:** " + String.format("%,d", controller.getCurrencies().size()));
+		returnString.append("\n**Prudukte:** " + String.format("%,d", controller.getProducts().size()));
+		returnString.append("\n* *Davon Ameisen: " + String.format("%,d", controller.getAntProducts().size()) + " (" + String.format("%.2f", ((float)controller.getAntProducts().size()/controller.getProducts().size())*100) + "%)*");
+		returnString.append("\n**Shops:** " + String.format("%,d", controller.getShops().size()));
+		returnString.append("\n* *Davon auf der Blacklist: " + String.format("%,d", controller.getBlShops().size()) + "*");
+		returnString.append("\n**Ameisen Arten:** " + String.format("%,d", controller.getSpecies().size()));
+		returnString.append("\n**Produktvarianten:** " + String.format("%,d", controller.getVariants().size()));
 		channel.sendMessage(returnString.toString()).queue();
 	}
 	
 	public void performUpdate() {
 		if (userMessage.length > 2) {
 			switch (userMessage[2].toLowerCase()) {
-				case "offers":
-					controller.updateOffers();
-					channel.sendMessage("Die Angebote wurden aktualisiert.").queue();
+				case "currencies":
+					controller.updateCurrencies();
+					channel.sendMessage("Die Währungen und Umrechnungsfaktoren wurden aktualisiert.").queue();
+					break;
+				case "products":
+					controller.updateProducts();
+					channel.sendMessage("Die Produkte wurden aktualisiert.").queue();
 					break;
 				case "shops":
 					controller.updateShops();
@@ -225,6 +281,10 @@ public class AntcheckCmd extends ServerCommand {
 				case "species":
 					controller.updateSpecies();
 					channel.sendMessage("Die Ameisen-Arten wurden aktualisiert.").queue();
+					break;
+				case "variants":
+					controller.updateVariants();
+					channel.sendMessage("Die Produktvarianten wurden aktualisiert.").queue();
 					break;
 			}
 		} else {

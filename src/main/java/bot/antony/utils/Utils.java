@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import javax.ws.rs.client.ClientBuilder;
 
+import jakarta.ws.rs.client.ClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
@@ -216,13 +216,14 @@ public abstract class Utils {
 	
 	public static AntCheckClient getAntCheckClient() {
 		//ResteasyClient client = (ResteasyClient) ClientBuilder.newClient();
-		ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder()
-				.connectTimeout(10, TimeUnit.SECONDS)
-				.readTimeout(10, TimeUnit.SECONDS)
-				.build();
-		client.register(JacksonJsonProvider.class);	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
+		ResteasyClient client;
+        client = (ResteasyClient) ClientBuilder.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+				.register(JacksonJsonProvider.class)	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
+				.register(new CustomRestHeaderFilter("X-API-KEY", Antony.getProperty("antcheck.api.key")))
+                .build();
 		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
-		client.register(new CustomRestHeaderFilter("X-Api-Key", Antony.getProperty("antcheck.api.key")));
 		return target.proxy(AntCheckClient.class);
 	}
 	
