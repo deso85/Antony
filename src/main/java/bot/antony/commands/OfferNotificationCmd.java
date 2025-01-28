@@ -37,16 +37,16 @@ public class OfferNotificationCmd extends ServerCommand {
 	// --------------------------------------------------
 	@Override
 	public void performCommand(Member member, GuildMessageChannel channel, Message message) {
-		/*this.antcheckController = Antony.getAntcheckController();
+		this.antcheckController = Antony.getAntcheckController();
 		this.antcheckNotificationController = Antony.getAntcheckNotificationController();
 		this.channel = channel;
 		String[] userMessage = message.getContentDisplay().replaceAll("\\s+", " ").trim().split(" ");
-		String searchString = "";*/
+		String searchString = "";
 		
 		/* ================================================================================
 		 * 1. Search for the ant
 		 * ================================================================================ */
-		/*if (userMessage.length > 2) { //Genus and specie name are given
+		if (userMessage.length > 2) { //Genus and specie name are given
 			specieList = antcheckController.findAnt(userMessage[1], userMessage[2]);
 			searchString = userMessage[1] + " " + userMessage[2];
 		} else if(userMessage.length > 1) { //only genus or specie name is given
@@ -60,7 +60,7 @@ public class OfferNotificationCmd extends ServerCommand {
 		if(specieList.isEmpty()) { //found no ants with the given search parameters
 			sendNoAntMessage(searchString);
 		} else if(specieList.size() == 1) { //found an ants with the given search parameters
-			if(antcheckController.getOffersForAntWithoutBlShops(specieList.get(0)).size() == 0) {
+			if(antcheckController.getFilteredAvailableAntProducts(specieList.get(0)).isEmpty()) {
 				antcheckNotificationController.addAvailabilityCheck(specieList.get(0), Antony.getGuildController().getGuildData(message.getGuild()), new UserData(member));
 				message.reply("Du wirst einmalig darüber informiert, wenn die Ameisenart ***" + specieList.get(0).getName() + "*** im Verkauf gefunden wird.").queue();
 				antcheckNotificationController.run();
@@ -70,7 +70,7 @@ public class OfferNotificationCmd extends ServerCommand {
 			}
 		} else { //found multiple ants with the given search parameters
 			sendTooManySpeciesFound(specieList.size() ,searchString);
-		}*/
+		}
 	}
 	
 	private void sendNoAntMessage(String searchString) {

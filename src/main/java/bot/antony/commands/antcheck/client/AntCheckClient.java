@@ -16,18 +16,14 @@ import jakarta.ws.rs.core.MediaType;
 public interface AntCheckClient {
 
 	public static String BASE_URL = "https://antcheck.info";
-	
+
 	@GET
-	@Path("/ants/species")
-	public List<Specie> getSpecies(@QueryParam("limit") String limit);
+	@Path("/ecommerce/currencies")
+	public List<Currency> getCurrencies(@QueryParam("limit") String limit);
 
 	@GET
 	@Path("/ecommerce/products")
 	public List<Product> getProducts(@QueryParam("limit") String limit);
-	
-	@GET
-	@Path("/ecommerce/variants")
-	public List<Variant> getVariants(@QueryParam("limit") String limit);
 
 	@GET
 	@Path("/ecommerce/shops")
@@ -42,7 +38,11 @@ public interface AntCheckClient {
 	public List<Shop> getShopsByName(@QueryParam("name") String name, @QueryParam("limit") String limit);
 
 	@GET
-	@Path("/ecommerce/currencies")
-	public List<Currency> getCurrencies(@QueryParam("limit") String limit);
+	@Path("/ants/species")
+	public List<Specie> getSpecies(@QueryParam("limit") String limit);
+
+	@GET
+	@Path("/ecommerce/variants")
+	public List<Variant> getVariants(@QueryParam("limit") String limit);
 
 }

@@ -41,7 +41,7 @@ public class AntcheckNotificationController {
 	// Functions
 	// --------------------------------------------------
 	public void checkAvailability() {
-		/*if(nextCheckDateTime.isBefore(LocalDateTime.now())) {
+		if(nextCheckDateTime.isBefore(LocalDateTime.now())) {
 
 			Antony.getLogger().info("[Antcheck Availability Controller] Found " + anrs.size() + " notification requests to check.");
 			int newSpecieOffers = 0;
@@ -50,7 +50,7 @@ public class AntcheckNotificationController {
 			
 			for(AvailabilityNotificationRequest anr : anrsCopy) {
 				//Check if ants are available
-				if(Antony.getAntcheckController().getOffersForAntWithoutBlShops(anr.getAnt()).size() > 0) {
+				if(!Antony.getAntcheckController().getFilteredAvailableAntProducts(anr.getAnt()).isEmpty()) {
 					//get member to inform
 					Guild guild = Antony.getJda().getGuildById(anr.getGuild().getId());
 					List<Member> member = getMemberByANR(guild, anr.getUser());
@@ -71,7 +71,7 @@ public class AntcheckNotificationController {
 			
 			lastCheckDateTime = LocalDateTime.now();
 			nextCheckDateTime = LocalDateTime.now().plusMinutes(60).truncatedTo(ChronoUnit.HOURS);
-		}*/
+		}
 	}
 	
 	public List<Member> getMemberByANR(Guild guild, List<UserData> user){

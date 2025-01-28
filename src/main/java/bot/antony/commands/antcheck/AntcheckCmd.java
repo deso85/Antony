@@ -68,7 +68,7 @@ public class AntcheckCmd extends ServerCommand {
 				case "variants":
 					performVariants();
 					break;
-                case "update":
+				case "update":
 					performUpdate();
 					break;
 				default:
@@ -130,7 +130,7 @@ public class AntcheckCmd extends ServerCommand {
 				performShopsBlacklist();
 				break;	
 			case "count":
-				channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getShops().size()) + "** Shops gelistet.\n*Stand: " + lastUpdated + " Uhr*").queue();
+				channel.sendMessage("Antcheck hat **" + String.format("%,d", controller.getOnlineShops().size()) + "** Shops gelistet.\n*Stand: " + lastUpdated + " Uhr*").queue();
 				break;
 			case "list":
 				returnString.append("Folgende Shops sind gelistet:\n");
@@ -256,7 +256,7 @@ public class AntcheckCmd extends ServerCommand {
 		returnString.append("\n**Währungen:** " + String.format("%,d", controller.getCurrencies().size()));
 		returnString.append("\n**Prudukte:** " + String.format("%,d", controller.getProducts().size()));
 		returnString.append("\n* *Davon Ameisen: " + String.format("%,d", controller.getAntProducts().size()) + " (" + String.format("%.2f", ((float)controller.getAntProducts().size()/controller.getProducts().size())*100) + "%)*");
-		returnString.append("\n**Shops:** " + String.format("%,d", controller.getShops().size()));
+		returnString.append("\n**Shops:** " + String.format("%,d", controller.getOnlineShops().size()));
 		returnString.append("\n* *Davon auf der Blacklist: " + String.format("%,d", controller.getBlShops().size()) + "*");
 		returnString.append("\n**Ameisen Arten:** " + String.format("%,d", controller.getSpecies().size()));
 		returnString.append("\n**Produktvarianten:** " + String.format("%,d", controller.getVariants().size()));

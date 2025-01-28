@@ -8,16 +8,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import bot.antony.commands.antcheck.client.dto.*;
+import bot.antony.commands.antcheck.client.dto.Currency;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import bot.antony.Antony;
@@ -389,39 +386,6 @@ public class AntcheckController {
 		return specieList;
 	}
 	
-	/*public List<Offer> getOffersForAnt(Specie ant) {
-		List<Offer> offerList = new ArrayList<Offer>();
-		
-		offerList = getOffers().stream()
-				.filter(offer -> offer.getSpeciesid().equals(ant.getId()))
-				.collect(Collectors.toList());
-		
-		return offerList;
-	}
-	
-	public List<Offer> getOffersForAntWithoutBlShops(Specie ant) {
-		List<Offer> offerList = getOffersForAnt(ant);
-		
-		for(Shop shop : getBlShops()) {
-			offerList.removeIf(offer -> offer.getShopid().equals(shop.getId()));
-		}
-		
-		return offerList;
-	}
-	
-	public List<Shop> getShopsByOffers(List<Offer> offers){
-		Set<Shop> shops = new HashSet<>();
-		
-		//Get all shops
-		for(Offer offer : offers) {
-			if(getShopById(offer.getShopid()) != null) {
-				shops.add(getShopById(offer.getShopid()));
-			}
-		}
-		
-		return new ArrayList<Shop>(shops);
-	}*/
-	
 	public Shop getShopById(int id) {
 		//because of data inconsistency
 		if(shops.stream().noneMatch(shop -> shop.getId().equals(id))) {
@@ -446,6 +410,74 @@ public class AntcheckController {
 		return products.stream()
 				.filter(product -> product.getProduct_type().equalsIgnoreCase("ants"))
 				.collect(Collectors.toList());
+	}
+
+	public List<Product> getAvailableAntProducts(Specie ant) {
+		return products.stream()
+				.filter(product -> product.getProduct_type().equalsIgnoreCase("ants"))
+				.filter(product -> Objects.equals(product.getType_id(), ant.getId()))
+				.filter(Product::isIn_stock)
+				.filter(Product::isIs_active)
+				.collect(Collectors.toList());
+	}
+
+	public List<Product> getFilteredAvailableAntProducts(Specie ant) {
+		List<Product> products = getAvailableAntProducts(ant);
+		List<Shop> shops = getNonBLOnlineShops();
+		return getProductsFilteredByShops(products, shops);
+	}
+
+	public List<Product> getProductsFilteredByShops(List<Product> products, List<Shop> shops) {
+		List<Product> newList = new ArrayList<>();
+
+		for(Product product : products) {
+			for(Shop shop : shops) {
+				if(product.getShop_id().equals(shop.getId())) {
+					newList.add(product);
+				}
+			}
+		}
+
+		return newList;
+	}
+
+	public List<Variant> getAvailableProductVariants(Product product) {
+		return getAvailableVariants().stream()
+				.filter(variant -> variant.getProduct_id().equals(product.getId()))
+				.collect(Collectors.toList());
+	}
+
+	public List<Variant> getAvailableVariants() {
+		return getVariants().stream()
+				.filter(Variant::isIn_stock)
+				.filter(Variant::isIs_active)
+				.collect(Collectors.toList());
+	}
+
+	public List<Shop> getOnlineShops() {
+		return shops.stream()
+				.filter(Shop::isOnline)
+				.collect(Collectors.toList());
+	}
+
+	public List<Shop> getNonBLOnlineShops() {
+		return removeBlacklistedShops(getOnlineShops());
+	}
+
+	public List<Shop> getShopsFromProducts(List<Product> products) {
+		Set<Shop> shops = new HashSet<>();
+
+		for(Product product : products) {
+			shops.add(getShopById(product.getShop_id()));
+		}
+
+		return new ArrayList<>(shops);
+	}
+
+	public Currency getCurrency(String iso) {
+		return getCurrencies().stream()
+				.filter(currency -> currency.getIso().equals(iso))
+				.collect(Collectors.toList()).get(0);
 	}
 
 	public void run(JDA jda) {

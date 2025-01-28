@@ -3,6 +3,9 @@ package bot.antony.utils;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -253,5 +256,16 @@ public abstract class Utils {
 		}
 		
 		return sb.toString();
+	}
+
+	public static boolean isValidURL(String url) throws MalformedURLException, URISyntaxException {
+		try {
+			new URL(url).toURI();
+			return true;
+		} catch (MalformedURLException e) {
+			return false;
+		} catch (URISyntaxException e) {
+			return false;
+		}
 	}
 }

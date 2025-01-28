@@ -160,7 +160,7 @@ public class Product {
 				", product_type='" + product_type + '\'' +
 				", type_id=" + type_id +
 				", title='" + title + '\'' +
-				", description='" + description + '\'' +
+				//", description='" + description + '\'' +
 				", in_stock=" + in_stock +
 				", is_active=" + is_active +
 				", min_price=" + min_price +
