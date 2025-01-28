@@ -60,7 +60,7 @@ public class OfferNotificationCmd extends ServerCommand {
 		if(specieList.isEmpty()) { //found no ants with the given search parameters
 			sendNoAntMessage(searchString);
 		} else if(specieList.size() == 1) { //found an ants with the given search parameters
-			if(antcheckController.getOffersForAntWithoutBlShops(specieList.get(0)).size() == 0) {
+			if(antcheckController.getFilteredAvailableAntProducts(specieList.get(0)).isEmpty()) {
 				antcheckNotificationController.addAvailabilityCheck(specieList.get(0), Antony.getGuildController().getGuildData(message.getGuild()), new UserData(member));
 				message.reply("Du wirst einmalig darüber informiert, wenn die Ameisenart ***" + specieList.get(0).getName() + "*** im Verkauf gefunden wird.").queue();
 				antcheckNotificationController.run();

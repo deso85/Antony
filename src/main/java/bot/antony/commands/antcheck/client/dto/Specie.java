@@ -3,22 +3,19 @@ package bot.antony.commands.antcheck.client.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+import java.util.Objects;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Specie {
 
 	private Integer id;
-
 	private String genus;
-
 	private String species;
+	private String comment;
+	private String antcheck_url;
+	private List<AntImage> images;
 
-	private String image_url;
-	
-	private String image_caption;
-
-	private String image_licence;
-	
-	private String url;
 	
 	public Integer getId() {
 		return id;
@@ -44,72 +41,55 @@ public class Specie {
 		this.species = species;
 	}
 
-	public String getImage_url() {
-		return image_url;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setImage_url(String image_url) {
-		this.image_url = image_url;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
-	public String getImage_caption() {
-		return image_caption;
+	public String getAntcheck_url() {
+		return antcheck_url;
 	}
 
-	public void setImage_caption(String image_caption) {
-		this.image_caption = image_caption;
-	}
-
-	public String getImage_licence() {
-		return image_licence;
-	}
-
-	public void setImage_licence(String image_licence) {
-		this.image_licence = image_licence;
-	}
-	
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	public void setAntcheck_url(String antcheck_url) {
+		this.antcheck_url = antcheck_url;
 	}
 
 	@JsonIgnore
 	public String getName() {
 		return genus + " " + species;
 	}
-	
+
+	public List<AntImage> getImages() {
+		return images;
+	}
+
+	public void setImages(List<AntImage> images) {
+		this.images = images;
+	}
+
 	@Override
 	public String toString() {
-		return "Specie [id=" + id + ", genus=" + genus + ", species=" + species + ", image_url=" + image_url
-				+ ", image_caption=" + image_caption + ", image_licence=" + image_licence + ", url=" + url + "]";
+		return "Specie{" +
+				"id=" + id +
+				", genus='" + genus + '\'' +
+				", species='" + species + '\'' +
+				", comment='" + comment + '\'' +
+				", antcheck_url='" + antcheck_url + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		Specie specie = (Specie) o;
+		return Objects.equals(id, specie.id) && Objects.equals(genus, specie.genus) && Objects.equals(species, specie.species) && Objects.equals(comment, specie.comment) && Objects.equals(antcheck_url, specie.antcheck_url);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hash(id, genus, species, comment, antcheck_url);
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Specie other = (Specie) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
 }

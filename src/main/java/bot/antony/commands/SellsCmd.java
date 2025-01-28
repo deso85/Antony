@@ -1,16 +1,17 @@
 package bot.antony.commands;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.AntcheckController;
-import bot.antony.commands.antcheck.client.dto.Offer;
-import bot.antony.commands.antcheck.client.dto.Shop;
-import bot.antony.commands.antcheck.client.dto.Specie;
+import bot.antony.commands.antcheck.client.dto.*;
 import bot.antony.commands.types.ServerCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -72,19 +73,24 @@ public class SellsCmd extends ServerCommand {
 	private void showMultipleSpeciesWithOffers(String searchString) {
 		List<Specie> speciesWithOffers = new ArrayList<Specie>();
 		StringBuilder returnString = new StringBuilder();
-		
+
 		for(Specie specie : specieList) {
 			//Check all species for available offers
-			if(!controller.getOffersForAntWithoutBlShops(specie).isEmpty()) {
+			if(!controller.getFilteredAvailableAntProducts(specie).isEmpty()) {
 				speciesWithOffers.add(specie);
 			}
 		}
-		
-		if(speciesWithOffers.size() > 1) { // There are multiple species with offers
+
+		if(speciesWithOffers.isEmpty()) {
+			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.").queue();
+		} else if(speciesWithOffers.size() == 1) {
+			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, gibt es aber nur für ***" + speciesWithOffers.get(0).getName() + "*** Angebote.").queue();
+			showOffersForAnt(speciesWithOffers.get(0));
+		} else {
 			returnString.append("Folgende " + speciesWithOffers.size() + " Ameisenarten wurden im Verkauf gefunden:\n\n");
 			for(Specie specie : speciesWithOffers.stream()
 					.sorted(Comparator.comparing(Specie::getName, String.CASE_INSENSITIVE_ORDER))
-	                .collect(Collectors.toList())) {
+					.collect(Collectors.toList())) {
 				if((returnString.length() + specie.getName().length() + 6) >= 2000) {
 					channel.sendMessage(returnString.toString()).queue();
 					returnString = new StringBuilder();
@@ -95,11 +101,6 @@ public class SellsCmd extends ServerCommand {
 			}
 			returnString.append("\nBitte schränke die Suche weiter ein.");
 			channel.sendMessage(returnString.toString()).queue();
-		} else if(speciesWithOffers.size() == 1) { // There is just 1 species with offers
-			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, gibt es aber nur für ***" + speciesWithOffers.get(0).getName() + "*** Angebote.").queue();
-			showOffersForAnt(speciesWithOffers.get(0));
-		} else { // No offer for any of the found species
-			channel.sendMessage("Mit der Suche nach \"" + searchString + "\" wurden " + specieList.size() + " Ameisenarten gefunden, aber leider werden davon aktuell keine verkauft.").queue();
 		}
 	}
 	
@@ -119,65 +120,100 @@ public class SellsCmd extends ServerCommand {
 	}
 	
 	private void showOffersForAnt(Specie ant) {
-		List<Offer> offerList = new ArrayList<Offer>();
-		List<Shop> shopList = new ArrayList<Shop>();
-		// 2. Search for offers with the given ant
-		offerList = controller.getOffersForAntWithoutBlShops(ant);
-		if(offerList.isEmpty()) {
+		List<Product> products  = new ArrayList<>();
+		List<Shop> shops = new ArrayList<>();
+		List<Variant> variants = new ArrayList<>();
+
+		// search for products with the given ant
+		products = controller.getFilteredAvailableAntProducts(ant);
+		// filter out products from shops which are not online or blacklisted
+		shops = controller.getNonBLOnlineShops();
+		if(products.isEmpty()) {
 			channel.sendMessage("Es werden aktuell keine *" + ant.getName() + "* verkauft.").queue();
 		} else {
-			//3. Get related shops
-			shopList = controller.getShopsByOffers(offerList).stream()
+			// get only relevant shops
+			shops = controller.getShopsFromProducts(products).stream()
 					.sorted(Comparator.comparing(Shop::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList());
-			
 			/* ================================================================================
-			 * 4. Combine shops with offers in embed fields
+			 * Combine shops with offers and variants in embed fields
 			 * ================================================================================ */
 			List<Field> shopFields = new ArrayList<Field>();
-			for(Shop shop : shopList) {
+			for(Shop shop : shops) {
 				StringBuilder fieldPart = new StringBuilder();
 				StringBuilder tempFieldPart;
-				List<Offer> offersFromShop = offerList.stream()
-						.filter(offer -> offer.getShopid().equals(shop.getId()))
+				List<Product> productsFromShop = products.stream()
+						.filter(product -> product.getShop_id().equals(shop.getId()))
 						.collect(Collectors.toList());
-	
+
 				String fieldTopic = ":flag_" + shop.getCountry() + ": " + shop.getName();
-				for(Offer offer : offersFromShop) {
-					tempFieldPart = new StringBuilder();
-					tempFieldPart.append(offer.getName());
-					tempFieldPart.append(": [**" + String.format("%.2f", offer.getPrice()) + " " + shop.getCurrency() + "**]");
-					tempFieldPart.append("(" + offer.getUrl() + ")\n");
-					if((fieldPart.length() + tempFieldPart.length()) > 1024) {
-						Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
-						shopFields.add(shopField);
-						fieldPart = new StringBuilder();
-						fieldTopic = "";
+				for(Product product : productsFromShop) {
+					variants = controller.getAvailableProductVariants(product);
+
+					fieldPart.append("**" + product.getTitle() + "**\n");
+
+					int counter = 1;
+					for(Variant variant : variants) {
+						tempFieldPart = new StringBuilder();
+
+						if (!variant.getTitle().isEmpty()) {
+							tempFieldPart.append(variant.getTitle());
+						} else {
+							tempFieldPart.append("Variante " + counter);
+						}
+
+						tempFieldPart.append(": [**" + String.format("%.2f", variant.getPrice()) + " " + shop.getCurrency_iso() + "**]");
+						tempFieldPart.append("(" + variant.getUrl() + ")");
+
+						// show EUR price
+						if(!shop.getCurrency_iso().equals("EUR")) {
+							Currency currency = controller.getCurrency(shop.getCurrency_iso());
+							tempFieldPart.append(" *(ca. " + String.format("%.2f", variant.getPrice()/currency.getEuro_rate()) + " EUR)*");
+						}
+
+						tempFieldPart.append("\n");
+
+						if ((fieldPart.length() + tempFieldPart.length()) > 1024) {
+							Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
+							shopFields.add(shopField);
+							fieldPart = new StringBuilder();
+							fieldTopic = "";
+						}
+						fieldPart.append(tempFieldPart);
+						counter++;
 					}
-					fieldPart.append(tempFieldPart);
 				}
 
 				Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
 				shopFields.add(shopField);
 			}
-			
+
 			/* ================================================================================
-			 * 5. Build and present embed
+			 * Build and present embed
 			 * ================================================================================ */
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.setTitle("*" + ant.getName() + "*", "https://antwiki.org/wiki/" + ant.getName().replace(" ", "_"));
 			eb.setColor(Antony.getBaseColor());
 			eb.setDescription("Die folgenden Daten wurden von https://antcheck.info/ bereitgestellt.\n\n"
 					+ "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
-			if (ant.getImage_url() != null && !ant.getImage_url().isEmpty()) {
-				eb.setThumbnail(ant.getImage_url());
-				
-			}
+			//ToDo: Images dont work from API and have to be replaced by another source
+			if (!ant.getImages().isEmpty() && !ant.getImages().get(0).getUrl().isEmpty()) {
+				String imageUrl = ant.getImages().get(0).getUrl();
+                try {
+                    if(bot.antony.utils.Utils.isValidURL(imageUrl)) {
+                        eb.setThumbnail(imageUrl);
+                    }
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 			eb.setFooter("Preise und Verfügbarkeiten werden täglich mehrfach aktualisiert.\n"
 					+ "Letzter erfolgreicher Abruf der Antcheck-Schnittstelle: "
 					+ controller.getLastUpdatedDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + " Uhr");
-			
-			
+
+
 			int ebCharCount = 0;
 			int ebFieldCount = 0;
 			for(Field field : shopFields) {
@@ -191,6 +227,7 @@ public class SellsCmd extends ServerCommand {
 				eb.addField(field);
 			}
 			channel.sendMessageEmbeds(eb.build()).complete();
+
 		}
 	}
 	

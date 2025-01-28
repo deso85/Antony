@@ -3,12 +3,17 @@ package bot.antony.utils;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+
+import jakarta.ws.rs.client.ClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
@@ -21,7 +26,7 @@ import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
-import jakarta.ws.rs.client.ClientBuilder;
+import bot.antony.commands.antcheck.client.CustomRestHeaderFilter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -214,11 +219,13 @@ public abstract class Utils {
 	
 	public static AntCheckClient getAntCheckClient() {
 		//ResteasyClient client = (ResteasyClient) ClientBuilder.newClient();
-		ResteasyClient client = (ResteasyClient) ClientBuilder.newBuilder()
-				.connectTimeout(10, TimeUnit.SECONDS)
-				.readTimeout(10, TimeUnit.SECONDS)
-				.build();
-		client.register(JacksonJsonProvider.class);	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
+		ResteasyClient client;
+        client = (ResteasyClient) ClientBuilder.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+				.register(JacksonJsonProvider.class)	//needed because of "RESTEASY003145: Unable to find a MessageBodyReader of content-type application/json ..."
+				.register(new CustomRestHeaderFilter("X-API-KEY", Antony.getProperty("antcheck.api.key")))
+                .build();
 		ResteasyWebTarget target = client.target(AntCheckClient.BASE_URL);
 		return target.proxy(AntCheckClient.class);
 	}
@@ -249,5 +256,16 @@ public abstract class Utils {
 		}
 		
 		return sb.toString();
+	}
+
+	public static boolean isValidURL(String url) throws MalformedURLException, URISyntaxException {
+		try {
+			new URL(url).toURI();
+			return true;
+		} catch (MalformedURLException e) {
+			return false;
+		} catch (URISyntaxException e) {
+			return false;
+		}
 	}
 }

@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("29.01.2025 - Version 7.14.0", "Diverse Anpassungenn vorgeommen, um die neue Antcheck API v2 anzusprechen. Nicht-EUR-Preise werden nun umgerechnet mit angezeigt."));
 		changeLog.add(new ChangeLogEntry("03.01.2025 - Version 7.13.1", "Update diverser genutzter Programmbibliotheken."));
 		changeLog.add(new ChangeLogEntry("15.11.2024 - Version 7.13.0", "Update diverser genutzter Programmbibliotheken."));
 		changeLog.add(new ChangeLogEntry("26.01.2024 - Version 7.12.2", "Korrektur am Befehl ***" + cmdPrefix + "emergency*** eingebaut, der nicht funktioniert hatte, wenn zuvor eine Ausgabe mit dem Parameter *long* getätigt wurde und im Anschluss eine gekürze Variante ausgegeben werden sollte. Die genutzte JDA Library wurde auf die neuste Version aktualisiert."));

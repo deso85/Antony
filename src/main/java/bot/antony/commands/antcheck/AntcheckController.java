@@ -8,22 +8,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import bot.antony.commands.antcheck.client.dto.*;
+import bot.antony.commands.antcheck.client.dto.Currency;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import bot.antony.Antony;
 import bot.antony.commands.antcheck.client.AntCheckClient;
-import bot.antony.commands.antcheck.client.dto.Offer;
-import bot.antony.commands.antcheck.client.dto.Shop;
-import bot.antony.commands.antcheck.client.dto.Specie;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -32,20 +27,24 @@ import net.dv8tion.jda.api.OnlineStatus;
  * Controller for antcheck.info API
  */
 public class AntcheckController {
-	private String subdir = "antcheck" + File.separator;
-	private String backupdir = subdir + "backup" + File.separator;
-	private String offersFileName = "offers.json";
-	private String shopsFileName = "shops.json";
-	private String blShopsFileName = "shops.blacklisted.json";
-	private String speciesFileName = "species.json";
+	private final String subdir = "antcheck" + File.separator;
+	private final String backupdir = subdir + "backup" + File.separator;
+	private final String currenciesFileName = "currencies.json";
+	private final String productsFileName = "products.json";
+	private final String shopsFileName = "shops.json";
+	private final String blShopsFileName = "shops.blacklisted.json";
+	private final String speciesFileName = "species.json";
+	private final String variantsFileName = "variants.json";
 	private LocalDateTime lastUpdatedDateTime = LocalDateTime.now();
 	private LocalDateTime nextUpdateDateTime = LocalDateTime.now().minusDays(1);
-	private DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-	private DateTimeFormatter backupName = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-	private AntCheckClient antCheckClient = Utils.getAntCheckClient();
-	private List<Offer> offers = new ArrayList<Offer>();
+	private final DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+	private final DateTimeFormatter backupName = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+	private final AntCheckClient antCheckClient = Utils.getAntCheckClient();
+	private List<Currency> currencies = new ArrayList<Currency>();
+	private List<Product> products = new ArrayList<Product>();
 	private List<Shop> shops = new ArrayList<Shop>();
 	private List<Specie> species = new ArrayList<Specie>();
+	private List<Variant> variants = new ArrayList<Variant>();
 	private List<Shop> blShops = new ArrayList<Shop>();
 	private boolean isRunning = false;
 	private Thread updateThread;
@@ -77,14 +76,20 @@ public class AntcheckController {
 			updateThread = new Thread() {
 				public void run() {
 					try {
-						Antony.getLogger().info("[Antcheck Controller] Updating Offers");
-						updateOffers();
+						Antony.getLogger().info("[Antcheck Controller] Updating Currencies");
+						updateCurrencies();
+						Thread.sleep(5000); //5sec
+						Antony.getLogger().info("[Antcheck Controller] Updating Products");
+						updateProducts();
 						Thread.sleep(5000); //5sec
 						Antony.getLogger().info("[Antcheck Controller] Updating Shops");
 						updateShops();
 						Thread.sleep(5000); //5sec
 						Antony.getLogger().info("[Antcheck Controller] Updating Species");
 						updateSpecies();
+						Thread.sleep(5000); //5sec
+						Antony.getLogger().info("[Antcheck Controller] Updating Variants");
+						updateVariants();
 						Antony.getLogger().info("[Antcheck Controller] Backing Up Data");
 						backupData();
 						lastUpdatedDateTime = LocalDateTime.now();
@@ -100,19 +105,29 @@ public class AntcheckController {
 		}
 	}
 	
-	public boolean updateOffers() {
-		List<Offer> updatedOffers = antCheckClient.getOffers();
-		if(updatedOffers != null && updatedOffers.size() > 0) {
-			offers = updatedOffers;
-			saveOffers();
+	public boolean updateCurrencies() {
+		List<Currency> updatedCurrencies = antCheckClient.getCurrencies("-1");
+		if(updatedCurrencies != null && !updatedCurrencies.isEmpty()) {
+			currencies = updatedCurrencies;
+			saveCurrencies();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean updateProducts() {
+		List<Product> updatedProducts = antCheckClient.getProducts("-1");
+		if(updatedProducts != null && !updatedProducts.isEmpty()) {
+			products = updatedProducts;
+			saveProducts();
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean updateShops() {
-		List<Shop> updatedShops = antCheckClient.getShops();
-		if(updatedShops != null && updatedShops.size() > 0) {
+		List<Shop> updatedShops = antCheckClient.getShops("-1");
+		if(updatedShops != null && !updatedShops.isEmpty()) {
 			shops = updatedShops;
 			saveShops();
 			return true;
@@ -121,35 +136,51 @@ public class AntcheckController {
 	}
 
 	public boolean updateSpecies() {
-		List<Specie> updatedSpecies = antCheckClient.getSpecies();
-		if(updatedSpecies != null && updatedSpecies.size() > 0) {
+		List<Specie> updatedSpecies = antCheckClient.getSpecies("-1");
+		if(updatedSpecies != null && !updatedSpecies.isEmpty()) {
 			species = updatedSpecies;
 			saveSpecies();
 			return true;
 		}
 		return false;
 	}
-	
+
+	public boolean updateVariants() {
+		List<Variant> updatedVariants = antCheckClient.getVariants("-1");
+		if(updatedVariants != null && !updatedVariants.isEmpty()) {
+			variants = updatedVariants;
+			saveVariants();
+			return true;
+		}
+		return false;
+	}
+
 	private void loadData() {
-		loadOffers();
+		loadCurrencies();
+		loadProducts();
 		loadShops();
 		loadSpecies();
 		loadBlShops();
+		loadVariants();
 	}
 	
 	private void saveData() {
-		saveOffers();
+		saveCurrencies();
+		saveProducts();
 		saveShops();
 		saveSpecies();
 		saveBlShops();
+		saveVariants();
 	}
 	
 	private void backupData() {
 		try {
-			String offersFile = Antony.getDataPath() + subdir + offersFileName;
+			String currenciesFile = Antony.getDataPath() + subdir + currenciesFileName;
+			String productsFile = Antony.getDataPath() + subdir + productsFileName;
 			String shopsFile = Antony.getDataPath() + subdir + shopsFileName;
 			String speciesFile = Antony.getDataPath() + subdir + speciesFileName;
-			final List<String> srcFiles = Arrays.asList(offersFile, shopsFile, speciesFile);
+			String variantsFile = Antony.getDataPath() + subdir + variantsFileName;
+			final List<String> srcFiles = Arrays.asList(currenciesFile, productsFile, shopsFile, speciesFile, variantsFile);
 			
 			FileOutputStream fos;
 			fos = new FileOutputStream(Antony.getDataPath() + backupdir + LocalDateTime.now().format(backupName) + ".zip");
@@ -180,14 +211,23 @@ public class AntcheckController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void loadOffers() {
-		offers = (List<Offer>) Utils.loadJSONData(subdir, offersFileName, new TypeReference<List<Offer>>(){}, offers);
+	private void loadCurrencies() {
+		currencies = (List<Currency>) Utils.loadJSONData(subdir, currenciesFileName, new TypeReference<List<Currency>>(){}, currencies);
 	}
 	
-	private void saveOffers() {
-		Utils.saveJSONData(subdir, offersFileName, offers);
+	private void saveCurrencies() {
+		Utils.saveJSONData(subdir, currenciesFileName, currencies);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	private void loadProducts() {
+		products = (List<Product>) Utils.loadJSONData(subdir, productsFileName, new TypeReference<List<Product>>(){}, products);
+	}
+
+	private void saveProducts() {
+		Utils.saveJSONData(subdir, productsFileName, products);
+	}
+
 	@SuppressWarnings("unchecked")
 	private void loadShops() {
 		shops = (List<Shop>) Utils.loadJSONData(subdir, shopsFileName, new TypeReference<List<Shop>>(){}, shops);
@@ -205,7 +245,16 @@ public class AntcheckController {
 	private void saveSpecies() {
 		Utils.saveJSONData(subdir, speciesFileName, species);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	private void loadVariants() {
+		variants = (List<Variant>) Utils.loadJSONData(subdir, variantsFileName, new TypeReference<List<Variant>>(){}, variants);
+	}
+
+	private void saveVariants() {
+		Utils.saveJSONData(subdir, variantsFileName, variants);
+	}
+
 	@SuppressWarnings("unchecked")
 	private void loadBlShops() {
 		blShops = (List<Shop>) Utils.loadJSONData(subdir, blShopsFileName, new TypeReference<List<Shop>>(){}, blShops);
@@ -223,8 +272,8 @@ public class AntcheckController {
 	}
 	
 	public List<Shop> addBlShop(String name) {
-		List<Shop> result = antCheckClient.getShopsByName(name);
-		blShops.addAll(antCheckClient.getShopsByName(name));
+		List<Shop> result = antCheckClient.getShopsByName(name, "-1");
+		blShops.addAll(antCheckClient.getShopsByName(name, "-1"));
 		saveBlShops();
 		return result;
 	}
@@ -237,7 +286,7 @@ public class AntcheckController {
 	}
 	
 	public List<Shop> removeBlShop(String name) {
-		List<Shop> result = antCheckClient.getShopsByName(name);
+		List<Shop> result = antCheckClient.getShopsByName(name, "-1");
 		blShops.removeAll(result);
 		saveBlShops();
 		return result;
@@ -337,44 +386,9 @@ public class AntcheckController {
 		return specieList;
 	}
 	
-	public List<Offer> getOffersForAnt(Specie ant) {
-		List<Offer> offerList = new ArrayList<Offer>();
-		
-		offerList = getOffers().stream()
-				.filter(offer -> offer.getSpeciesid().equals(ant.getId()))
-				.collect(Collectors.toList());
-		
-		return offerList;
-	}
-	
-	public List<Offer> getOffersForAntWithoutBlShops(Specie ant) {
-		List<Offer> offerList = getOffersForAnt(ant);
-		
-		for(Shop shop : getBlShops()) {
-			offerList.removeIf(offer -> offer.getShopid().equals(shop.getId()));
-		}
-		
-		return offerList;
-	}
-	
-	public List<Shop> getShopsByOffers(List<Offer> offers){
-		Set<Shop> shops = new HashSet<>();
-		
-		//Get all shops
-		for(Offer offer : offers) {
-			if(getShopById(offer.getShopid()) != null) {
-				shops.add(getShopById(offer.getShopid()));
-			}
-		}
-		
-		return new ArrayList<Shop>(shops);
-	}
-	
 	public Shop getShopById(int id) {
 		//because of data inconsistency
-		if(shops.stream()
-			.filter(shop -> shop.getId().equals(id))
-			.collect(Collectors.toList()).isEmpty()) {
+		if(shops.stream().noneMatch(shop -> shop.getId().equals(id))) {
 			return null;
 		}
 		
@@ -391,7 +405,81 @@ public class AntcheckController {
 	public List<Shop> getNonBlacklistedShops() {
 		return removeBlacklistedShops(shops);
 	}
-	
+
+	public List<Product> getAntProducts() {
+		return products.stream()
+				.filter(product -> product.getProduct_type().equalsIgnoreCase("ants"))
+				.collect(Collectors.toList());
+	}
+
+	public List<Product> getAvailableAntProducts(Specie ant) {
+		return products.stream()
+				.filter(product -> product.getProduct_type().equalsIgnoreCase("ants"))
+				.filter(product -> Objects.equals(product.getType_id(), ant.getId()))
+				.filter(Product::isIn_stock)
+				.filter(Product::isIs_active)
+				.collect(Collectors.toList());
+	}
+
+	public List<Product> getFilteredAvailableAntProducts(Specie ant) {
+		List<Product> products = getAvailableAntProducts(ant);
+		List<Shop> shops = getNonBLOnlineShops();
+		return getProductsFilteredByShops(products, shops);
+	}
+
+	public List<Product> getProductsFilteredByShops(List<Product> products, List<Shop> shops) {
+		List<Product> newList = new ArrayList<>();
+
+		for(Product product : products) {
+			for(Shop shop : shops) {
+				if(product.getShop_id().equals(shop.getId())) {
+					newList.add(product);
+				}
+			}
+		}
+
+		return newList;
+	}
+
+	public List<Variant> getAvailableProductVariants(Product product) {
+		return getAvailableVariants().stream()
+				.filter(variant -> variant.getProduct_id().equals(product.getId()))
+				.collect(Collectors.toList());
+	}
+
+	public List<Variant> getAvailableVariants() {
+		return getVariants().stream()
+				.filter(Variant::isIn_stock)
+				.filter(Variant::isIs_active)
+				.collect(Collectors.toList());
+	}
+
+	public List<Shop> getOnlineShops() {
+		return shops.stream()
+				.filter(Shop::isOnline)
+				.collect(Collectors.toList());
+	}
+
+	public List<Shop> getNonBLOnlineShops() {
+		return removeBlacklistedShops(getOnlineShops());
+	}
+
+	public List<Shop> getShopsFromProducts(List<Product> products) {
+		Set<Shop> shops = new HashSet<>();
+
+		for(Product product : products) {
+			shops.add(getShopById(product.getShop_id()));
+		}
+
+		return new ArrayList<>(shops);
+	}
+
+	public Currency getCurrency(String iso) {
+		return getCurrencies().stream()
+				.filter(currency -> currency.getIso().equals(iso))
+				.collect(Collectors.toList()).get(0);
+	}
+
 	public void run(JDA jda) {
 		if(!isRunning) {
 			isRunning = true;
@@ -417,10 +505,18 @@ public class AntcheckController {
 	// --------------------------------------------------
 	// Getter & Setter
 	// --------------------------------------------------
-	public List<Offer> getOffers() {
-		return offers;
+	public List<Currency> getCurrencies() {
+		return currencies;
 	}
-	
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public List<Variant> getVariants() {
+		return variants;
+	}
+
 	public List<Shop> getShops() {
 		return shops;
 	}

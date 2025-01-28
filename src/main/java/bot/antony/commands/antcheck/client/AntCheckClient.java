@@ -2,9 +2,7 @@ package bot.antony.commands.antcheck.client;
 
 import java.util.List;
 
-import bot.antony.commands.antcheck.client.dto.Offer;
-import bot.antony.commands.antcheck.client.dto.Shop;
-import bot.antony.commands.antcheck.client.dto.Specie;
+import bot.antony.commands.antcheck.client.dto.*;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -12,59 +10,39 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("/api/antcheck")
+@Path("/api/v2")
 @Produces(MediaType.APPLICATION_JSON + "; charset=UTF-8")
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AntCheckClient {
 
 	public static String BASE_URL = "https://antcheck.info";
-	
-	@GET
-	@Path("/species")
-	public List<Specie> getSpecies();
-	
-	@GET
-	@Path("/species")
-	public List<Specie> getSpeciesByGenus(@QueryParam("genus") String genus);
-	
-	@GET
-	@Path("/species")
-	public List<Specie> getSpeciesBySpecies(@QueryParam("species") String species);
-	
-	@GET
-	@Path("/species")
-	public List<Specie> getSpeciesByGenusAndSpecies(@QueryParam("genus") String genus, @QueryParam("species") String species);
 
 	@GET
-	@Path("/offers")
-	public List<Offer> getOffers();
-	
-	@GET
-	@Path("/offers")
-	public List<Offer> getOffersByShopId(@QueryParam("shopid") Integer shopid);
-	
-	@GET
-	@Path("/offers")
-	public List<Offer> getOffersBySpeciesId(@QueryParam("speciesid") Integer speciesid);
-	
-	@GET
-	@Path("/offers")
-	public List<Offer> getOffersByShopIdAndSpeciesId(@QueryParam("shopid") Integer shopid, @QueryParam("speciesid") Integer speciesid);
+	@Path("/ecommerce/currencies")
+	public List<Currency> getCurrencies(@QueryParam("limit") String limit);
 
 	@GET
-	@Path("/shops")
-	public List<Shop> getShops();
+	@Path("/ecommerce/products")
+	public List<Product> getProducts(@QueryParam("limit") String limit);
+
+	@GET
+	@Path("/ecommerce/shops")
+	public List<Shop> getShops(@QueryParam("limit") String limit);
 	
 	@GET
-	@Path("/shops")
-	public List<Shop> getShopsById(@QueryParam("shopid") Integer shopid);
+	@Path("/ecommerce/shops")
+	public List<Shop> getShopsById(@QueryParam("id") Integer id);
 	
 	@GET
-	@Path("/shops")
-	public List<Shop> getShopsByName(@QueryParam("shopname") String shopname);
-	
+	@Path("/ecommerce/shops")
+	public List<Shop> getShopsByName(@QueryParam("name") String name, @QueryParam("limit") String limit);
+
 	@GET
-	@Path("/shops")
-	public List<Shop> getShopsByIdAndName(@QueryParam("shopid") Integer shopid, @QueryParam("shopname") String shopname);
+	@Path("/ants/species")
+	public List<Specie> getSpecies(@QueryParam("limit") String limit);
+
+	@GET
+	@Path("/ecommerce/variants")
+	public List<Variant> getVariants(@QueryParam("limit") String limit);
 
 }
