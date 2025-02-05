@@ -68,7 +68,7 @@ public class ShopsCmd extends ServerCommand {
 			if(countryFilter == "" || ccode.equals(countryFilter)) {
 				
 				// get all non blacklisted shops located in the country
-				List<Shop> localShops = controller.getNonBlacklistedShops().stream()
+				List<Shop> localShops = controller.getNonBLOnlineShops().stream()
 					.filter(shop -> shop.getCountry().equals(ccode))
 					.collect(Collectors.toList());
 				
