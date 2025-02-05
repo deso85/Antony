@@ -91,7 +91,7 @@ public class SellsCmd extends ServerCommand {
 			for(Specie specie : speciesWithOffers.stream()
 					.sorted(Comparator.comparing(Specie::getName, String.CASE_INSENSITIVE_ORDER))
 					.collect(Collectors.toList())) {
-				if((returnString.length() + specie.getName().length() + 6) >= 2000) {
+				if((returnString.length() + specie.getName().length() + 40) >= 2000) {
 					channel.sendMessage(returnString.toString()).queue();
 					returnString = new StringBuilder();
 				}
