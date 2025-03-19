@@ -172,8 +172,7 @@ public class SellsCmd extends ServerCommand {
 						}
 
 						tempFieldPart.append("\n");
-
-						if ((fieldPart.length() + tempFieldPart.length()) > 1024) {
+						if ((fieldTopic.length() + fieldPart.length() + tempFieldPart.length()) > 1024) {
 							Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
 							shopFields.add(shopField);
 							fieldPart = new StringBuilder();

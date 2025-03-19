@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		changeLog.add(new ChangeLogEntry("19.03.2025 - Version 7.14.3", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe von Angeboten verhindert hat."));
 		changeLog.add(new ChangeLogEntry("05.02.2025 - Version 7.14.2", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe verhindert hat, wenn zu viele Arten mit dem Suchbegriff im Verkauf gefunden wurden."));
 		changeLog.add(new ChangeLogEntry("30.01.2025 - Version 7.14.1", "Filter für den ***" + cmdPrefix + "shops*** Befehl eingefügt, um nur noch aktive Shops anzuzeigen."));
 		changeLog.add(new ChangeLogEntry("29.01.2025 - Version 7.14.0", "Diverse Anpassungenn vorgeommen, um die neue Antcheck API v2 anzusprechen. Nicht-EUR-Preise werden nun umgerechnet mit angezeigt."));
