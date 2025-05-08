@@ -9,8 +9,8 @@ import bot.antony.guild.ChannelData;
 import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -18,12 +18,11 @@ public class NotificationListener extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		
 		//check which channel ...
-		if(event.isFromType(ChannelType.TEXT)) {
+		if(event.isFromType(ChannelType.TEXT) || event.isFromType(ChannelType.GUILD_PUBLIC_THREAD) || event.isFromType(ChannelType.GUILD_PRIVATE_THREAD)) {
 			NotificationController nc = Antony.getNotificationController();
 			final Guild guild = event.getGuild();
-			final TextChannel channel = event.getChannel().asTextChannel();
+			final Channel channel = event.getChannel();
 			GuildData guildData = new GuildData(guild);
 		    ChannelData channelData = new ChannelData(channel);
 			

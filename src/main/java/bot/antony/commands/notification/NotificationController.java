@@ -18,7 +18,6 @@ import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -313,89 +312,86 @@ public class NotificationController {
 			Guild guild = gcnl.getGuild().getId();
 		}
 	}*/
-	
-	/**
-	 * will send all pending messages
-	 * @param jda as JDA
-	 */
-	public void sendPendingNotifications(JDA jda) {
-		LocalDateTime now = LocalDateTime.now();
 
-		//Is it time to send notifications?
+	public void checkPendingNotifications() {
+		LocalDateTime now = LocalDateTime.now();
 		if(getNextUpdateDate().isBefore(now)) {
+			sendPendingNotifications();
 			setNextUpdateDate(now.plusMinutes(Antony.getNotificationPendingTime()));
-			
-			if(getPendingUserNotifications().size() > 0) {
-				for(UserNotification notification: getPendingUserNotifications()) {
-					GuildData guildData = notification.getGuild();
-					UserData userData = notification.getUser();
-					ArrayList<ChannelData> channels = notification.getChannels();
-					Guild guild = jda.getGuildById(guildData.getId());
-					
-					//If user is a member of the guild
-					if(guild.getMemberById(userData.getId()) != null && channels.size() > 0) {
-					
-						Member member = guild.getMemberById(userData.getId());
-						StringBuilder logMessage = new StringBuilder();
-						logMessage.append("On server [" + guildData.toString() + "] ");
-						logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
-						logMessage.append("Notify about channels: ");
-						int counter = 1;
-						for(ChannelData channel: channels) {
-							logMessage.append("[" + channel.toString() + "]");
-							if(counter < channels.size()) {
-								logMessage.append(", ");
-								counter++;
-							}
-						}
-						Antony.getLogger().info(logMessage.toString());
-						
-						EmbedBuilder eb = new EmbedBuilder().setTitle("Benachrichtigung über Kanal-Updates")
-								.setColor(Antony.getBaseColor())
-								.setThumbnail(guild.getIconUrl())
-								.setDescription("Auf dem Server [" + guildData.getName() + "](https://discord.com/channels/" + guildData.getId() + ") "
-										+ "gibt es Neuigkeiten in den von dir abonnierten Kanälen. Schau es dir gleich mal an!")
-								.setFooter("Antony | Version " + Antony.getVersion());
-						
-						ArrayList<String> textList = new ArrayList<String>();
-						StringBuilder fieldText = new StringBuilder();
-						String textPart;
-						int msgCounter = 1;
-						
-						for(ChannelData channel: channels) {
-							textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + ")";
-							if((fieldText.length() + textPart.length() + 2) > 1024) {
-								textList.add(fieldText.toString());
-								fieldText = new StringBuilder();
-							}
-							
-							fieldText.append(textPart);
-							if(msgCounter < channels.size()) {
-								fieldText.append(", ");
-								msgCounter++;
-							} else {
-								textList.add(fieldText.toString());
-							}
-						}
-						
-						msgCounter = 1;
-						for(String text: textList) {
-							if(msgCounter == textList.size()) {
-								text += "\n_";
-							}
-							eb.addField("", text, false);
-						}
-						
-						Utils.sendPM(member, eb);
-	
-					}
-				}
-				getPendingUserNotifications().clear();
-				persistData();
-			}
 		}
 	}
-	
+
+	/**
+	 * will send all pending messages
+	 */
+	public void sendPendingNotifications() {
+		for(UserNotification notification: getPendingUserNotifications()) {
+			GuildData guildData = notification.getGuild();
+			UserData userData = notification.getUser();
+			ArrayList<ChannelData> channels = notification.getChannels();
+			Guild guild = Antony.getJda().getGuildById(guildData.getId());
+
+			//If user is a member of the guild
+			if(guild.getMemberById(userData.getId()) != null && channels.size() > 0) {
+
+				Member member = guild.getMemberById(userData.getId());
+				StringBuilder logMessage = new StringBuilder();
+				logMessage.append("On server [" + guildData.toString() + "] ");
+				logMessage.append("user [" + userData.toString() + "] got pending notifications. ");
+				logMessage.append("Notify about channels: ");
+				int counter = 1;
+				for(ChannelData channel: channels) {
+					logMessage.append("[" + channel.toString() + "]");
+					if(counter < channels.size()) {
+						logMessage.append(", ");
+						counter++;
+					}
+				}
+				Antony.getLogger().info(logMessage.toString());
+
+				EmbedBuilder eb = new EmbedBuilder().setTitle("Benachrichtigung über Kanal-Updates")
+						.setColor(Antony.getBaseColor())
+						.setThumbnail(guild.getIconUrl())
+						.setDescription("Auf dem Server [" + guildData.getName() + "](https://discord.com/channels/" + guildData.getId() + ") "
+								+ "gibt es Neuigkeiten in den von dir abonnierten Kanälen. Schau es dir gleich mal an!")
+						.setFooter("Antony | Version " + Antony.getVersion());
+
+				ArrayList<String> textList = new ArrayList<String>();
+				StringBuilder fieldText = new StringBuilder();
+				String textPart;
+				int msgCounter = 1;
+
+				for(ChannelData channel: channels) {
+					textPart = "[#" + channel.getName() + "](https://discord.com/channels/" + guildData.getId() + "/" + channel.getId() + ")";
+					if((fieldText.length() + textPart.length() + 2) > 1024) {
+						textList.add(fieldText.toString());
+						fieldText = new StringBuilder();
+					}
+
+					fieldText.append(textPart);
+					if(msgCounter < channels.size()) {
+						fieldText.append(", ");
+						msgCounter++;
+					} else {
+						textList.add(fieldText.toString());
+					}
+				}
+
+				msgCounter = 1;
+				for(String text: textList) {
+					if(msgCounter == textList.size()) {
+						text += "\n_";
+					}
+					eb.addField("", text, false);
+				}
+
+				Utils.sendPM(member, eb);
+
+			}
+		}
+		getPendingUserNotifications().clear();
+		persistData();
+	}
 
 	
 	/**

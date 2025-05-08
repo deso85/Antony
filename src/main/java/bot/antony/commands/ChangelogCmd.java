@@ -43,7 +43,8 @@ public class ChangelogCmd extends ServerCommand {
 	
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
-		List<ChangeLogEntry> changeLog = new ArrayList<ChangeLogEntry>();
+		List<ChangeLogEntry> changeLog = new ArrayList<>();
+		changeLog.add(new ChangeLogEntry("19.03.2025 - Version 7.15.0", "Der Befehl ***" + cmdPrefix + "notify*** wurde so angepasst, dass nun auch Threads berücksichtigt werden können."));
 		changeLog.add(new ChangeLogEntry("19.03.2025 - Version 7.14.3", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe von Angeboten verhindert hat."));
 		changeLog.add(new ChangeLogEntry("05.02.2025 - Version 7.14.2", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe verhindert hat, wenn zu viele Arten mit dem Suchbegriff im Verkauf gefunden wurden."));
 		changeLog.add(new ChangeLogEntry("30.01.2025 - Version 7.14.1", "Filter für den ***" + cmdPrefix + "shops*** Befehl eingefügt, um nur noch aktive Shops anzuzeigen."));
@@ -222,12 +223,10 @@ public class ChangelogCmd extends ServerCommand {
 		}
 		
 		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("ChangeLogEntry(");
-			sb.append("Title: " + getTitle());
-			sb.append(", Notes: " + getNotes());
-			sb.append(")");
-			return sb.toString();
+			return "ChangeLogEntry(" +
+                    "Title: " + getTitle() +
+                    ", Notes: " + getNotes() +
+                    ")";
 		}
 	}
 	

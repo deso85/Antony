@@ -10,8 +10,10 @@ import bot.antony.guild.GuildData;
 import bot.antony.guild.UserData;
 import bot.antony.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -34,6 +36,7 @@ public class NotifyCmd extends ServerCommand {
 		this.cmdParams.put("stats #channel (#channel2 ...)", "Zeigt, welche User den jeweiligen Kanal abonniert haben.");
 		this.cmdParams.put("info", "Informiert dich über alle Kanäle, zu denen du aktuell über Updates benachrichtigt wirst.");
 		this.cmdParams.put("off", "Du wirst nicht mehr über Kanal-Updates informiert.");
+		this.cmdParams.put("now", "Administrative Funktion, um sofort alle ausstehenden Notifications zu versenden.");
 	}
 	
 	@Override
@@ -42,65 +45,66 @@ public class NotifyCmd extends ServerCommand {
 		NotificationController nc = Antony.getNotificationController();
 		GuildData guild = new GuildData(message.getGuild());
 		UserData user = new UserData(message.getAuthor());
-		
+
 		// Exp. Parameter: (on|off|stats|statistics) #MentionedChannel
 		if(message.getMentions().getChannels().size() > 0) {
 			ArrayList<ChannelData> channelsAdddedTo = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsRemovedFrom = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsUnchanged = new ArrayList<ChannelData>();
 			
-			
 			//for each mentioned channel...
-			for(TextChannel textChannel: message.getMentions().getChannels(TextChannel.class)) {
-				ChannelData channelData = new ChannelData(textChannel);
-				Antony.getLogger().debug(channelData.toString());
-				
-				switch (userMessage[1].toLowerCase()) {
+			for(Channel mentionedChannel: message.getMentions().getChannels()) {
+				if (mentionedChannel.getType().isMessage() || mentionedChannel.getType().isThread()) {
+					ChannelData channelData = new ChannelData(mentionedChannel);
+					Antony.getLogger().debug(channelData.toString());
 
-				case "on": // If user wants to receive notifications for channel
-						if(nc.addNotification(guild, channelData, user)) {
-							channelsAdddedTo.add(channelData);
-						} else {
-							channelsUnchanged.add(channelData);
-						}
-					break;
-				case "off": // If user doesn't want to receive notifications for channel
-						if(nc.removeNotification(guild, channelData, user)) {
-							channelsRemovedFrom.add(channelData);
-						} else {
-							channelsUnchanged.add(channelData);
-						}
-					break;
-				case "stats":
-				case "statistics": // If user want's to see who has notifications turned on for specified channel
-						
-						ArrayList<UserData> usrList = nc.getChannelUser(guild, channelData);
-						StringBuilder msg = new StringBuilder();
-						
-						if(!usrList.isEmpty()) {
-							msg.append("Folgende Benutzer werden über Aktualisierungen im Kanal " + textChannel.getAsMention() + " informiert:\n");
-							int counter = 1;
-							for(UserData usr: usrList) {
-								msg.append(message.getGuild().getMemberById(usr.getId()).getEffectiveName());
-								if(counter < usrList.size()) {
-									msg.append(", ");
-									counter++;
-								}
+					switch (userMessage[1].toLowerCase()) {
+
+						case "on": // If user wants to receive notifications for channel
+							if (nc.addNotification(guild, channelData, user)) {
+								channelsAdddedTo.add(channelData);
+							} else {
+								channelsUnchanged.add(channelData);
 							}
-							channel.sendMessage(msg.toString()).queue();
-						} else {
-							msg.append("Es wird aktuell niemand über Aktualisierungen im Kanal " + textChannel.getAsMention() + " informiert.");
-							channel.sendMessage(msg.toString()).queue();
-						}
-						
-					break;
-				default: // Toggle - Turns on if user doesn't receive notifications and vice versa
-						if(nc.toggleNotification(guild, channelData, user)) {
-							channelsAdddedTo.add(channelData);
-						} else {
-							channelsRemovedFrom.add(channelData);
-						}
-					break;
+							break;
+						case "off": // If user doesn't want to receive notifications for channel
+							if (nc.removeNotification(guild, channelData, user)) {
+								channelsRemovedFrom.add(channelData);
+							} else {
+								channelsUnchanged.add(channelData);
+							}
+							break;
+						case "stats":
+						case "statistics": // If user want's to see who has notifications turned on for specified channel
+
+							ArrayList<UserData> usrList = nc.getChannelUser(guild, channelData);
+							StringBuilder msg = new StringBuilder();
+
+							if (!usrList.isEmpty()) {
+								msg.append("Folgende Benutzer werden über Aktualisierungen im Kanal " + mentionedChannel.getAsMention() + " informiert:\n");
+								int counter = 1;
+								for (UserData usr : usrList) {
+									msg.append(message.getGuild().getMemberById(usr.getId()).getEffectiveName());
+									if (counter < usrList.size()) {
+										msg.append(", ");
+										counter++;
+									}
+								}
+								channel.sendMessage(msg.toString()).queue();
+							} else {
+								msg.append("Es wird aktuell niemand über Aktualisierungen im Kanal " + mentionedChannel.getAsMention() + " informiert.");
+								channel.sendMessage(msg.toString()).queue();
+							}
+
+							break;
+						default: // Toggle - Turns on if user doesn't receive notifications and vice versa
+							if (nc.toggleNotification(guild, channelData, user)) {
+								channelsAdddedTo.add(channelData);
+							} else {
+								channelsRemovedFrom.add(channelData);
+							}
+							break;
+					}
 				}
 			}
 			
@@ -157,6 +161,12 @@ public class NotifyCmd extends ServerCommand {
 				case "off": // if user wants to receive no more notifications for this guild
 						nc.removeUserFromAllListsOfGuild(guild, user);
 						channel.sendMessage("Du erhältst nun keine weiteren Benachrichtigungen mehr.").queue();
+					break;
+				case "now":
+					if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR)) {
+						nc.sendPendingNotifications();
+						message.addReaction(Emoji.fromUnicode("👌")).queue();
+					}
 					break;
 				default: // give the user an overview on which channels he'll receive notifications for this guild
 					printHelp(channel);

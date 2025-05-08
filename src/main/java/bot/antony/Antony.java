@@ -170,7 +170,7 @@ public class Antony extends ListenerAdapter {
 				public void run() {
 					while(jda.getPresence().getStatus() == OnlineStatus.ONLINE) {
 						try {
-							notificationController.sendPendingNotifications(jda);
+							notificationController.checkPendingNotifications();
 							hbController.checkHBs();
 							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {

@@ -1,6 +1,6 @@
 package bot.antony.guild;
 
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.Channel;
 
 /**
  * Class to store channel data to help manage the notifications
@@ -16,18 +16,8 @@ public class ChannelData {
 	public ChannelData() {
 		super();
 	}
-	
-	public ChannelData(String id) {
-		setId(id);
-		setName(id);
-	}
 
-	public ChannelData(String id, String name) {
-		setId(id);
-		setName(name);
-	}
-	
-	public ChannelData(TextChannel channel) {
+	public ChannelData(Channel channel) {
 		setId(channel.getId());
 		setName(channel.getName());
 	}
@@ -36,7 +26,7 @@ public class ChannelData {
 	// --------------------------------------------------
 	// Functions
 	// --------------------------------------------------
-	public void update(TextChannel channel) {
+	public void update(Channel channel) {
 		setName(channel.getName());
 	}
 	
@@ -58,11 +48,8 @@ public class ChannelData {
 		// Typecast o to ChannelData so that we can compare data
 		ChannelData channelData = (ChannelData) o;
 		// Compare the ID, because it's unique while the channel name could have been changed
-		if(getId().equals(channelData.getId())) {
-			return true;
-		}
-		return false;
-	}
+        return getId().equals(channelData.getId());
+    }
 	
 	
 	// --------------------------------------------------
