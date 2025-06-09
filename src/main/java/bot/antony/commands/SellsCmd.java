@@ -150,7 +150,15 @@ public class SellsCmd extends ServerCommand {
 				for(Product product : productsFromShop) {
 					variants = controller.getAvailableProductVariants(product);
 
-					fieldPart.append("**" + product.getTitle() + "**\n");
+					// make sure that char count doesn't exceed the limit of 1024
+					String productTitle = "**" + product.getTitle() + "**\n";
+					if ((fieldPart.length() + productTitle.length()) > 1024) {
+						Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
+						shopFields.add(shopField);
+						fieldPart = new StringBuilder();
+						fieldTopic = "";
+					}
+					fieldPart.append(productTitle);
 
 					int counter = 1;
 					for(Variant variant : variants) {
@@ -171,6 +179,7 @@ public class SellsCmd extends ServerCommand {
 							tempFieldPart.append(" *(ca. " + String.format("%.2f", variant.getPrice()/currency.getEuro_rate()) + " EUR)*");
 						}
 
+						// make sure that char count doesn't exceed the limit of 1024
 						tempFieldPart.append("\n");
 						if ((fieldTopic.length() + fieldPart.length() + tempFieldPart.length()) > 1024) {
 							Field shopField = new Field(fieldTopic, fieldPart.toString(), false);
@@ -178,6 +187,7 @@ public class SellsCmd extends ServerCommand {
 							fieldPart = new StringBuilder();
 							fieldTopic = "";
 						}
+
 						fieldPart.append(tempFieldPart);
 						counter++;
 					}

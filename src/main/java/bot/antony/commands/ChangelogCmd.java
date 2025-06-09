@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<>();
+		changeLog.add(new ChangeLogEntry("09.06.2025 - Version 7.15.1", "Bugfix: Der Befehl ***" + cmdPrefix + "sells*** läuft nun nicht mehr in ein Zeichenlimit, dass die Ausgabe verhindert."));
 		changeLog.add(new ChangeLogEntry("19.03.2025 - Version 7.15.0", "Der Befehl ***" + cmdPrefix + "notify*** wurde so angepasst, dass nun auch Threads berücksichtigt werden können."));
 		changeLog.add(new ChangeLogEntry("19.03.2025 - Version 7.14.3", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe von Angeboten verhindert hat."));
 		changeLog.add(new ChangeLogEntry("05.02.2025 - Version 7.14.2", "Einen Fehler im ***" + cmdPrefix + "sells*** Befehl korrigiert, der die Ausgabe verhindert hat, wenn zu viele Arten mit dem Suchbegriff im Verkauf gefunden wurden."));
