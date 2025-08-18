@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Antony</groupId>
 	<artifactId>Antony</artifactId>
-	<version>7.15.1</version>
+	<version>7.16.0</version>
 
 	<properties>
 		<resteasy.version>6.2.11.Final</resteasy.version>
 		<maven.compiler.release>8</maven.compiler.release>
 		<jackson.version>2.18.2</jackson.version>
-		<jda.version>5.5.1</jda.version>
+		<jda.version>5.6.1</jda.version>
 		<sqlite.version>3.47.1.0</sqlite.version>
 		<sqlite.dialect.version>0.1.4</sqlite.dialect.version>
 		<jaxrs.version>2.0.2.Final</jaxrs.version>
