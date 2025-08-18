@@ -10,8 +10,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -56,7 +54,8 @@ public class OffersCmd extends ServerCommand {
         }
 
         List<Shop> matchingShops = controller.getNonBLOnlineShops().stream()
-                .filter(shop -> shop.getName().toLowerCase().contains(searchString.toLowerCase()))
+                .filter(shop -> shop.getName().equalsIgnoreCase(searchString)
+                        || shop.getName().toLowerCase().contains(searchString.toLowerCase()))
                 .collect(Collectors.toList());
 
         // No shop found with the given search string. Send error message.
@@ -92,57 +91,82 @@ public class OffersCmd extends ServerCommand {
         }
 
         // Found a shop. Send known offers.
-        if (matchingShops.size() == 1) {
-            Shop shop = matchingShops.get(0);
+        Shop shop = matchingShops.get(0);
+        List<Product> products = controller.getAvailableProductsByShop(shop);
 
-            List<Offer> offers = shop.getOffers();
-            if (offers == null || offers.isEmpty()) {
-                channel.sendMessage("Der Shop **" + shop.getName() + "** hat aktuell keine Angebote.").queue();
-                return;
-            }
-
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setTitle("Angebote von " + shop.getName(), shop.getUrl()); // Shop-Name + klickbarer Link
-            eb.setFooter("Daten bereitgestellt von antcheck.info");
-
-            int fieldCounter = 0;
-            StringBuilder fieldContent = new StringBuilder();
-
-            for (Offer offer : offers.stream()
-                    .sorted(Comparator.comparing(o -> o.getSpecie().getName(), String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList())) {
-
-                // Beispieltext pro Angebot
-                String line = "• **" + offer.getSpecie().getName() + "** – " + offer.getPrice() + " " + offer.getCurrency() + "\n";
-
-                // prüfen, ob dieses Field das Limit sprengen würde
-                if (fieldContent.length() + line.length() >= 1024) {
-                    eb.addField(new Field("Angebote (" + (fieldCounter + 1) + ")", fieldContent.toString(), false));
-                    fieldContent = new StringBuilder();
-                    fieldCounter++;
-                }
-
-                fieldContent.append(line);
-
-                // wenn wir schon 25 Felder hätten → Embed abschicken und neuen starten
-                if (fieldCounter >= 25) {
-                    channel.sendMessageEmbeds(eb.build()).queue();
-                    eb = new EmbedBuilder();
-                    eb.setTitle("Angebote von " + shop.getName(), shop.getUrl());
-                    eb.setFooter("Daten bereitgestellt von antcheck.info");
-                    fieldCounter = 0;
-                }
-            }
-
-            // Rest anhängen
-            if (fieldContent.length() > 0) {
-                eb.addField(new Field("Angebote (" + (fieldCounter + 1) + ")", fieldContent.toString(), false));
-            }
-
-            channel.sendMessageEmbeds(eb.build()).queue();
+        if (products.isEmpty()) {
+            channel.sendMessage("Der Shop **" + shop.getName() + "** hat aktuell keine Ameisen im Angebot oder wünscht, nicht aufgelistet zu werden.").queue();
             return;
         }
 
+        // Put offers into Embed
+        List<Field> productFields = new ArrayList<>();
+        for (Product product : products) {
+            StringBuilder fieldPart = new StringBuilder();
+            List<Variant> variants = controller.getAvailableProductVariants(product);
+
+            int counter = 1;
+            for (Variant variant : variants) {
+                StringBuilder temp = new StringBuilder();
+
+                // Variant title or "Variante x"
+                String variantTitle = !variant.getTitle().isEmpty() ? variant.getTitle() : "Variante " + counter;
+                temp.append(variantTitle)
+                        .append(": [**")
+                        .append(String.format("%.2f", variant.getPrice()))
+                        .append(" ").append(shop.getCurrency_iso()).append("**](")
+                        .append(variant.getUrl()).append(")");
+
+                // Calculate € price if necessary
+                if (!shop.getCurrency_iso().equals("EUR")) {
+                    Currency currency = controller.getCurrency(shop.getCurrency_iso());
+                    temp.append(" *(ca. ")
+                            .append(String.format("%.2f", variant.getPrice() / currency.getEuro_rate()))
+                            .append(" EUR)*");
+                }
+
+                temp.append("\n");
+
+                // Flush if field is full
+                if ((fieldPart.length() + temp.length()) > 1024) {
+                    productFields.add(new Field(product.getTitle(), fieldPart.toString(), false));
+                    fieldPart = new StringBuilder();
+                }
+
+                fieldPart.append(temp);
+                counter++;
+            }
+
+            productFields.add(new Field(product.getTitle(), fieldPart.toString(), false));
+        }
+
+        // Build Embed
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle(":flag_" + shop.getCountry() + ": " + shop.getName(), shop.getUrl());
+        eb.setColor(Antony.getBaseColor());
+        eb.setDescription("Alle aktuellen Ameisen-Angebote von **" + shop.getName() + "**.\n"
+                + "Quelle: https://antcheck.info\n"
+                + "***Achtung:*** Die gelisteten Preise beinhalten keine Versandkosten und können je nach Shop unterschiedlich hoch ausfallen.");
+
+        eb.setFooter("Preise und Verfügbarkeiten werden täglich mehrfach aktualisiert.\n"
+                + "Letzter erfolgreicher Abruf der Antcheck-Schnittstelle: "
+                + controller.getLastUpdatedDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")) + " Uhr");
+
+        // Send embed fields (check limits)
+        int ebCharCount = 0;
+        int ebFieldCount = 0;
+        for (Field field : productFields) {
+            if ((field.getName().length() + field.getValue().length() + ebCharCount) > 5000 || ebFieldCount == 25) {
+                channel.sendMessageEmbeds(eb.build()).complete();
+                eb.clearFields();
+                ebCharCount = 0;
+                ebFieldCount = 0;
+            }
+            eb.addField(field);
+            ebFieldCount++;
+            ebCharCount += (field.getName().length() + field.getValue().length());
+        }
+        channel.sendMessageEmbeds(eb.build()).queue();
 
     }
 }

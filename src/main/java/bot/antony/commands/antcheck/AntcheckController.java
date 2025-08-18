@@ -421,7 +421,15 @@ public class AntcheckController {
 				.collect(Collectors.toList());
 	}
 
-	public List<Product> getFilteredAvailableAntProducts(Specie ant) {
+    public List<Product> getAvailableProductsByShop(Shop shop) {
+        return getAntProducts().stream()
+                .filter(Product::isIn_stock)
+                .filter(Product::isIs_active)
+                .filter(p -> Objects.equals(p.getShop_id(), shop.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Product> getFilteredAvailableAntProducts(Specie ant) {
 		List<Product> products = getAvailableAntProducts(ant);
 		List<Shop> shops = getNonBLOnlineShops();
 		return getProductsFilteredByShops(products, shops);
