@@ -53,10 +53,23 @@ public class OffersCmd extends ServerCommand {
             return;
         }
 
-        List<Shop> matchingShops = controller.getNonBLOnlineShops().stream()
-                .filter(shop -> shop.getName().equalsIgnoreCase(searchString)
-                        || shop.getName().toLowerCase().contains(searchString.toLowerCase()))
+        List<Shop> allShops = controller.getNonBLOnlineShops();
+        List<Shop> matchingShops;
+
+        // First: check for exact matches (case-insensitive, trimmed)
+        List<Shop> exactMatches = allShops.stream()
+                .filter(shop -> shop.getName().equalsIgnoreCase(searchString.trim()))
                 .collect(Collectors.toList());
+
+        if (!exactMatches.isEmpty()) {
+            // If there are exact matches, prefer them
+            matchingShops = exactMatches;
+        } else {
+            // If no exact matches are found, fall back to partial matches
+            matchingShops = allShops.stream()
+                    .filter(shop -> shop.getName().toLowerCase().contains(searchString.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
 
         // No shop found with the given search string. Send error message.
         if (matchingShops.isEmpty()) {
