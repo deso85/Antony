@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<>();
+        changeLog.add(new ChangeLogEntry("16.09.2025 - Version 7.16.4", "Refactor: Der ***ReactionManager*** übergibt nun den kanonischen Reaktionsschlüssel an die Handler. Dadurch laufen die Berechtigungsprüfungen konsistent mit den normalisierten/aliasierten Emoji-Keys und Probleme bei der rollenbasierten Zugriffssteuerung wurden behoben."));
         changeLog.add(new ChangeLogEntry("16.09.2025 - Version 7.16.3", "Refactor: Der ***ReactionManager*** wurde überarbeitet. Unicode-Emoji-Varianten (z. B. Hauttöne, Gender, ZWJ, VS16) werden nun automatisch normalisiert. Für echte Emoji-Gruppen (z. B. 🔇/🔈/🔉/🔊) werden Aliases genutzt. Dadurch ist der Code schlanker und robuster gegenüber unterschiedlichen Emoji-Darstellungen."));
         changeLog.add(new ChangeLogEntry("21.08.2025 - Version 7.16.2", "Bugfix: Der ***" + cmdPrefix + "help*** Befehl wird nun bei Bedarf in mehrere Ausgaben zertrennt, um das Discord Zeichenlimit nicht zu überschreiten."));
         changeLog.add(new ChangeLogEntry("19.08.2025 - Version 7.16.1", "Bugfix: Der ***" + cmdPrefix + "offers*** Befehl berücksichtigt nun exakte Shopnamen vor Teiltreffern, um mehrdeutige Ergebnisse zu vermeiden."));
