@@ -72,19 +72,20 @@ public class HelpCmd extends ServerCommand {
     }
 
     private void sendChunkedMessage(GuildMessageChannel channel, String header, List<String> lines, String footer) {
+        // First page starts with the header; subsequent pages do NOT repeat it
         StringBuilder block = new StringBuilder(header);
 
         for (String line : lines) {
-            // if the next line doesn't fit, send the current block
-            if (block.length() + line.length() + 1 >= DISCORD_MESSAGE_LIMIT) {
+            // If next line doesn't fit, flush current block
+            if (block.length() + line.length() + 1 > DISCORD_MESSAGE_LIMIT) {
                 channel.sendMessage(block.toString()).queue();
-                block = new StringBuilder(header);
+                block = new StringBuilder(); // no header on subsequent pages
             }
             block.append(line).append("\n");
         }
 
-        // Try to add footer, or send separately if too long
-        if (block.length() + footer.length() >= DISCORD_MESSAGE_LIMIT) {
+        // Append footer to the last page if it fits; otherwise send it separately
+        if (block.length() + footer.length() > DISCORD_MESSAGE_LIMIT) {
             channel.sendMessage(block.toString()).queue();
             channel.sendMessage(footer).queue();
         } else {
