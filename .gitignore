@@ -1,16 +1,17 @@
-# Compiled class file
+# --------------------------------------------------
+# Java
+# --------------------------------------------------
+# Compiled class files
 *.class
 
-# Log file
+# Log files
 *.log
+antony.log*
 
-# BlueJ files
-*.ctxt
+# JVM crash logs
+hs_err_pid*
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package / Archive files
 *.jar
 *.war
 *.nar
@@ -19,20 +20,36 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
 
-# Eclipse Core      
+# --------------------------------------------------
+# Eclipse
+# --------------------------------------------------
 .project
 org.eclipse.*
-
-# JDT-specific (Eclipse Java Development Tools)     
 .classpath
 /bin/
 
-# Antony specific ignores
+# --------------------------------------------------
+# IntelliJ IDEA
+# --------------------------------------------------
+.idea/
+*.iml
+compiler.xml
+jarRepositories.xml
+misc.xml
+vcs.xml
+
+# --------------------------------------------------
+# BlueJ
+# --------------------------------------------------
+*.ctxt
+
+# --------------------------------------------------
+# Antony specific
+# --------------------------------------------------
 /target/
 antony.properties
 antony.db
 antony.*.json
-antony.log*
