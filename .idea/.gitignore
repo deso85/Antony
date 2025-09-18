@@ -1,3 +1,55 @@
-# Default ignored files
-/shelf/
-/workspace.xml
+# --------------------------------------------------
+# Java
+# --------------------------------------------------
+# Compiled class files
+*.class
+
+# Log files
+*.log
+antony.log*
+
+# JVM crash logs
+hs_err_pid*
+
+# Package / Archive files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# --------------------------------------------------
+# Eclipse
+# --------------------------------------------------
+.project
+org.eclipse.*
+.classpath
+/bin/
+
+# --------------------------------------------------
+# IntelliJ IDEA
+# --------------------------------------------------
+.idea/
+*.iml
+compiler.xml
+jarRepositories.xml
+misc.xml
+vcs.xml
+
+# --------------------------------------------------
+# BlueJ
+# --------------------------------------------------
+*.ctxt
+
+# --------------------------------------------------
+# Antony specific
+# --------------------------------------------------
+/target/
+antony.properties
+antony.db
+antony.*.json
