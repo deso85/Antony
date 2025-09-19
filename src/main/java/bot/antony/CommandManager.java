@@ -31,11 +31,11 @@ public class CommandManager {
     public CommandManager() {
         // Keep LinkedHashMap to preserve insertion order (e.g., for help listings)
         LinkedHashMap<String, ServerCommand> cmds = new LinkedHashMap<>();
-        cmds.put("antcheck", new AntcheckCmd());
         cmds.put("antony", new AntonyCmd());
         cmds.put("help", new HelpCmd());
         cmds.put("changelog", new ChangelogCmd());
         cmds.put("addhb", new AddHBCmd());
+        cmds.put("antcheck", new AntcheckCmd());
         cmds.put("archive", new ArchiveCmd());
         cmds.put("beer", new BeerCmd());
         cmds.put("blacklist", new BlacklistCmd());

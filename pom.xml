@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>Antony</groupId>
     <artifactId>Antony</artifactId>
-    <version>7.17.0</version>
+    <version>7.18.0</version>
 
     <properties>
         <resteasy.version>6.2.11.Final</resteasy.version>
@@ -17,6 +17,7 @@
         <jboss.weld.version>2.4.8.Final</jboss.weld.version>
         <jboss.weld.se.version>5.1.2.Final</jboss.weld.se.version>
         <jandex.version>3.1.6</jandex.version>
+        <flexmark.version>0.64.8</flexmark.version>
     </properties>
 
     <build>
@@ -207,5 +208,19 @@
             <artifactId>slf4j-reload4j</artifactId>
             <version>2.0.16</version>
         </dependency>
+
+        <!-- Flexmark for Markdown -> HTML rendering -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
     </dependencies>
 </project>
