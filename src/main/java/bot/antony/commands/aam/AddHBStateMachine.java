@@ -3,8 +3,7 @@ package bot.antony.commands.aam;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import bot.antony.Antony;
@@ -202,6 +201,7 @@ public class AddHBStateMachine extends ListenerAdapter {
 		}
 	}
 	
+	/*
 	private void handleCategory(MessageReactionAddEvent event) {
 		if (event.getMessageIdLong() == nativeOrExoticMsgID) {
 			//get all Categories related to HBs
@@ -302,7 +302,168 @@ public class AddHBStateMachine extends ListenerAdapter {
 			}
 		}
 	}
-	
+	*/
+	private void handleCategory(MessageReactionAddEvent event) {
+		if (event.getMessageIdLong() == nativeOrExoticMsgID) {
+			List<Category> categories = new ArrayList<>();
+
+			if (event.getEmoji().getFormatted().equals("1️⃣")) {
+				categories = event.getGuild().getCategories().stream()
+						.filter(cat -> cat.getName().toLowerCase().contains("hb einheimisch"))
+						.filter(cat -> !cat.getName().toLowerCase().contains("geschlossen"))
+						.collect(Collectors.toList());
+			} else if (event.getEmoji().getFormatted().equals("2️⃣")) {
+				categories = event.getGuild().getCategories().stream()
+						.filter(cat -> cat.getName().toLowerCase().contains("hb exotisch"))
+						.filter(cat -> !cat.getName().toLowerCase().contains("geschlossen"))
+						.collect(Collectors.toList());
+			}
+
+			// Remove cf., sp., spec. for comparison
+			String antSpeciesForComparison = antSpecies
+					.replaceAll("(?i)\\bcf\\.?\\s*", "")
+					.replaceAll("(?i)\\bconf\\.?\\s*", "")
+					.replaceAll("(?i)\\bsp\\.?\\s*", "")
+					.replaceAll("(?i)\\bspec\\.?\\s*", "")
+					.trim()
+					.replaceAll(" +", " ");
+
+			String[] antParts = antSpeciesForComparison.split(" ", 2);
+			String antGenus = antParts[0];
+			String antEpithet = antParts.length > 1 ? antParts[1] : "";
+
+			// Keywords that are not a genus name
+			Set<String> ignoredWords = new HashSet<>(Arrays.asList("hb", "einheimisch", "exotisch"));
+
+			// Check if there are genus-specific categories for our ant's genus
+			boolean hasGenusCategories = categories.stream().anyMatch(cat -> {
+				String nameWithoutRange = cat.getName()
+						.substring(0, cat.getName().lastIndexOf(" "))
+						.toLowerCase();
+				return Arrays.stream(nameWithoutRange.split(" "))
+						.anyMatch(word -> word.equalsIgnoreCase(antGenus));
+			});
+
+			for (Category category : categories) {
+				String catName = category.getName();
+				String catNameWithoutRange = catName.substring(0, catName.lastIndexOf(" "));
+
+				// Detect if this category is genus-specific, and if so, for which genus
+				String categoryGenus = Arrays.stream(catNameWithoutRange.split(" "))
+						.filter(word -> !ignoredWords.contains(word.toLowerCase()))
+						.findFirst()
+						.orElse(null);
+
+				boolean isCategoryGenusSpecific = categoryGenus != null;
+
+				if (isCategoryGenusSpecific) {
+					// Skip if this genus-category is for a different genus
+					if (!categoryGenus.equalsIgnoreCase(antGenus)) {
+						continue;
+					}
+					// Skip if ant has no epithet (only genus known) — fall through to normal categories
+					if (antEpithet.isEmpty()) {
+						continue;
+					}
+				} else {
+					// This is a normal (non-genus-specific) category
+					// Skip if the ant has its own genus-specific categories
+					if (hasGenusCategories) {
+						continue;
+					}
+				}
+
+				// Determine what to compare against the range
+				String comparisonString = isCategoryGenusSpecific
+						? antEpithet.toLowerCase()
+						: antSpeciesForComparison.toLowerCase();
+
+				String rangeStr = catName.substring(catName.lastIndexOf(" ") + 1);
+				String[] range = rangeStr.split("-");
+
+				if (range.length > 1) {
+					// Range category (e.g. A-M, CAN-L)
+					int rangeStartLength = range[0].length();
+					int rangeEndLength = range[1].length();
+					char[] rangeStartChars = giveChars(range[0].toLowerCase());
+					char[] rangeEndsChars = giveChars(range[1].toLowerCase());
+					char[] antSpecieChars = giveChars(comparisonString);
+
+					boolean matches = true;
+					for (int i = 0; i < rangeStartLength; i++) {
+						if (rangeStartChars[i] > antSpecieChars[i]) {
+							matches = false;
+							break;
+						} else if (rangeStartChars[i] < antSpecieChars[i]) {
+							break;
+						}
+					}
+					if (matches) {
+						for (int i = 0; i < rangeEndLength; i++) {
+							if (rangeEndsChars[i] < antSpecieChars[i]) {
+								matches = false;
+								break;
+							} else if (rangeEndsChars[i] > antSpecieChars[i]) {
+								break;
+							}
+						}
+					}
+
+					if (matches) {
+						Antony.getLogger().info("Category found: " + catName);
+						hbCategory = category;
+						break;
+					}
+
+				} else {
+					// Unique category (e.g. "N" in "Camponotus N")
+					if (comparisonString.substring(0, range[0].length())
+							.equalsIgnoreCase(range[0])) {
+						Antony.getLogger().info("Category found: " + catName);
+						hbCategory = category;
+						break;
+					}
+				}
+			}
+
+			if (hbCategory != null) {
+				awaitApproval = true;
+
+				event.getChannel().retrieveMessageById(initMessageId).queue(msg -> {
+					msg.reply("Danke für die Infos. Ein Mod wird zeitnah darüber entscheiden, ob ein Haltungsbericht angelegt wird und du wirst dann darüber informiert.")
+							.queue();
+					TextChannel replyChan;
+					if (Antony.getGuildController().getLogChannel(msg.getGuild()) != null) {
+						replyChan = Antony.getGuildController().getLogChannel(msg.getGuild());
+					} else {
+						replyChan = msg.getChannel().asTextChannel();
+					}
+					StringBuilder sb = new StringBuilder();
+					sb.append("ℹ️ Anfrage für neuen Haltungsbericht\n");
+					sb.append("Author: ").append(event.getMember().getAsMention()).append("\n");
+					sb.append("Art: ").append(antSpecies).append("\n");
+					sb.append("Kategorie: ").append(hbCategory.getName()).append("\n\n");
+					sb.append("Soll der Haltungsbericht angelegt werden?");
+
+					replyChan.sendMessage(sb.toString()).queue(submsg -> {
+						Utils.addBooleanChoiceReactions(submsg);
+						approvalMsgID = submsg.getIdLong();
+					});
+				});
+
+				Antony.getLogger().info("HB dialogue is over and user awaits approval.");
+			} else {
+				event.getChannel().retrieveMessageById(initMessageId).queue(msg -> {
+					msg.reply("Es konnte leider keine passende Kategorie für **" + antSpecies
+									+ "** gefunden werden. Bitte wende dich direkt an die Moderation.")
+							.queue();
+				});
+				event.getJDA().removeEventListener(this);
+				Antony.getLogger().warn("HB dialogue cancelled: no category found for " + antSpecies);
+			}
+		}
+	}
+
 	public char[] giveChars(String text) {
 		String textLower = text.toLowerCase();
 		char[] charArray = new char[textLower.length()];
