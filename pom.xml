@@ -18,6 +18,7 @@
         <jboss.weld.se.version>5.1.2.Final</jboss.weld.se.version>
         <jandex.version>3.1.6</jandex.version>
         <flexmark.version>0.64.8</flexmark.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
     </properties>
 
     <build>
@@ -220,6 +221,13 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>5.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

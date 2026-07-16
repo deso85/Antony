@@ -1,12 +1,13 @@
 package bot.antony;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -55,11 +56,11 @@ public class Antony extends ListenerAdapter {
 
 	public static Antony INSTANCE;
 	private static Color baseColor = new Color(31, 89, 152);
+	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static String cmdPrefix;
 	private static long notificationPendingTime;
 	private static String version = getProperty("bot.version");
 	private static String dataPath;
-	private static Logger logger = LoggerFactory.getLogger(Antony.class);
 	private static CommandManager cmdMan;
 	private static ReactionManager reactionMan;
 	private static AntcheckController antcheckController;
@@ -83,21 +84,34 @@ public class Antony extends ListenerAdapter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		initializeConfig(args);
+		initializeControllers();
+		startBot();
+	}
 
-		//Set config file to owerwrite settings
-		for(int i = 0; i < args.length; i++) {
-            if(args[i].startsWith("-config=")) {
-            	File cFile = new File(args[i].substring(8));
-            	if(cFile.exists() && !cFile.isDirectory()) { 
-            		setConfigFile(args[i].substring(8));
-            	}
-            }
-        }
-		
-		//set variables
+	private static Optional<String> parseConfigArgument(String argument) {
+		if (argument == null || !argument.startsWith("-config=")) {
+			return Optional.empty();
+		}
+
+		String configPath = argument.substring("-config=".length()).trim();
+		return configPath.isEmpty() ? Optional.empty() : Optional.of(configPath);
+	}
+
+	private static void initializeConfig(String[] args) {
+		Arrays.stream(args)
+				.map(Antony::parseConfigArgument)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.findFirst()
+				.ifPresent(Antony::setConfigFile);
+
 		cmdPrefix = getProperty("command.prefix");
 		notificationPendingTime = Long.parseLong(getProperty("notification.pending.time"));
 		dataPath = getProperty("flatfile.path");
+	}
+
+	private static void initializeControllers() {
 		cmdMan = new CommandManager();
 		reactionMan = new ReactionManager();
 		antcheckController = new AntcheckController();
@@ -113,7 +127,9 @@ public class Antony extends ListenerAdapter {
 		gaController = new GiveawayController();
 		reminderController = new ReminderController();
 		usercount = 0;
-		
+	}
+
+	private static void startBot() {
 		try {
 			// build bot
 			jda = JDABuilder.createDefault(getProperty("bot.token"))	// The token of the account that is logging in.
@@ -208,29 +224,43 @@ public class Antony extends ListenerAdapter {
 	 * 			as String
 	 */
 	public static String getProperty(String key) {
-		InputStream is = null;
 		Properties prop = new Properties();
 		String retVal = null;
 		
-		if(configFile != null && !configFile.equals("")) {
-			try {
-				is = new FileInputStream(configFile);
+		if(configFile != null && !configFile.isEmpty()) {
+			try (InputStream is = new FileInputStream(configFile)) {
 				prop.load(is);
-				if(prop.getProperty(key) != null) {
-					retVal = prop.getProperty(key);
-				}
+				retVal = prop.getProperty(key);
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (logger != null) {
+					logger.warn("Unable to load config file {}", configFile, e);
+				}
 			}
 		}
 
 		if(retVal == null){
-			try {
-				is = Antony.class.getResourceAsStream("/antony.properties");
-				prop.load(is);
-				retVal = prop.getProperty(key);
+			try (InputStream is = Antony.class.getResourceAsStream("/antony.properties")) {
+				if (is != null) {
+					prop.load(is);
+					retVal = prop.getProperty(key);
+				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (logger != null) {
+					logger.warn("Unable to load default properties", e);
+				}
+			}
+		}
+		
+		if(retVal == null){
+			try (InputStream is = Antony.class.getResourceAsStream("/antony.properties.tpl")) {
+				if (is != null) {
+					prop.load(is);
+					retVal = prop.getProperty(key);
+				}
+			} catch (IOException e) {
+				if (logger != null) {
+					logger.warn("Unable to load template properties", e);
+				}
 			}
 		}
 		
