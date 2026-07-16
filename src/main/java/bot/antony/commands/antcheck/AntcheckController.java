@@ -499,13 +499,17 @@ public class AntcheckController {
 							updateData();
 							Thread.sleep(60000); //1min
 						} catch (InterruptedException e) {
-							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+							Antony.getLogger().info("Antcheck timer thread interrupted (likely during restart).");
+							Thread.currentThread().interrupt();
+							break;
 						}
 					}
 					isRunning = false;
 					Antony.getLogger().info("[Antcheck Controller] Stopping Runner");
 				}
 			};
+			timerThread.setName("antcheck-timer");
+			Antony.registerTimerThread(timerThread);
 			timerThread.start();
 		}
 	}

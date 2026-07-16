@@ -144,13 +144,17 @@ public class AntcheckNotificationController {
 							checkAvailability();
 							Thread.sleep(60000); //1min
 						} catch (InterruptedException e) {
-							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+							Antony.getLogger().info("Antcheck notification timer thread interrupted (likely during restart).");
+							Thread.currentThread().interrupt();
+							break;
 						}
 					}
 					isRunning = false;
 					Antony.getLogger().info("[Antcheck Availability Controller] Stopping Runner");
 				}
 			};
+			timerThread.setName("antcheck-notif-timer");
+			Antony.registerTimerThread(timerThread);
 			timerThread.start();
 		}
 	}

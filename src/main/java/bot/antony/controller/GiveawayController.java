@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 /**
- * Controller to start, monitor and end {@link bot.antony.commands.giveaway.Giveaway Giveaways}
+ * Controller to start, monitor and end {@link Giveaway Giveaways}
  *
  * @since  7.6.0
  * @author deso85
@@ -32,22 +32,22 @@ public class GiveawayController {
 	private boolean isRunning = false;
 	
 	/**
-     * Constructs a new GiveawayController instance, which can be used to start, monitor and end {@link bot.antony.commands.giveaway.Giveaway Giveaways}.
+     * Constructs a new GiveawayController instance, which can be used to start, monitor and end {@link Giveaway Giveaways}.
      */
 	public GiveawayController() {
 		Antony.getLogger().info("Created giveaway controller.");
 	}
 	
 	/**
-     * Starts a {@link java.lang.Thread Thread} which checks every 15 seconds
-     * if {@link bot.antony.commands.giveaway.Giveaway Giveaways} ended and
+     * Starts a {@link Thread Thread} which checks every 15 seconds
+     * if {@link Giveaway Giveaways} ended and
      * updates the related {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}
      * inside the Discord message if necessary.
      * 
      * @param  jda
-     *         The {@link net.dv8tion.jda.api.JDA JDA} instance is needed to get
-     *         necessary objects like {@link net.dv8tion.jda.api.entities.Guild Guilds}
-     *         where {@link bot.antony.commands.giveaway.Giveaway Giveaways} take place
+     *         The {@link JDA JDA} instance is needed to get
+     *         necessary objects like {@link Guild Guilds}
+     *         where {@link Giveaway Giveaways} take place
      */
 	public void run(JDA jda) {
 		if(!isRunning && giveaways.size() > 0) {
@@ -85,29 +85,33 @@ public class GiveawayController {
 							}
 							Thread.sleep(15000); //15sec
 						} catch (InterruptedException e) {
-							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+							Antony.getLogger().info("Giveaway timer thread interrupted (likely during restart).");
+							Thread.currentThread().interrupt();
+							break;
 						}
 					}
 					isRunning = false;
 					Antony.getLogger().info("[Giveaway Controller] Stopping Runner because there are no more giveaways");
 				}
 			};
+			timerThread.setName("giveaway-timer");
+			Antony.registerTimerThread(timerThread);
 			timerThread.start();
 		}
 	}
 	
 	/**
-	* Adds a {@link bot.antony.commands.giveaway.Giveaway Giveaway} and posts a
+	* Adds a {@link Giveaway Giveaway} and posts a
 	* {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed} in a specified
-	* {@link net.dv8tion.jda.api.entities.channel.concrete.TextChannel TextChannel}
+	* {@link TextChannel TextChannel}
 	* with the details
 	*
 	* @param  sponsor
-	*         The sponsor of the giveaway as an {@link net.dv8tion.jda.api.entities.User User} object.
+	*         The sponsor of the giveaway as an {@link User User} object.
 	* @param  description
 	*         The giveaways description.
 	* @param  channel
-	*         The {@link net.dv8tion.jda.api.entities.channel.concrete.TextChannel TextChannel} to post
+	*         The {@link TextChannel TextChannel} to post
 	*         the {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed} in.
 	* @param  runtimeMin
 	*         Specifies how long the giveaway will run in minutes.
@@ -124,7 +128,7 @@ public class GiveawayController {
 	}
 	
 	/**
-	* Adds a {@link bot.antony.commands.giveaway.Giveaway Giveaway} to the list of active giveaways
+	* Adds a {@link Giveaway Giveaway} to the list of active giveaways
 	* and stores it.
 	*
 	* @param  giveaway
@@ -135,7 +139,7 @@ public class GiveawayController {
 	}
 	
 	/**
-	* Removes a {@link bot.antony.commands.giveaway.Giveaway Giveaway} from the list of active
+	* Removes a {@link Giveaway Giveaway} from the list of active
 	* giveaways and stores it.
 	*
 	* @param  giveaway
@@ -146,7 +150,7 @@ public class GiveawayController {
 	}
 	
 	/**
-	* Loads the list of active {@link bot.antony.commands.giveaway.Giveaway Giveaways}.
+	* Loads the list of active {@link Giveaway Giveaways}.
 	*/
 	@SuppressWarnings("unchecked")
 	public void load() {
@@ -154,15 +158,15 @@ public class GiveawayController {
 	}
 	
 	/**
-	* Saves the list of active {@link bot.antony.commands.giveaway.Giveaway Giveaways}.
+	* Saves the list of active {@link Giveaway Giveaways}.
 	*/
 	public void save() {
 		Utils.saveJSONData(gaListFileName, giveaways);
 	}
 	
 	/**
-	 * Prepares and returns an {@link net.dv8tion.jda.api.EmbedBuilder EmbedBuilder}
-	 * with {@link bot.antony.commands.giveaway.Giveaway Giveaway} data.
+	 * Prepares and returns an {@link EmbedBuilder EmbedBuilder}
+	 * with {@link Giveaway Giveaway} data.
 	 * 
 	 * @param sponsorName
 	 *        The sponsors name.
@@ -174,7 +178,7 @@ public class GiveawayController {
 	 *        The amount of people who can win the giveaway.
 	 * @param endEpochSecond
 	 *        The epoch second (seconds after 1970-01-01) of the time when the giveaway ends.
-	 * @return {@link net.dv8tion.jda.api.EmbedBuilder EmbedBuilder}
+	 * @return {@link EmbedBuilder EmbedBuilder}
 	 */
 	private EmbedBuilder getEmbedBuilder(String sponsorName, String sponsorAvatar, String description, ArrayList<String> attachmentURLs, int winCount, long endEpochSecond) {
 		EmbedBuilder eb = new EmbedBuilder();
@@ -201,10 +205,10 @@ public class GiveawayController {
 	}
 	
 	/**
-	 * Returns a String which includes all winner of the {@link bot.antony.commands.giveaway.Giveaway Giveaway}.
+	 * Returns a String which includes all winner of the {@link Giveaway Giveaway}.
 	 * 
 	 * @param guild
-	 *        The {@link net.dv8tion.jda.api.entities.Guild Guild} in which the giveaway takes place.
+	 *        The {@link Guild Guild} in which the giveaway takes place.
 	 * @param chanID
 	 *        The channel ID in which the giveaway message has been posted.
 	 * @param messageID

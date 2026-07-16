@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 /**
- * Controller to start, monitor and end {@link bot.antony.commands.reminder.Reminder Reminder}
+ * Controller to start, monitor and end {@link Reminder Reminder}
  *
  * @since  7.7.0
  * @author deso85
@@ -28,21 +28,21 @@ public class ReminderController {
 	private boolean isRunning = false;
 	
 	/**
-     * Constructs a new ReminderController instance, which can be used to start, monitor and end {@link bot.antony.commands.reminder.Reminder Reminder}.
+     * Constructs a new ReminderController instance, which can be used to start, monitor and end {@link Reminder Reminder}.
      */
 	public ReminderController() {
 		Antony.getLogger().info("Created reminder controller.");
 	}
 	
 	/**
-     * Starts a {@link java.lang.Thread Thread} which checks every 5 minutes
-     * if {@link bot.antony.commands.reminder.Reminder Reminder} ended and reminds
+     * Starts a {@link Thread Thread} which checks every 5 minutes
+     * if {@link Reminder Reminder} ended and reminds
      * the user
      * 
      * @param  jda
-     *         The {@link net.dv8tion.jda.api.JDA JDA} instance is needed to get
-     *         necessary objects like {@link net.dv8tion.jda.api.entities.Guild Guilds}
-     *         where {@link bot.antony.commands.reminder.Reminder Reminder} will be sent
+     *         The {@link JDA JDA} instance is needed to get
+     *         necessary objects like {@link Guild Guilds}
+     *         where {@link Reminder Reminder} will be sent
      */
 	public void run(JDA jda) {
 		if(!isRunning && reminders.size() > 0) {
@@ -70,19 +70,23 @@ public class ReminderController {
 							}
 							Thread.sleep(60000); //1min
 						} catch (InterruptedException e) {
-							Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+							Antony.getLogger().info("Reminder timer thread interrupted (likely during restart).");
+							Thread.currentThread().interrupt();
+							break;
 						}
 					}
 					isRunning = false;
 					Antony.getLogger().info("[Reminder Controller] Stopping Runner because there are no more reminder");
 				}
 			};
+			timerThread.setName("reminder-timer");
+			Antony.registerTimerThread(timerThread);
 			timerThread.start();
 		}
 	}
 	
 	/**
-	* Adds a {@link bot.antony.commands.reminder.Reminder Reminder}
+	* Adds a {@link Reminder Reminder}
 	*
 	* @param  message
 	*         Message which includes all relevant information except the runtime
@@ -96,7 +100,7 @@ public class ReminderController {
 	}
 	
 	/**
-	* Removes a {@link bot.antony.commands.reminder.Reminder Reminder} from the list of active
+	* Removes a {@link Reminder Reminder} from the list of active
 	* reminders and stores it.
 	*
 	* @param  reminder
@@ -107,7 +111,7 @@ public class ReminderController {
 	}
 	
 	/**
-	* Loads the list of active {@link bot.antony.commands.reminder.Reminder Reminders}.
+	* Loads the list of active {@link Reminder Reminders}.
 	*/
 	@SuppressWarnings("unchecked")
 	public void load() {
@@ -115,7 +119,7 @@ public class ReminderController {
 	}
 	
 	/**
-	* Saves the list of active {@link bot.antony.commands.reminder.Reminder Reminders}.
+	* Saves the list of active {@link Reminder Reminders}.
 	*/
 	public void save() {
 		Utils.saveJSONData(reminderListFileName, reminders);

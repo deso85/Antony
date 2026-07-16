@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
- * The State Machine gathers all information to start a {@link bot.antony.commands.giveaway.Giveaway Giveaway}
+ * The State Machine gathers all information to start a {@link Giveaway Giveaway}
  * via an interactive dialogue.
  *
  * @since  7.6.0
@@ -37,7 +37,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 
 	/**
      * Constructs a new GiveawayStateMachine instance, which is used to gather all information to start a
-     * {@link bot.antony.commands.giveaway.Giveaway Giveaway} via an interactive dialogue.
+     * {@link Giveaway Giveaway} via an interactive dialogue.
      */
 	public GiveawayStateMachine(MessageChannel channel, User author) {
 		this.channel = channel;
@@ -139,7 +139,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	}
 	
 	/**
-	 * Function to parse the user input for {@link bot.antony.commands.giveaway.Giveaway Giveaway} duration.
+	 * Function to parse the user input for {@link Giveaway Giveaway} duration.
 	 * 
 	 * @param  usrInput
 	 *         String to parse.
@@ -178,7 +178,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	}
 	
 	/**
-	 * Verify if {@link bot.antony.commands.giveaway.Giveaway Giveaway} description is correct.
+	 * Verify if {@link Giveaway Giveaway} description is correct.
 	 * 
 	 * @param  event
 	 *         MessageReceivedEvent with answer from the user.
@@ -199,7 +199,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	}
 	
 	/**
-	 * Verify if {@link bot.antony.commands.giveaway.Giveaway Giveaway} duration is correct.
+	 * Verify if {@link Giveaway Giveaway} duration is correct.
 	 * 
 	 * @param  event
 	 *         MessageReceivedEvent with answer from the user.
@@ -233,7 +233,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	}
 	
 	/**
-	 * Verify if {@link bot.antony.commands.giveaway.Giveaway Giveaway} channel is correct.
+	 * Verify if {@link Giveaway Giveaway} channel is correct.
 	 * 
 	 * @param  event
 	 *         MessageReceivedEvent with answer from the user.
@@ -261,7 +261,7 @@ public class GiveawayStateMachine extends ListenerAdapter {
 	}
 	
 	/**
-	 * Verify how many people can win the {@link bot.antony.commands.giveaway.Giveaway Giveaway}.
+	 * Verify how many people can win the {@link Giveaway Giveaway}.
 	 * 
 	 * @param  event
 	 *         MessageReceivedEvent with answer from the user.

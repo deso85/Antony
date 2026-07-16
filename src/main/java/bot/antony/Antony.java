@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -75,6 +77,7 @@ public class Antony extends ListenerAdapter {
 	private static int usercount;
 	private static String configFile = null;
 	private static JDA jda;
+	private static final List<Thread> timerThreads = new ArrayList<>();
 	/**
 	 * This is the method where the program starts.
 	 * @param args
@@ -174,11 +177,15 @@ public class Antony extends ListenerAdapter {
 							hbController.checkHBs();
 							Thread.sleep(60000);	//60sec
 						} catch (InterruptedException e) {
-							logger.error("Wasn't able to put Thread asleep.", e);
+							logger.info("Timer thread interrupted (likely during restart).");
+							Thread.currentThread().interrupt(); // restore interrupted status
+							break;
 						}
 					}
 				}
 			};
+			timerThread.setName("antony-timer");
+			timerThreads.add(timerThread);
 			timerThread.start();
 			
 			
@@ -389,5 +396,29 @@ public class Antony extends ListenerAdapter {
 
 	public static JDA getJda() {
 		return jda;
+	}
+
+	/**
+	 * Interrupt all timer threads so they wake up from sleep immediately.
+	 * Used during restart to avoid waiting for sleep timeouts.
+	 */
+	public static void interruptTimerThreads() {
+		synchronized (timerThreads) {
+			for (Thread t : timerThreads) {
+				if (t != null && t.isAlive()) {
+					t.interrupt();
+					logger.info("Interrupted timer thread: {}", t.getName());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Register a timer thread for interrupt during restart.
+	 */
+	public static void registerTimerThread(Thread thread) {
+		synchronized (timerThreads) {
+			timerThreads.add(thread);
+		}
 	}
 }

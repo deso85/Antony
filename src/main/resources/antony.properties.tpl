@@ -16,3 +16,6 @@ sqlite.db.path = antony.db
 bot.version = ${project.version}
 # Set Antcheck API Key
 antcheck.api.key = 123456789abcdef
+# Path to the restart script (~/bin/antony.sh or absolute path)
+# Used by the !restart command to restart the bot from within Discord
+bot.restart.script = ~/bin/antony.sh

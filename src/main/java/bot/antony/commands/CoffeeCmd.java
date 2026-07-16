@@ -34,10 +34,13 @@ public class CoffeeCmd extends ServerCommand {
 					msg.editMessage("Hier, bitteschön. Frisch gebrüht! ☕\n\nDenk aber daran, auch mal ein Glas Wasser zu trinken.").queue();
 					message.addReaction(Emoji.fromUnicode("☕")).queue();
 				} catch (InterruptedException e) {
-					Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+					// Thread was interrupted (e.g. during restart) — ignore
+					Thread.currentThread().interrupt();
 				}
 			}
 		};
+		timerThread.setName("coffee-timer");
+		Antony.registerTimerThread(timerThread);
 		timerThread.start();
 		
 	}

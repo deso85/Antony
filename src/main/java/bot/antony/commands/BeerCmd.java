@@ -34,10 +34,13 @@ public class BeerCmd extends ServerCommand {
 					msg.editMessage("Hier, bitteschön. Ein erfrischendes Glas Wasser! 🥤").queue();
 					message.addReaction(Emoji.fromUnicode("🥤")).queue();
 				} catch (InterruptedException e) {
-					Antony.getLogger().error("Wasn't able to put Thread asleep.", e);
+					// Thread was interrupted (e.g. during restart) — ignore
+					Thread.currentThread().interrupt();
 				}
 			}
 		};
+		timerThread.setName("beer-timer");
+		Antony.registerTimerThread(timerThread);
 		timerThread.start();
 		
 	}

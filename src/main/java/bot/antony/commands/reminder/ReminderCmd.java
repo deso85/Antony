@@ -46,7 +46,7 @@ public class ReminderCmd extends ServerCommand {
 	
 	
 	/**
-	 * Function to parse the user input for {@link bot.antony.commands.reminder.Reminder Reminder} duration.
+	 * Function to parse the user input for {@link Reminder Reminder} duration.
 	 * 
 	 * @param  usrInput
 	 *         String to parse.

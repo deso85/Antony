@@ -61,6 +61,7 @@ public class CommandManager {
         cmds.put("shops", new ShopsCmd());
         cmds.put("showavatar", new ShowAvatarCmd());
         cmds.put("shutdown", new ShutdownCmd());
+        cmds.put("restart", new RestartCmd());
         cmds.put("user", new UserCmd());
         cmds.put("userinfo", new UserInfoCmd());
         cmds.put("watchlist", new WatchlistCmd());

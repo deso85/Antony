@@ -290,7 +290,7 @@ public class ChannelCmd extends ServerCommand {
 		
 		//sort if necessary
 		if(sort) {
-			bot.antony.commands.CategoryCmd.sort(cat);
+			CategoryCmd.sort(cat);
 		}
 		
 		return newChan;
