@@ -22,6 +22,16 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 
+/**
+ * Central registry for all bot commands.
+ *
+ * Commands are registered by canonical key and resolved case-insensitively.
+ * Commands are intentionally written in English for international availability.
+ * Aliases are only added in justified cases: language variants (e.g. "hilfe"
+ * for "help"), repeated misuse, or useful abbreviations.
+ *
+ * All maps are unmodifiable to prevent accidental tampering.
+ */
 public class CommandManager {
 
     // Encapsulated, immutable maps
@@ -83,6 +93,11 @@ public class CommandManager {
     }
 
     public boolean perform(String rawCommand, Member member, GuildMessageChannel channel, Message message) {
+        if (member == null || channel == null) {
+            Antony.getLogger().warn("Cannot perform command: member/channel is null");
+            return false;
+        }
+
         if (rawCommand == null || rawCommand.isBlank()) {
             Antony.getLogger().debug("Empty command received.");
             return false;
