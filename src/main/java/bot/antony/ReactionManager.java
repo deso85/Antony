@@ -3,6 +3,7 @@ package bot.antony;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import bot.antony.events.reaction.add.AamProposalDecision;
 import bot.antony.events.reaction.add.EggReaction;
@@ -32,6 +33,10 @@ public class ReactionManager {
     // Alias (different emoji) -> canonical key
     private final Map<String, String> aliases = new HashMap<>();
 
+    // Cache for normalized emoji strings (avoids repeated normalization)
+    private final Map<String, String> normalizeCache = new ConcurrentHashMap<>();
+    private static final int MAX_CACHE_SIZE = 512;
+
     private static final int ZWJ  = 0x200D; // Zero Width Joiner
     private static final int VS16 = 0xFE0F; // Variation Selector-16
 
@@ -60,6 +65,12 @@ public class ReactionManager {
 
     /** Executes the matching handler if one exists. */
     public boolean perform(MessageReactionAddEvent event) {
+        // Prevent loops: ignore reactions from the bot itself
+        String botId = event.getJDA().getSelfUser().getId();
+        if (botId.equals(event.getUser().getId())) {
+            return false;
+        }
+
         String raw = getEmojiName(event);   // raw name ("🕵️‍♂️" or "redflag")
         String key = resolveKey(raw);       // canonical key after normalize/alias
 
@@ -71,16 +82,6 @@ public class ReactionManager {
             return true;
         }
         return false;
-    }
-
-    // ---- Public helpers (kept for compatibility with your existing code) ----
-
-    public Map<String, MessageReaction> getReactions() {
-        return reactions;
-    }
-
-    public boolean hasReaction(String name) {
-        return reactions.containsKey(resolveKey(name));
     }
 
     public MessageReaction getReaction(String name) {
@@ -116,14 +117,29 @@ public class ReactionManager {
 
     /**
      * Resolution pipeline:
-     * 1) Normalize input (remove variants)
-     * 2) Direct match?
-     * 3) Alias lookup?
-     * 4) Simple family rule for speaker (optional convenience)
-     * 5) Fallback: normalized form
+     * 1) Check cache for already normalized form
+     * 2) Normalize input (remove variants)
+     * 3) Direct match?
+     * 4) Alias lookup?
+     * 5) Simple family rule for speaker (optional convenience)
+     * 6) Fallback: normalized form
      */
     private String resolveKey(String raw) {
+        // Check cache first
+        String cached = normalizeCache.get(raw);
+        if (cached != null) return cached;
+
         String norm = normalize(raw);
+
+        // Store in cache with size limit
+        if (normalizeCache.size() < MAX_CACHE_SIZE) {
+            normalizeCache.put(raw, norm);
+        } else if (normalizeCache.size() == MAX_CACHE_SIZE && !normalizeCache.containsKey(raw)) {
+            // Evict oldest entries when cache is full (LRU-like via LinkedHashMap iteration)
+            String oldestKey = normalizeCache.keySet().iterator().next();
+            normalizeCache.remove(oldestKey);
+            normalizeCache.put(raw, norm);
+        }
 
         if (reactions.containsKey(norm)) return norm;
 
