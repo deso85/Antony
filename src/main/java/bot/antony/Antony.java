@@ -52,32 +52,65 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
+/**
+ * Main class for the Antony Discord bot.
+ * 
+ * Antony is a feature-rich Discord bot that handles various guild management,
+ * user interactions, notifications, giveaways, reminders, and more.
+ * This class initializes the bot, manages all controllers and listeners,
+ * and provides access to the JDA instance and bot configuration.
+ */
 public class Antony extends ListenerAdapter {
 
+	/** Singleton instance of Antony bot */
 	public static Antony INSTANCE;
+	/** Base color for bot embeds and messages */
 	private static Color baseColor = new Color(31, 89, 152);
+	/** Logger instance for logging bot events and errors */
 	private static Logger logger = LoggerFactory.getLogger(Antony.class);
+	/** Command prefix for invoking bot commands (e.g., "!" or "?") */
 	private static String cmdPrefix;
+	/** Time in milliseconds to wait for notification processing */
 	private static long notificationPendingTime;
+	/** Current version of the Antony bot */
 	private static String version = getProperty("bot.version");
+	/** Path to the data directory for flatfile storage */
 	private static String dataPath;
+	/** Manager for command execution and routing */
 	private static CommandManager cmdMan;
+	/** Manager for reaction-based interactions */
 	private static ReactionManager reactionMan;
+	/** Controller for antcheck functionality */
 	private static AntcheckController antcheckController;
+	/** Controller for antcheck notifications */
 	private static AntcheckNotificationController antcheckNotificationController;
+	/** Controller for notifying members about new channel entries */
 	private static NotificationController notificationController;
+	/** Controller for whitelist management */
 	private static WhiteListController whitelistController;
+	/** Controller for watchlist management */
 	private static WatchListController watchlistController;
+	/** Controller for blacklist management */
 	private static BlackListController blacklistController;
+	/** Controller for softban functionality */
 	private static SoftbanController softbanController;
+	/** Controller for guild-related operations */
 	private static GuildController guildController;
+	/** Controller for user-related operations */
 	private static UserController userController;
+	/** Controller for AAM/HB (Keepers Journal) functionality */
 	private static AAMHBController hbController;
+	/** Controller for giveaway management */
 	private static GiveawayController gaController;
+	/** Controller for reminder management */
 	private static ReminderController reminderController;
+	/** Total count of users across all guilds */
 	private static int usercount;
+	/** Path to the custom configuration file (if provided) */
 	private static String configFile = null;
+	/** JDA instance representing the bot's connection to Discord */
 	private static JDA jda;
+	/** List of timer threads for background tasks and periodic checks */
 	private static final List<Thread> timerThreads = new ArrayList<>();
 	/**
 	 * This is the method where the program starts.
@@ -89,6 +122,13 @@ public class Antony extends ListenerAdapter {
 		startBot();
 	}
 
+	/**
+	 * Parse a configuration file path argument from command-line arguments.
+	 * Expects format: -config=/path/to/config.properties
+	 * 
+	 * @param argument the command-line argument to parse
+	 * @return Optional containing the config path if valid, empty otherwise
+	 */
 	private static Optional<String> parseConfigArgument(String argument) {
 		if (argument == null || !argument.startsWith("-config=")) {
 			return Optional.empty();
@@ -98,6 +138,12 @@ public class Antony extends ListenerAdapter {
 		return configPath.isEmpty() ? Optional.empty() : Optional.of(configPath);
 	}
 
+	/**
+	 * Initialize bot configuration from command-line arguments and property files.
+	 * Loads command prefix, notification pending time, and data path from properties.
+	 * 
+	 * @param args command-line arguments (may contain -config=/path/to/config)
+	 */
 	private static void initializeConfig(String[] args) {
 		Arrays.stream(args)
 				.map(Antony::parseConfigArgument)
@@ -111,6 +157,10 @@ public class Antony extends ListenerAdapter {
 		dataPath = getProperty("flatfile.path");
 	}
 
+	/**
+	 * Initialize all bot controllers responsible for managing features and data.
+	 * Each controller handles a specific bot feature (commands, reactions, notifications, etc.).
+	 */
 	private static void initializeControllers() {
 		cmdMan = new CommandManager();
 		reactionMan = new ReactionManager();
@@ -129,6 +179,15 @@ public class Antony extends ListenerAdapter {
 		usercount = 0;
 	}
 
+	/**
+	 * Build and start the Discord bot.
+	 * 
+	 * Configures JDA with all event listeners, cache settings, and gateway intents.
+	 * Sets up the bot's presence, initializes all background controllers and timers,
+	 * and starts the notification and giveaway processing loops.
+	 * 
+	 * @throws InterruptedException if the bot thread is interrupted during startup
+	 */
 	private static void startBot() {
 		try {
 			// build bot
@@ -326,22 +385,34 @@ public class Antony extends ListenerAdapter {
 		return reactionMan;
 	}
 	
+	/**
+	 * Function to get the AntcheckController
+	 * @return AntcheckController instance
+	 */
 	public static AntcheckController getAntcheckController() {
 		return antcheckController;
 	}
 	
+	/**
+	 * Function to get the AntcheckNotificationController
+	 * @return AntcheckNotificationController instance
+	 */
 	public static AntcheckNotificationController getAntcheckNotificationController() {
 		return antcheckNotificationController;
 	}
 	
 	/**
-	 * Function to get the NotificationManager
-	 * @return NotificationManager
+	 * Function to get the NotificationController (notifies members about new channel entries)
+	 * @return NotificationController instance
 	 */
 	public static NotificationController getNotificationController() {
 		return notificationController;
 	}
 	
+	/**
+	 * Function to get the data directory path
+	 * @return dataPath as String
+	 */
 	public static String getDataPath() {
 		return dataPath;
 	}
@@ -372,58 +443,114 @@ public class Antony extends ListenerAdapter {
 		Antony.cmdPrefix = cmdPrefix;
 	}
 
+	/**
+	 * Function to get the notification pending time
+	 * @return notificationPendingTime in milliseconds
+	 */
 	public static long getNotificationPendingTime() {
 		return notificationPendingTime;
 	}
 
+	/**
+	 * Function to set the notification pending time
+	 * @param notificationPendingTime in milliseconds
+	 */
 	public static void setNotificationPendingTime(long notificationPendingTime) {
 		Antony.notificationPendingTime = notificationPendingTime;
 	}
 
+	/**
+	 * Function to get the WhiteListController
+	 * @return WhiteListController instance
+	 */
 	public static WhiteListController getWhitelistController() {
 		return whitelistController;
 	}
 	
+	/**
+	 * Function to get the WatchListController
+	 * @return WatchListController instance
+	 */
 	public static WatchListController getWatchlistController() {
 		return watchlistController;
 	}
 	
+	/**
+	 * Function to get the BlackListController
+	 * @return BlackListController instance
+	 */
 	public static BlackListController getBlacklistController() {
 		return blacklistController;
 	}
 	
+	/**
+	 * Function to get the GuildController
+	 * @return GuildController instance
+	 */
 	public static GuildController getGuildController() {
 		return guildController;
 	}
 
+	/**
+	 * Function to get the UserController
+	 * @return UserController instance
+	 */
 	public static UserController getUserController() {
 		return userController;
 	}
 	
+	/**
+	 * Function to get the AAMHBController (Keepers Journal Controller)
+	 * @return AAMHBController instance
+	 */
 	public static AAMHBController getHBController() {
 		return hbController;
 	}
 	
+	/**
+	 * Function to get the GiveawayController
+	 * @return GiveawayController instance
+	 */
 	public static GiveawayController getGiveawayController() {
 		return gaController;
 	}
 	
+	/**
+	 * Function to get the ReminderController
+	 * @return ReminderController instance
+	 */
 	public static ReminderController getReminderController() {
 		return reminderController;
 	}
 	
+	/**
+	 * Function to get the total user count across all guilds
+	 * @return usercount as integer
+	 */
 	public static int getUsercount() {
 		return usercount;
 	}
 
+	/**
+	 * Function to set the total user count
+	 * @param usercount as integer
+	 */
 	public static void setUsercount(int usercount) {
 		Antony.usercount = usercount;
 	}
 
+	/**
+	 * Function to get the SoftbanController
+	 * @return SoftbanController instance
+	 */
 	public static SoftbanController getSoftbanController() {
 		return softbanController;
 	}
 
+	/**
+	 * Function to get the JDA instance
+	 * @return JDA instance representing the bot's Discord connection
+	 */
 	public static JDA getJda() {
 		return jda;
 	}
