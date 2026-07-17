@@ -46,13 +46,13 @@ public class NotifyCmd extends ServerCommand {
 		GuildData guild = new GuildData(message.getGuild());
 		UserData user = new UserData(message.getAuthor());
 
-		// Exp. Parameter: (on|off|stats|statistics) #MentionedChannel
+		// Subcommand with channel mention: (on|off|stats|statistics) #MentionedChannel
 		if(message.getMentions().getChannels().size() > 0) {
 			ArrayList<ChannelData> channelsAdddedTo = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsRemovedFrom = new ArrayList<ChannelData>();
 			ArrayList<ChannelData> channelsUnchanged = new ArrayList<ChannelData>();
 			
-			//for each mentioned channel...
+			// Process each mentioned channel
 			for(Channel mentionedChannel: message.getMentions().getChannels()) {
 				if (mentionedChannel.getType().isMessage() || mentionedChannel.getType().isThread()) {
 					ChannelData channelData = new ChannelData(mentionedChannel);
@@ -60,14 +60,16 @@ public class NotifyCmd extends ServerCommand {
 
 					switch (userMessage[1].toLowerCase()) {
 
-						case "on": // If user wants to receive notifications for channel
+						case "on":
+							// Enable notifications for the channel
 							if (nc.addNotification(guild, channelData, user)) {
 								channelsAdddedTo.add(channelData);
 							} else {
 								channelsUnchanged.add(channelData);
 							}
 							break;
-						case "off": // If user doesn't want to receive notifications for channel
+						case "off":
+							// Disable notifications for the channel
 							if (nc.removeNotification(guild, channelData, user)) {
 								channelsRemovedFrom.add(channelData);
 							} else {
@@ -75,7 +77,8 @@ public class NotifyCmd extends ServerCommand {
 							}
 							break;
 						case "stats":
-						case "statistics": // If user want's to see who has notifications turned on for specified channel
+						case "statistics":
+							// Show which users have notifications enabled for this channel
 
 							ArrayList<UserData> usrList = nc.getChannelUser(guild, channelData);
 							StringBuilder msg = new StringBuilder();
@@ -97,7 +100,7 @@ public class NotifyCmd extends ServerCommand {
 							}
 
 							break;
-						default: // Toggle - Turns on if user doesn't receive notifications and vice versa
+						default: // Toggle: enable if disabled, disable if enabled
 							if (nc.toggleNotification(guild, channelData, user)) {
 								channelsAdddedTo.add(channelData);
 							} else {
@@ -131,6 +134,7 @@ public class NotifyCmd extends ServerCommand {
 				switch (userMessage[1].toLowerCase()) {
 
 				case "info":
+					// Show all channels where the user receives notifications on this guild
 					
 					StringBuilder msgText = new StringBuilder();
 					
@@ -158,17 +162,20 @@ public class NotifyCmd extends ServerCommand {
 					Utils.sendPM(message.getMember(), eb);
 					
 					break;
-				case "off": // if user wants to receive no more notifications for this guild
-						nc.removeUserFromAllListsOfGuild(guild, user);
-						channel.sendMessage("Du erhältst nun keine weiteren Benachrichtigungen mehr.").queue();
+				case "off":
+					// Disable all notifications for this guild
+					nc.removeUserFromAllListsOfGuild(guild, user);
+					channel.sendMessage("Du erhältst nun keine weiteren Benachrichtigungen mehr.").queue();
 					break;
 				case "now":
+					// Subcommand-Permission: Admin-only, force-send all pending notifications
 					if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR)) {
 						nc.sendPendingNotifications();
 						message.addReaction(Emoji.fromUnicode("👌")).queue();
 					}
 					break;
-				default: // give the user an overview on which channels he'll receive notifications for this guild
+				default:
+					// No recognized subcommand: show help
 					printHelp(channel);
 					break;
 					

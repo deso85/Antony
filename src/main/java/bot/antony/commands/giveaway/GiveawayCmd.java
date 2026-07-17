@@ -40,9 +40,11 @@ public class GiveawayCmd extends ServerCommand {
 		if(userMessage.length >= 2) {
 			switch (userMessage[1].toLowerCase()) {
 			case "start":
+				// Subcommand: Available to everyone, starts interactive giveaway creation dialog
 				startGiveaway(message, member);
 				break;
 			case "reroll":
+				// Subcommand-Permission: Only Admin/Owner may reroll a giveaway
 				if(member.isOwner() || member.hasPermission(Permission.ADMINISTRATOR))
 					performReroll(userMessage);
 				break;
@@ -50,7 +52,8 @@ public class GiveawayCmd extends ServerCommand {
 				printHelp(channel);
 				break;
 			}
-		} else { // no parameters starts the dialogue
+		} else {
+			// No parameters: default to starting a new giveaway dialog
 			startGiveaway(message, member);
 		}
 	}
@@ -65,7 +68,8 @@ public class GiveawayCmd extends ServerCommand {
 	 */
 	private void startGiveaway(Message message, Member member) {
 		Antony.getLogger().info("Giveaway dialogue started");
-			message.reply(
+		// Starts interactive dialog and registers state machine to handle follow-up input
+		message.reply(
 				"Was willst du verschenken und welche Bedingungen gibt es? *(Freitext)"
 				+ "\n`stop` beendet den Dialog*")
 				.queue(msg -> {
