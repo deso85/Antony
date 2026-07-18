@@ -56,6 +56,11 @@ public class GuildController {
 		return guild.getTextChannelById(guildData.getCommandsChannelID());
 	}
 	
+	public TextChannel getProposalChannel(Guild guild) {
+		GuildData guildData = loadGuildData(guild);
+		return guild.getTextChannelById(guildData.getProposalChannelID());
+	}
+	
 	public List<String> getAdminRoles(Guild guild){
 		GuildData guildData = loadGuildData(guild);
 		return guildData.getAdminRoles();

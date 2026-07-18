@@ -3,6 +3,7 @@ package bot.antony.events.reaction.add;
 import java.util.Arrays;
 
 import bot.antony.Antony;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -31,6 +32,18 @@ public class AamProposalDecision extends MessageReaction {
 			removeOtherEmotes(event.getEmoji().getName());
 			togglePin(event.getEmoji().getName());
 		}
+	}
+	
+	@Override
+	public boolean shallTrigger(Member member) {
+		if (!super.shallTrigger(member)) {
+			return false;
+		}
+		TextChannel proposalChannel = Antony.getGuildController().getProposalChannel(guild);
+		if (proposalChannel == null) {
+			return true;
+		}
+		return responseChannel != null && responseChannel.getIdLong() == proposalChannel.getIdLong();
 	}
 	
 	private void sendInfoMessage() {

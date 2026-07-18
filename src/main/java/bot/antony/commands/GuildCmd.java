@@ -29,6 +29,7 @@ public class GuildCmd extends ServerCommand {
 		this.cmdParams.put("activationchan (#activationChannel)", "Gibt den aktuellen Activation-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("exitchan (#exitChannel)", "Gibt den aktuellen Exit-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("commandchan (#commandChannel)", "Gibt den aktuellen Kanal für Commands aus oder setzt diesen.");
+		this.cmdParams.put("proposalchan (#proposalChannel)", "Gibt den aktuellen Proposal-Channel aus oder setzt diesen.");
 	}
 	
 	// --------------------------------------------------
@@ -78,7 +79,13 @@ public class GuildCmd extends ServerCommand {
 						printCommandChan(message.getGuild());
 					}
 					break;
-					
+				case "proposalchan":
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						setProposalChan(message.getMentions().getChannels(TextChannel.class).get(0));
+					} else {
+						printProposalChan(message.getGuild());
+					}
+					break;
 				default:
 					printHelp(channel);
 					break;
@@ -178,6 +185,23 @@ public class GuildCmd extends ServerCommand {
 			channel.sendMessage("Channel für Commands ist: " + guildController.getCommandChannel(guild).getAsMention()).queue();
 		} else {
 			channel.sendMessage("Es ist kein Channel für Commands gesetzt.").queue();
+		}
+	}
+	
+	private void setProposalChan(TextChannel proposalChan) {
+		GuildData guildData = Antony.getGuildController().loadGuildData(proposalChan.getGuild());
+		guildData.setProposalChannelID(proposalChan.getIdLong());
+		Antony.getGuildController().saveGuildData(guildData, proposalChan.getGuild());
+		channel.sendMessage("Proposal Channel gesetzt.").queue();
+		Antony.getLogger().info("Proposal channel of guild " + guildData.toString() + " set to " + proposalChan.getAsMention());
+	}
+	
+	private void printProposalChan(Guild guild) {
+		GuildController guildController = Antony.getGuildController();
+		if(guildController.getProposalChannel(guild) != null) {
+			channel.sendMessage("Proposal Channel ist: " + guildController.getProposalChannel(guild).getAsMention()).queue();
+		} else {
+			channel.sendMessage("Es ist kein Proposal Channel gesetzt.").queue();
 		}
 	}
 }
