@@ -1,5 +1,6 @@
 package bot.antony;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -84,8 +85,18 @@ public class ReactionManager {
         return false;
     }
 
+    public boolean hasReaction(String name) {
+        return reactions.containsKey(resolveKey(name));
+    }
+
     public MessageReaction getReaction(String name) {
         return reactions.get(resolveKey(name));
+    }
+
+    /** Returns an unmodifiable view of registered reaction handlers.
+     *  Returning an unmodifiable map prevents callers from mutating the internal state. */
+    public Map<String, MessageReaction> getReactions() {
+        return Collections.unmodifiableMap(reactions);
     }
 
     // ---- Internals ----
