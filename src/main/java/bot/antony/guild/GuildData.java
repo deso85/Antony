@@ -47,7 +47,7 @@ public class GuildData {
 		setId(guild.getId());
 		setName(guild.getName());
 		if (guild.getSystemChannel() != null) {
-	setWelcomeChannelID(guild.getSystemChannel().getIdLong());
+			setWelcomeChannelID(guild.getSystemChannel().getIdLong());
 		}
 	}
 	
