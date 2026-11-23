@@ -18,6 +18,7 @@ public class GuildData {
 	private long activationRulesChannelID;
 	private long exitChannelID;
 	private long commandsChannelID;
+	private long roleManagementChannelID;
 	private List<String> adminRoles = new ArrayList<String>();
 	private List<String> modRoles = new ArrayList<String>();
 	private Map<String, ArrayList<Long>> cmdRoles = new HashMap<String, ArrayList<Long>>();
@@ -333,6 +334,14 @@ public class GuildData {
 
 	public void setCommandsChannelID(long commandsChannelID) {
 		this.commandsChannelID = commandsChannelID;
+	}
+
+	public long getRoleManagementChannelID() {
+		return roleManagementChannelID;
+	}
+
+	public void setRoleManagementChannelID(long roleManagementChannelID) {
+		this.roleManagementChannelID = roleManagementChannelID;
 	}
 
 	public Map<String, ArrayList<Long>> getCmdRoles() {

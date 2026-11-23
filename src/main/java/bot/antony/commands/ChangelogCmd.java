@@ -44,6 +44,7 @@ public class ChangelogCmd extends ServerCommand {
 	private List<ChangeLogEntry> getChangeLog(int limit) {
 		String cmdPrefix = Antony.getCmdPrefix();
 		List<ChangeLogEntry> changeLog = new ArrayList<>();
+		changeLog.add(new ChangeLogEntry("23.11.2026 - Version 7.22.0", "Neuer Parameter ***" + cmdPrefix + "guild rolechan #kanal*** zum Festlegen des Kanals für die Rollenvergabe per Reaktion. Verlässt ein User den Server, entfernt Antony dort automatisch seine Reaktionen. Zusätzlich gleicht Antony jede Nacht alle Reaktionen mit der Mitgliederliste ab und entfernt Reaktionen ehemaliger Mitglieder. So bleibt die Übersicht über vergebene Rollen aktuell und zurückkehrende User können ihre Rollen einfach neu auswählen."));
 		changeLog.add(new ChangeLogEntry("15.07.2026 - Version 7.21.0", "Neuer Befehl ***" + cmdPrefix + "restart***: Der Bot kann sich nun selbst neu starten. Dazu wird ein externes Shell-Script auf dem Server ausgeführt. Das Script unterstützt start/stop/restart/status."));
 		changeLog.add(new ChangeLogEntry("08.06.2026 - Version 7.20.0", "Haltungsberichte können nun auch bei feiner unterteilten Kategorien (z.B. gattungsspezifisch) korrekt angelegt werden."));
 		changeLog.add(new ChangeLogEntry("15.04.2026 - Version 7.19.0", "Die automatische Sortierung der Kategorien wurde überarbeitet. Die eingesetzte Java Bibliothek wurde auf die neuste Version aktualisiert."));
