@@ -4,6 +4,7 @@ import bot.antony.Antony;
 import bot.antony.commands.types.ServerCommand;
 import bot.antony.controller.GuildController;
 import bot.antony.guild.GuildData;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -29,6 +30,7 @@ public class GuildCmd extends ServerCommand {
 		this.cmdParams.put("activationchan (#activationChannel)", "Gibt den aktuellen Activation-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("exitchan (#exitChannel)", "Gibt den aktuellen Exit-Kanal aus oder setzt diesen.");
 		this.cmdParams.put("commandchan (#commandChannel)", "Gibt den aktuellen Kanal für Commands aus oder setzt diesen.");
+		this.cmdParams.put("rolechan (#roleChannel)", "Gibt den aktuellen Kanal für die Rollenvergabe per Reaktion aus oder setzt diesen. Verlässt ein User den Server, werden seine Reaktionen in diesem Kanal entfernt.");
 	}
 	
 	// --------------------------------------------------
@@ -76,6 +78,13 @@ public class GuildCmd extends ServerCommand {
 						setCommmandChan(message.getMentions().getChannels(TextChannel.class).get(0));
 					} else {
 						printCommandChan(message.getGuild());
+					}
+					break;
+				case "rolechan":
+					if(message.getMentions().getChannels(TextChannel.class).size() > 0) {
+						setRoleManagementChan(message.getMentions().getChannels(TextChannel.class).get(0));
+					} else {
+						printRoleManagementChan(message.getGuild());
 					}
 					break;
 					
@@ -178,6 +187,29 @@ public class GuildCmd extends ServerCommand {
 			channel.sendMessage("Channel für Commands ist: " + guildController.getCommandChannel(guild).getAsMention()).queue();
 		} else {
 			channel.sendMessage("Es ist kein Channel für Commands gesetzt.").queue();
+		}
+	}
+	
+	//Role Management Channel
+	private void setRoleManagementChan(TextChannel roleChan) {
+		GuildData guildData = Antony.getGuildController().loadGuildData(roleChan.getGuild());
+		guildData.setRoleManagementChannelID(roleChan.getIdLong());
+		Antony.getGuildController().saveGuildData(guildData, roleChan.getGuild());
+		channel.sendMessage("Channel für die Rollenvergabe gesetzt.").queue();
+		Antony.getLogger().info("Role management channel of guild " + guildData.toString() + " set to " + roleChan.getAsMention());
+		
+		Member self = roleChan.getGuild().getSelfMember();
+		if(!self.hasPermission(roleChan, Permission.MESSAGE_HISTORY, Permission.MESSAGE_MANAGE)) {
+			channel.sendMessage("Achtung: Mir fehlen in " + roleChan.getAsMention() + " die Berechtigungen *Nachrichtenverlauf lesen* und/oder *Nachrichten verwalten*. Ohne diese kann ich Reaktionen von Usern, die den Server verlassen, nicht entfernen.").queue();
+		}
+	}
+	
+	private void printRoleManagementChan(Guild guild) {
+		GuildController guildController = Antony.getGuildController();
+		if(guildController.getRoleManagementChannel(guild) != null) {
+			channel.sendMessage("Channel für die Rollenvergabe ist: " + guildController.getRoleManagementChannel(guild).getAsMention()).queue();
+		} else {
+			channel.sendMessage("Es ist kein Channel für die Rollenvergabe gesetzt.").queue();
 		}
 	}
 }

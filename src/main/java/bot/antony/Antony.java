@@ -22,6 +22,7 @@ import bot.antony.controller.BlackListController;
 import bot.antony.controller.GiveawayController;
 import bot.antony.controller.GuildController;
 import bot.antony.controller.ReminderController;
+import bot.antony.controller.RoleReactionController;
 import bot.antony.controller.SoftbanController;
 import bot.antony.controller.UserController;
 import bot.antony.controller.WatchListController;
@@ -74,6 +75,7 @@ public class Antony extends ListenerAdapter {
 	private static AAMHBController hbController;
 	private static GiveawayController gaController;
 	private static ReminderController reminderController;
+	private static RoleReactionController roleReactionController;
 	private static int usercount;
 	private static String configFile = null;
 	private static JDA jda;
@@ -112,6 +114,7 @@ public class Antony extends ListenerAdapter {
 		hbController = new AAMHBController();
 		gaController = new GiveawayController();
 		reminderController = new ReminderController();
+		roleReactionController = new RoleReactionController();
 		usercount = 0;
 		
 		try {
@@ -166,6 +169,7 @@ public class Antony extends ListenerAdapter {
 			gaController.run(jda);
 			reminderController.load();
 			reminderController.run(jda);
+			roleReactionController.run(jda);
 			antcheckController.run(jda);
 			antcheckNotificationController.run();
 			//Thread which is used to do timed actions
@@ -376,6 +380,10 @@ public class Antony extends ListenerAdapter {
 	
 	public static GiveawayController getGiveawayController() {
 		return gaController;
+	}
+	
+	public static RoleReactionController getRoleReactionController() {
+		return roleReactionController;
 	}
 	
 	public static ReminderController getReminderController() {
