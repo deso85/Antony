@@ -11,6 +11,7 @@ import bot.antony.commands.aam.AddHBCmd;
 import bot.antony.commands.antcheck.AntcheckCmd;
 import bot.antony.commands.emergency.EmergencyCmd;
 import bot.antony.commands.giveaway.GiveawayCmd;
+import bot.antony.commands.hibernation.HibernationCmd;
 import bot.antony.commands.lists.BlacklistCmd;
 import bot.antony.commands.lists.WatchlistCmd;
 import bot.antony.commands.lists.WhitelistCmd;
@@ -66,6 +67,7 @@ public class CommandManager {
         cmds.put("userinfo", new UserInfoCmd());
         cmds.put("watchlist", new WatchlistCmd());
         cmds.put("whitelist", new WhitelistCmd());
+        cmds.put("winterruhe", new HibernationCmd());
         this.commands = Collections.unmodifiableMap(cmds);
 
         // Aliases map alias -> canonical key
@@ -79,6 +81,7 @@ public class CommandManager {
         als.put("bier", "beer");
         als.put("kaffee", "coffee");
         als.put("stats", "serverstats");
+        als.put("hibernation", "winterruhe");
         this.aliases = Collections.unmodifiableMap(als);
     }
 
